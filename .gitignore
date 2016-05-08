@@ -221,3 +221,4 @@ pip-log.txt
 .mr.developer.cfg
 *.sln
 >>>>>>> parent of 6c985f0... Revert "Base de travail pour la gestion des littéraux et des opérations"
+*.db

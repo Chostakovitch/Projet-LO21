@@ -1,6 +1,6 @@
 #pragma once
 #include "Literal.h"
-#include "Operateurs2.h"
+#include "Operateurs.h"
 #include "LiteralFactory.h"
 #include <memory>
 

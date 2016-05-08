@@ -1,6 +1,6 @@
 #include "OperatorManager.h"
 #include "Literal.h"
-#include "Operateurs2.h"
+#include "Operateurs.h"
 #include "LiteralFactory.h"
 #include "Operation.h"
 #include <memory>

@@ -1,5 +1,5 @@
 #pragma once
-#include "Operateurs2.h"
+#include "Operateurs.h"
 
 class OperatorManager
 {
