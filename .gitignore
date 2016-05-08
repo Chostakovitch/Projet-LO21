@@ -1,7 +1,4 @@
 <<<<<<< HEAD
-*.sln
-*.vcxproj
-*.vcxproj.*
 =======
 #################
 ## Eclipse
@@ -45,6 +42,9 @@ local.properties
 *.suo
 *.user
 *.sln.docstates
+*.sln
+*.vcxproj
+*.vcxproj.*
 
 # Build results
 
