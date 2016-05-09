@@ -5,7 +5,13 @@
 #include "Operation.h"
 #include <memory>
 
-const std::map<std::string, std::pair<int, std::shared_ptr<Operation>>> OperatorManager::op_infos = { {"+", { 2, std::shared_ptr<Operation>(new PlusOperation)} } };
+const std::map<std::string, std::pair<int, std::shared_ptr<Operation>>> OperatorManager::op_infos = {
+	{"+", { 2, std::shared_ptr<Operation>(new PlusOperation)} },
+	{"NEG", { 1, nullptr }},
+	{"DUP", { 1, nullptr }},
+	{"IFT", { 3, nullptr }},
+	{"<", { 2, nullptr }}
+};
 
 OperatorManager::OperatorManager() {
 	for (auto op : op_infos) operators.insert({ op.first, std::shared_ptr<Operator>(new Operator(op.first, op.second.first, op.second.second)) });
@@ -50,9 +56,9 @@ int main() {
 	//Singletons
 	LiteralFactory& factory = LiteralFactory::getInstance();
 	OperatorManager& manager = OperatorManager::getInstance();
-
+	/*
 	//Parsing des littéraux
-	auto l1 = factory.makeLiteralFromString("\"1\"");
+	auto l1 = factory.makeLiteralFromString("2");
 	auto l2 = factory.makeLiteralFromString("5.4");
 
 	//Instance de l'opérateur
@@ -67,6 +73,10 @@ int main() {
 	for (auto arg : args) std::cout << typeid(*arg).name() << " : " << arg->toString() << std::endl;
 	//Affichage du vecteur de retour
 	for (auto res : result) std::cout << typeid(*res).name() << " : " << res->toString() << std::endl;
+	*/
+
+	auto p1 = factory.makeLiteralFromString("[ DUP 0.5 < [ NEG ] IFT ]");
+	std::cout << p1->toString() << std::endl;
 	getchar();
 	return 0;
 }
