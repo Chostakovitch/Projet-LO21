@@ -2,6 +2,7 @@
 #include "Utility.h"
 #include <algorithm>
 #include <sstream>
+#include <cmath>
 
 LiteralFactory::LiteralFactory() { //Push dans l'ordre de priorité
 	allocatorsPriority.push_back(std::bind(&LiteralFactory::makeInteger, this, std::placeholders::_1));
