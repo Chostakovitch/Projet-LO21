@@ -9,9 +9,6 @@ Arguments<std::shared_ptr<Literal>> Operation::eval(LiteralFactory& factory, Arg
 Arguments<std::shared_ptr<Literal>> Operation::eval(LiteralFactory& factory, Arguments<RealLiteral>& args) { 
 	throw std::invalid_argument("Not implemented."); 
 }
-Arguments<std::shared_ptr<Literal>> Operation::eval(LiteralFactory& factory, Arguments<ExpressionLiteral>& args) { 
-	throw std::invalid_argument("Not implemented."); 
-}
 
 Arguments<std::shared_ptr<Literal>> PlusOperation::eval(LiteralFactory& factory, Arguments<IntegerLiteral>& args) {
 	return Arguments<std::shared_ptr<Literal>>{factory.makeLiteral(args.at(0).getValue() + args.at(1).getValue())};
@@ -25,9 +22,4 @@ Arguments<std::shared_ptr<Literal>> PlusOperation::eval(LiteralFactory& factory,
 
 Arguments<std::shared_ptr<Literal>> PlusOperation::eval(LiteralFactory& factory, Arguments<RealLiteral>& args) {
 	return Arguments<std::shared_ptr<Literal>>{factory.makeLiteral(args.at(0).getValue() + args.at(1).getValue())};
-}
-
-Arguments<std::shared_ptr<Literal>> PlusOperation::eval(LiteralFactory& factory, Arguments<ExpressionLiteral>& args) {
-	std::string res = "(" + args.at(0).getExpression() + ")+(" + args.at(1).getExpression() + ")";
-	return Arguments<std::shared_ptr<Literal>>{factory.makeLiteral(res)};
 }
