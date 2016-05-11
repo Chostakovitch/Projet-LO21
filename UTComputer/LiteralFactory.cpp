@@ -56,7 +56,12 @@ void LiteralFactory::makeLeafProgram(const std::string &s, std::shared_ptr<Progr
 			prog->add(makeLiteralFromString(str)); //Ajout du litéral au vecteur courant
 		}
 		catch (std::invalid_argument&) {
-			prog->add(OperatorManager::getInstance().getOperator(str)); //Ajout de l'opérateur au vecteur courant
+			try {
+				prog->add(OperatorManager::getInstance().getOperator(str)); //Ajout de l'opérateur au vecteur courant
+			}
+			catch (std::invalid_argument&) {
+				throw std::invalid_argument("Unrecognized symbol.");
+			}
 		}
 	}
 }

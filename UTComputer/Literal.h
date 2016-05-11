@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LITERAL_H
+#define LITERAL_H
 #include <string>
 #include <memory>
 #include <vector>
@@ -84,3 +85,4 @@ public:
 	std::string toString() const override;
 	ProgramLiteral* add(std::shared_ptr<Operand> op) { operands.push_back(op); return this; }
 };
+#endif

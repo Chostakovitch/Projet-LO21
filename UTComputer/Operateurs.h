@@ -1,4 +1,5 @@
-#pragma once
+#ifndef OPERATEURS_H
+#define OPERATEURS_H
 #include <map>
 #include <iostream>
 #include <vector>
@@ -41,3 +42,4 @@ class Operator : public Operand {
 public:
 	std::string toString() const override { return symbol; }
 };
+#endif

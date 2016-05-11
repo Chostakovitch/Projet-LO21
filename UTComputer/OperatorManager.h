@@ -1,4 +1,5 @@
-#pragma once
+#ifndef OPERATORMANAGER_H
+#define OPERATORMANAGER_H
 #include "Operateurs.h"
 
 class OperatorManager
@@ -13,3 +14,4 @@ public:
 	const std::shared_ptr<Operator> getOperator(std::string opcode);
 	std::vector<std::shared_ptr<Literal>> dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args);
 };
+#endif

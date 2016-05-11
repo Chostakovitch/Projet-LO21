@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LITERALFACTORY_H
+#define LITERALFACTORY_H
 #include "Literal.h"
 #include <memory>
 #include <functional>
@@ -26,4 +27,4 @@ public:
 	std::shared_ptr<Literal> makeLiteral(double f) const;
 	std::shared_ptr<Literal> makeLiteral(const std::string& s) const;
 };
-
+#endif
