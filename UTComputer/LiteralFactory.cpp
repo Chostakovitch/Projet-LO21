@@ -5,6 +5,7 @@
 #include <sstream>
 #include <vector>
 #include <iterator>
+#include <cmath>
 
 LiteralFactory::LiteralFactory() { //Push dans l'ordre de priorité
 	allocatorsPriority.push_back(std::bind(&LiteralFactory::makeInteger, this, std::placeholders::_1));
@@ -112,7 +113,7 @@ std::shared_ptr<Literal> LiteralFactory::makeLiteral(int num, int den) const {
 	num /= gcd;
 	den /= gcd;
 	if (den == 1) return makeLiteral(num);
-	return std::shared_ptr<RationalLiteral>(new RationalLiteral(IntegerLiteral(num), IntegerLiteral(den)));
+    return std::shared_ptr<RationalLiteral>(new RationalLiteral(IntegerLiteral(num), IntegerLiteral(den)));
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeLiteral(double f) const {

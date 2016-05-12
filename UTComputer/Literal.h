@@ -45,7 +45,7 @@ public:
 class RationalLiteral : public NumericLiteral {
 	IntegerLiteral num, den;
 public:
-	RationalLiteral(IntegerLiteral& num, IntegerLiteral& den) : num(num), den(den) {}
+    RationalLiteral(const IntegerLiteral& num, const IntegerLiteral& den) : num(num), den(den) {}
 	const IntegerLiteral& getNum() const { return num; }
 	const IntegerLiteral& getDen() const { return den; }
 	operator RealLiteral() override;
