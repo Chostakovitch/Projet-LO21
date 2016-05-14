@@ -30,7 +30,7 @@ const std::shared_ptr<Operator> OperatorManager::getOperator(std::string opcode)
 std::vector<std::shared_ptr<Literal>> OperatorManager::dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) {
 	if (op->arity != args.size()) throw std::invalid_argument("Wrong number of operands.");
 	try {
-        return op->operation->eval((Arguments<IntegerLiteral>)args);
+		return op->operation->eval((Arguments<IntegerLiteral>)args);
 	}
 	catch (std::bad_cast&) {
 		try {

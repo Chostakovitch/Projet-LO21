@@ -7,16 +7,16 @@
 
 class Operation {
 public:
-    virtual Arguments<std::shared_ptr<Literal>> eval(Arguments<IntegerLiteral>& args);
-    virtual Arguments<std::shared_ptr<Literal>> eval(Arguments<RationalLiteral>& args);
-    virtual Arguments<std::shared_ptr<Literal>> eval(Arguments<RealLiteral>& args);
-	virtual ~Operation() {}
+    virtual Arguments<std::shared_ptr<Literal>> eval(const Arguments<IntegerLiteral>& args);
+    virtual Arguments<std::shared_ptr<Literal>> eval(const Arguments<RationalLiteral>& args);
+    virtual Arguments<std::shared_ptr<Literal>> eval(const Arguments<RealLiteral>& args);
+    virtual ~Operation() {}
 };
 
 class PlusOperation : public Operation {
 public:
-    Arguments<std::shared_ptr<Literal>> eval(Arguments<IntegerLiteral>& args) override;
-    Arguments<std::shared_ptr<Literal>> eval(Arguments<RationalLiteral>& args) override;
-    Arguments<std::shared_ptr<Literal>> eval(Arguments<RealLiteral>& args) override;
+    Arguments<std::shared_ptr<Literal>> eval(const Arguments<IntegerLiteral>& args) override;
+    Arguments<std::shared_ptr<Literal>> eval(const Arguments<RationalLiteral>& args) override;
+    Arguments<std::shared_ptr<Literal>> eval(const Arguments<RealLiteral>& args) override;
 };
 #endif
