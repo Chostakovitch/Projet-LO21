@@ -57,7 +57,9 @@ SOURCES       = ../UTComputer/main.cpp \
 		../UTComputer/OperatorManager.cpp \
 		../UTComputer/Utility.cpp \
 		../UTComputer/Calculator.cpp \
-		../UTComputer/Button.cpp moc_utcomputer.cpp \
+		../UTComputer/Button.cpp \
+		../UTComputer/Settings.cpp \
+		../UTComputer/MainFrame.cpp moc_utcomputer.cpp \
 		moc_Calculator.cpp \
 		moc_Button.cpp
 OBJECTS       = main.o \
@@ -70,6 +72,8 @@ OBJECTS       = main.o \
 		Utility.o \
 		Calculator.o \
 		Button.o \
+		Settings.o \
+		MainFrame.o \
 		moc_utcomputer.o \
 		moc_Calculator.o \
 		moc_Button.o
@@ -222,7 +226,9 @@ DIST          = /Users/aureliedigeon/Qt/5.6/clang_64/mkspecs/features/spec_pre.p
 		../UTComputer/OperatorManager.h \
 		../UTComputer/Utility.h \
 		../UTComputer/Calculator.h \
-		../UTComputer/Button.h ../UTComputer/main.cpp \
+		../UTComputer/Button.h \
+		../UTComputer/Settings.h \
+		../UTComputer/MainFrame.h ../UTComputer/main.cpp \
 		../UTComputer/utcomputer.cpp \
 		../UTComputer/Literal.cpp \
 		../UTComputer/LiteralFactory.cpp \
@@ -231,7 +237,9 @@ DIST          = /Users/aureliedigeon/Qt/5.6/clang_64/mkspecs/features/spec_pre.p
 		../UTComputer/OperatorManager.cpp \
 		../UTComputer/Utility.cpp \
 		../UTComputer/Calculator.cpp \
-		../UTComputer/Button.cpp
+		../UTComputer/Button.cpp \
+		../UTComputer/Settings.cpp \
+		../UTComputer/MainFrame.cpp
 QMAKE_TARGET  = UTComputer
 DESTDIR       = 
 TARGET        = UTComputer.app/Contents/MacOS/UTComputer
@@ -564,8 +572,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ../UTComputer/utcomputer.h ../UTComputer/Literal.h ../UTComputer/LiteralFactory.h ../UTComputer/Operateurs.h ../UTComputer/Operation.h ../UTComputer/OperatorManager.h ../UTComputer/Utility.h ../UTComputer/Calculator.h ../UTComputer/Button.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../UTComputer/main.cpp ../UTComputer/utcomputer.cpp ../UTComputer/Literal.cpp ../UTComputer/LiteralFactory.cpp ../UTComputer/Operateurs.cpp ../UTComputer/Operation.cpp ../UTComputer/OperatorManager.cpp ../UTComputer/Utility.cpp ../UTComputer/Calculator.cpp ../UTComputer/Button.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../UTComputer/utcomputer.h ../UTComputer/Literal.h ../UTComputer/LiteralFactory.h ../UTComputer/Operateurs.h ../UTComputer/Operation.h ../UTComputer/OperatorManager.h ../UTComputer/Utility.h ../UTComputer/Calculator.h ../UTComputer/Button.h ../UTComputer/Settings.h ../UTComputer/MainFrame.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../UTComputer/main.cpp ../UTComputer/utcomputer.cpp ../UTComputer/Literal.cpp ../UTComputer/LiteralFactory.cpp ../UTComputer/Operateurs.cpp ../UTComputer/Operation.cpp ../UTComputer/OperatorManager.cpp ../UTComputer/Utility.cpp ../UTComputer/Calculator.cpp ../UTComputer/Button.cpp ../UTComputer/Settings.cpp ../UTComputer/MainFrame.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../UTComputer/utcomputer.ui $(DISTDIR)/
 
 
@@ -600,6 +608,18 @@ moc_utcomputer.cpp: /Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework
 
 moc_Calculator.cpp: /Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QWidget \
 		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QLineEdit \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/qlineedit.h \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QTextEdit \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/qtextedit.h \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QTableWidget \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/qtablewidget.h \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QVBoxLayout \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/qboxlayout.h \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QHeaderView \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/qheaderview.h \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtCore.framework/Headers/QDebug \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtCore.framework/Headers/qdebug.h \
 		../UTComputer/Calculator.h
 	/Users/aureliedigeon/Qt/5.6/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/aureliedigeon/Qt/5.6/clang_64/mkspecs/macx-clang -I/Users/aureliedigeon/Documents/UTC/P16/LO21/Projet-LO21/UTComputer -I/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers -I/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtGui.framework/Headers -I/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtCore.framework/Headers -I. -F/Users/aureliedigeon/Qt/5.6/clang_64/lib ../UTComputer/Calculator.h -o moc_Calculator.cpp
 
@@ -632,51 +652,42 @@ main.o: ../UTComputer/main.cpp ../UTComputer/utcomputer.h \
 		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
 		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
 		../UTComputer/OperatorManager.h \
-		../UTComputer/Operateurs.h \
 		../UTComputer/Literal.h \
+		../UTComputer/Operateurs.h \
 		../UTComputer/LiteralFactory.h \
-		../UTComputer/Operation.h \
-		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QApplication \
-		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/qapplication.h
+		../UTComputer/CompositeLiteral.h \
+		../UTComputer/Operation.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../UTComputer/main.cpp
 
-utcomputer.o: ../UTComputer/utcomputer.cpp ../UTComputer/utcomputer.h \
-		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
-		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
-		ui_utcomputer.h
+utcomputer.o: ../UTComputer/utcomputer.cpp ui_utcomputer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o utcomputer.o ../UTComputer/utcomputer.cpp
 
 Literal.o: ../UTComputer/Literal.cpp ../UTComputer/Literal.h \
 		../UTComputer/Utility.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Literal.o ../UTComputer/Literal.cpp
 
-LiteralFactory.o: ../UTComputer/LiteralFactory.cpp ../UTComputer/LiteralFactory.h \
-		../UTComputer/Literal.h \
-		../UTComputer/OperatorManager.h \
-		../UTComputer/Operateurs.h \
+LiteralFactory.o: ../UTComputer/LiteralFactory.cpp ../UTComputer/OperatorManager.h \
 		../UTComputer/Utility.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o LiteralFactory.o ../UTComputer/LiteralFactory.cpp
 
-Operateurs.o: ../UTComputer/Operateurs.cpp ../UTComputer/Operateurs.h \
+Operateurs.o: ../UTComputer/Operateurs.cpp ../UTComputer/Operation.h \
 		../UTComputer/Literal.h \
-		../UTComputer/Operation.h \
-		../UTComputer/LiteralFactory.h
+		../UTComputer/Operateurs.h \
+		../UTComputer/LiteralFactory.h \
+		../UTComputer/CompositeLiteral.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Operateurs.o ../UTComputer/Operateurs.cpp
 
-Operation.o: ../UTComputer/Operation.cpp ../UTComputer/Operation.h \
-		../UTComputer/Literal.h \
-		../UTComputer/Operateurs.h \
-		../UTComputer/LiteralFactory.h
+Operation.o: ../UTComputer/Operation.cpp ../UTComputer/OperatorManager.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Operation.o ../UTComputer/Operation.cpp
 
-OperatorManager.o: ../UTComputer/OperatorManager.cpp ../UTComputer/OperatorManager.h \
+OperatorManager.o: ../UTComputer/OperatorManager.cpp ../UTComputer/Literal.h \
 		../UTComputer/Operateurs.h \
-		../UTComputer/Literal.h \
 		../UTComputer/LiteralFactory.h \
+		../UTComputer/CompositeLiteral.h \
 		../UTComputer/Operation.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o OperatorManager.o ../UTComputer/OperatorManager.cpp
 
-Utility.o: ../UTComputer/Utility.cpp ../UTComputer/Utility.h
+Utility.o: ../UTComputer/Utility.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Utility.o ../UTComputer/Utility.cpp
 
 Calculator.o: ../UTComputer/Calculator.cpp /Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QtWidgets \
@@ -809,8 +820,16 @@ Calculator.o: ../UTComputer/Calculator.cpp /Users/aureliedigeon/Qt/5.6/clang_64/
 		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/qtwidgetsversion.h \
 		../UTComputer/Button.h \
 		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QToolButton \
-		../UTComputer/calculator.h \
-		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QWidget
+		../UTComputer/Calculator.h \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QLineEdit \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QTextEdit \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QTableWidget \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QVBoxLayout \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QHeaderView \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtCore.framework/Headers/QDebug \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtCore.framework/Headers/qdebug.h \
+		../UTComputer/Settings.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Calculator.o ../UTComputer/Calculator.cpp
 
 Button.o: ../UTComputer/Button.cpp /Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QtWidgets \
@@ -944,6 +963,12 @@ Button.o: ../UTComputer/Button.cpp /Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWi
 		../UTComputer/Button.h \
 		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QToolButton
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Button.o ../UTComputer/Button.cpp
+
+Settings.o: ../UTComputer/Settings.cpp ../UTComputer/Settings.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Settings.o ../UTComputer/Settings.cpp
+
+MainFrame.o: ../UTComputer/MainFrame.cpp ../UTComputer/MainFrame.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainFrame.o ../UTComputer/MainFrame.cpp
 
 moc_utcomputer.o: moc_utcomputer.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_utcomputer.o moc_utcomputer.cpp

@@ -11,6 +11,7 @@
 
 class Button;
 class Settings;
+class MainFrame;
 
 class Calculator : public QWidget
 {
@@ -21,7 +22,9 @@ private:
     QLineEdit* commande;
     QVBoxLayout* layout;
     //Manager* manager;
-    Setting* options;
+    Settings* settings;
+
+    MainFrame* mainFrame;
 
 public:
     explicit Calculator(QWidget *parent = 0);
