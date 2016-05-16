@@ -223,3 +223,5 @@ build-UTComputer-Desktop_Qt_5_6_0_MinGW_32bit-Debug/
 UTComputer/html
 UTComputer/latex
 *.autosave
+UTComputer/Doxyfile
+build-UTComputer-Desktop_Qt_5_6_0_clang_64bit-Debug
