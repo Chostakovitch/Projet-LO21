@@ -1,45 +1,53 @@
+﻿/**
+  * @file Operateurs.h
+  * @brief Fichier de référence pour les opérateurs.
+  */
+
 #ifndef OPERATEURS_H
 #define OPERATEURS_H
-#include <map>
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <type_traits>
 #include <memory>
-#include "Literal.h"
+
+#include "Literal.h" //Obligatoire pour pouvoir hériter d'Operand
 
 class Operation;
 
-template <typename T>
-class Arguments : public std::vector<T> {
-	using std::vector<T>::vector;
-};
-
-/* A bien noter sur cette classe pour expliquer dans le rapport : on pourrait se demander pourquoi on ne fait pas simplement
-un dynamic_cast (ou �quivalent pour shared_ptr) : tout simplement parce qu'on souhaite op�rer sur des litt�rales qui sont soeurs
-(donc pas de downcast direct) et parce qu'on applique le m�canisme de promotion pour �viter la redondance dans des m�thodes de calcul
-dont le nombre deviendrait exponentiel (i.e. toutes les combinaisons de types possibles). Il existe certains op�rateurs sp�ciaux (par exemple le "$") 
-pour lesquels cela aurait �t� pertinent, mais le "$" semble plus appartenir � la Factory de litt�rales qu'autre chose. A voir donc.
-*/
-template <typename T>
-class Arguments<std::shared_ptr<T>> : public std::vector<std::shared_ptr<T>> {
-public:
-	using std::vector<std::shared_ptr<T>>::vector;
-	template <typename U>
-	operator Arguments<U>() { //Cast d'un vecteur de pointeurs sur un T vers un vecteur de U (si la conversion existe)
-		Arguments<U> dest;
-		for (auto arg : *this) dest.push_back(*arg);
-		return dest;
-	}
-};
-
+/**
+ * @brief Un objet Operator est une opérande qui abstrait la notion d'opérateur.
+ * @details Une instance d'un objet Operator peut représenter indifféremment un opérateur arithmétique, logique, de pile, de programme, etc.
+ * L'abstraction ici consiste à dire qu'un opérateur agit sur un vecteur de littérales et produit un autre vecteur de littérales.
+ * On empêche ainsi le couplage entre l'opérateur et la pile par exemple, rendant cette classe utilisable sans dépendance aux autres composants d'UTComputer.
+ */
 class Operator : public Operand {
-	friend class OperatorManager;
-	const unsigned int arity;
-	std::string symbol;
-	const std::shared_ptr<Operation> operation;
-	Operator(std::string symbol, unsigned int arity, std::shared_ptr<Operation> operation) : symbol(symbol), arity(arity), operation(operation) { }
+    /**
+     * @brief Chaîne de caractères représentant l'opérateur.
+     */
+    std::string symbol;
+    /**
+     * @brief Arité de l'opérateur, i.e. le nombre d'opérandes sur lequel il s'applique.
+     */
+    const unsigned int arity;
+    /**
+     * @brief Pointeur sur objet Operation, qui représente le comportement de l'opérateur.
+     */
+    std::shared_ptr<Operation> operation;
 public:
+    /**
+     * @brief Constructeur d'objet Operator.
+     * @param symbol Chaîne de caractère représentant l'opérateur.
+     * @param arity Entier positif représentant le nombre d'opérandes sur lequel l'opérateur s'applique.
+     * @param operation Pointeur sur Operation, définissant le comportement de l'opérateur.
+     */
+    Operator(std::string symbol, unsigned int arity, std::shared_ptr<Operation> operation) : symbol(symbol), arity(arity), operation(operation) { }
+    /**
+     * @brief Accesseur pour arity.
+     * @return Entier non-signé.
+     */
+    unsigned int getArity() { return arity; }
+    /**
+     * @brief Accesseur pour operation.
+     * @return Référence constante sur un pointeur sur Operation.
+     */
+    const std::shared_ptr<Operation>& getOperation() { return operation; }
 	std::string toString() const override { return symbol; }
 };
 #endif

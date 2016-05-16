@@ -1,4 +1,4 @@
-#include "Operation.h"
+﻿#include "Operation.h"
 #include "OperatorManager.h"
 
 Arguments<std::shared_ptr<Literal>> Operation::eval(const Arguments<IntegerLiteral>&) {

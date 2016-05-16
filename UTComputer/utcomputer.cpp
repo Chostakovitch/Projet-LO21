@@ -1,4 +1,4 @@
-#include "utcomputer.h"
+﻿#include "utcomputer.h"
 #include "ui_utcomputer.h"
 
 UTComputer::UTComputer(QWidget *parent) :

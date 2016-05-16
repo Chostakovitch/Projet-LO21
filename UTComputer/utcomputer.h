@@ -1,4 +1,4 @@
-#ifndef UTCOMPUTER_H
+﻿#ifndef UTCOMPUTER_H
 #define UTCOMPUTER_H
 
 #include <QMainWindow>
