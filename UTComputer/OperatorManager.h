@@ -11,6 +11,7 @@
 
 class Operator;
 class Literal;
+class ExpressionLiteral;
 template <typename T>
 class Arguments;
 
@@ -43,9 +44,29 @@ class OperatorManager
          */
         FindOperator(const std::string& symbol) : symbol(symbol) { }
         /**
-         * @brief Opérateur fonction qui compare le symbole de l'objet Operator en paramètre et le symbole courant.
+         * @brief Opérateur fonction qui compare le symbole de l'objet Operator et le symbole courant.
          * @param op Pointeur sur objet Operator à comparer.
          * @return true si le symbole est identique, false sinon.
+         */
+        bool operator()(const std::shared_ptr<Operator>& op);
+    };
+    /**
+     * @brief Foncteur utilisé comme prédicat pour comparer les priorités de deux opérateurs.
+     */
+    struct PriorityComparator {
+        /**
+         * @brief Priorité à comparer.
+         */
+        int priority;
+        /**
+         * @brief Constructeur d'objet PriorityComparator.
+         * @param priority Entier.
+         */
+        PriorityComparator(int priority) : priority(priority) { }
+        /**
+         * @brief Opérateur fonction qui compare la priorité de l'objet Operator et la priorité courante.
+         * @param op Pointeur sur objet Operator à comparer.
+         * @return true si la priorité courante est inférieure, false sinon
          */
         bool operator()(const std::shared_ptr<Operator>& op);
     };
@@ -82,6 +103,14 @@ public:
      * @exception invalid_argument Si aucun type englobant n'a été trouvé ou si aucune opération n'est définie pour le type des littérales.
      * @return Objet Arguments de pointeurs sur Literal représentant le(s) résultat(s) de l'opération.
      */
-    std::vector<std::shared_ptr<Literal>> dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const;
+    Arguments<std::shared_ptr<Literal>> dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const;
+    /**
+     * @brief Effectue une opération entre un ensemble d'objet ExpressionLiteral. Cette opération ne dépend pas de l'opérateur mais uniquement
+     * de sa priorité et de son symbole, c'est pourquoi elle est définie à part des autres opérations.
+     * @param op Pointeur sur Operator.
+     * @param args Arguments d'objets ExpressionLiteral.
+     * @return Arguments de pointeurs sur Literal.
+     */
+     std::shared_ptr<ExpressionLiteral> opExpression(std::shared_ptr<Operator> op, const Arguments<ExpressionLiteral>& args) const;
 };
 #endif

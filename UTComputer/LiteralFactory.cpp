@@ -112,7 +112,7 @@ std::shared_ptr<Literal> LiteralFactory::makeLiteralFromString(std::string str) 
 		}
 		catch(std::exception&) {}
 	}
-	throw std::invalid_argument("No literal could match string.");
+    throw std::invalid_argument("No literal could match the string.");
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeLiteral(int n) const {
