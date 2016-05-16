@@ -74,7 +74,7 @@ bool OperatorManager::FindOperator::operator()(const std::shared_ptr<Operator>& 
 }
 
 bool OperatorManager::PriorityComparator::operator()(const std::shared_ptr<Operator> &op) {
-    return priority > op->getPriority();
+    return op->isSymbolic() && (priority > op->getPriority());
 }
 
 std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr<Operator> op, const Arguments<ExpressionLiteral>& args) const {
