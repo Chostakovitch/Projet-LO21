@@ -1,4 +1,4 @@
-#ifndef OPERATION_H
+﻿#ifndef OPERATION_H
 #define OPERATION_H
 #include "Literal.h"
 #include "Operateurs.h"
