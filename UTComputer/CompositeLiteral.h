@@ -5,14 +5,14 @@
 #ifndef COMPOSITELITERAL_H
 #define COMPOSITELITERAL_H
 
+#include <memory>
 #include "Literal.h"
 #include "Operateurs.h" //Obligatoire pour que le compilateur connaisse la relation d'héritage entre Operand et Operator
 
 /**
  * @brief Un objet ProgramLiteral représente une suite d'opérandes ordonnées.
  * @details Cette suite d'opérandes constitue un algorithme qui ne s'évalue pas en un résultat particulier. Un programme étant aussi
- * une opérande, on peut référencer des sous-programmes.
- * Cette classe utilise le design pattern __Composite__.
+ * une opérande, on peut référencer des sous-programmes. Cette classe utilise le design pattern __Composite__.
  */
 class ProgramLiteral : public Literal {
     /**
