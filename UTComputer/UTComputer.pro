@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     OperatorManager.cpp \
     Utility.cpp \
     Calculator.cpp \
-    Button.cpp
+    Button.cpp \
+    Settings.cpp
     CompositeLiteral.cpp
 
 HEADERS  += utcomputer.h \
@@ -33,7 +34,8 @@ HEADERS  += utcomputer.h \
     OperatorManager.h \
     Utility.h \
     Calculator.h \
-    Button.h
+    Button.h \
+    Settings.h
     CompositeLiteral.h
 
 FORMS    += utcomputer.ui
