@@ -7,6 +7,6 @@
 #include "Settings.h"
 
 Calculator::Calculator(QWidget *parent) {
-    options = new Settings();
+    settings = new Settings();
 }
 

@@ -5,6 +5,7 @@
 #include <sstream>
 #include <vector>
 #include <iterator>
+#include <cmath>
 
 /**
  * @details Ce constructeur sert à définir l'ordre des tentatives réalisées pour parser une chaîne de caractères en

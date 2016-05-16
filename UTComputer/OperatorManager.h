@@ -7,6 +7,7 @@
 #define OPERATORMANAGER_H
 #include <vector>
 #include <memory>
+#include <string>
 
 class Operator;
 class Literal;
