@@ -58,5 +58,9 @@ int main(int argc, char *argv[])
     std::cout << l3->toString() << " " << op3->toString() << " " << l2->toString() << " = ";
     for(auto res : result4) std::cout << res->toString() << std::endl;
 
-    return 0;
+    QApplication a(argc, argv);
+    Calculator w;
+    w.show();
+
+    return a.exec();
 }
