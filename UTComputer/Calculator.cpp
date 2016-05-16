@@ -8,8 +8,7 @@
 #include "Settings.h"
 #include "MainFrame.h"
 
-
-Calculator::Calculator(QWidget *parent){
+Calculator::Calculator(QWidget *parent) {
     settings = new Settings();
 
     QVBoxLayout *mainLayout = new QVBoxLayout;

@@ -30,6 +30,17 @@ class Operator : public Operand {
      * @brief Pointeur sur objet Operation, qui représente le comportement de l'opérateur.
      */
     std::shared_ptr<Operation> operation;
+    /**
+     * @brief Vaut true si l'opérateur est __symbolique__, false s'il est __parenthésé__.
+     * @details Etant donné un opérateur de symbole S, il est symbolique s'il est binaire, d'un seul caractère et si son opération s'écrit L1 S L2 (infixe).
+     * Il est parenthésé si son opération s'écrit S(L1, ...) (préfixe parenthésé).
+     */
+    bool symbolic;
+    /**
+     * @brief Entier représentant la priorité relative de l'opérateur.
+     * @details Cette priorité devrait valoir -1 si l'opérateur est parenthésé, un nombre positif s'il est symbolique.
+     */
+    int priority;
 public:
     /**
      * @brief Constructeur d'objet Operator.
@@ -37,7 +48,8 @@ public:
      * @param arity Entier positif représentant le nombre d'opérandes sur lequel l'opérateur s'applique.
      * @param operation Pointeur sur Operation, définissant le comportement de l'opérateur.
      */
-    Operator(std::string symbol, unsigned int arity, std::shared_ptr<Operation> operation) : symbol(symbol), arity(arity), operation(operation) { }
+    Operator(std::string symbol, unsigned int arity, std::shared_ptr<Operation> operation, int priority = -1) : \
+        symbol(symbol), arity(arity), operation(operation), priority(priority) { symbolic = priority >= 0 && arity == 2 && symbol.length() == 1; }
     /**
      * @brief Accesseur pour arity.
      * @return Entier non-signé.
@@ -48,6 +60,20 @@ public:
      * @return Référence constante sur un pointeur sur Operation.
      */
     const std::shared_ptr<Operation>& getOperation() { return operation; }
+    /**
+     * @brief Accesseur pour priority.
+     * @return Nombre entier.
+     */
+    int getPriority() { return priority; }
+    /**
+     * @brief Accesseur pour isSymbolic.
+     * @return Booléen.
+     */
+    bool isSymbolic() { return symbolic; }
+    /**
+     * @brief Retourn le symbole de l'opérateur.
+     * @return Objet string.
+     */
 	std::string toString() const override { return symbol; }
 };
 #endif

@@ -23,7 +23,6 @@ private:
     QVBoxLayout* layout;
     //Manager* manager;
     Settings* settings;
-
     MainFrame* mainFrame;
 
 public:
