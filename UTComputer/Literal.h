@@ -26,6 +26,10 @@ public:
      * @return Une chaîne de caractères.
      */
 	virtual std::string toString() const = 0;
+    /**
+     * @brief Destructeur virtuel.
+     */
+    virtual ~Operand() { }
 };
 
 /**
@@ -100,17 +104,22 @@ public:
      */
 	int getValue() const { return value; }
     /**
-     * @brief Opérateur de cast d'un objet NumericLiteral en objet RationalLiteral.
+     * @brief Opérateur de cast d'un objet IntegerLiteral en objet RationalLiteral.
      * @details La valeur de la littérale entière devient numérateur de la littérale rationnelle
      * dont le dénominateur est fixé à 1, il n'y a pas de perte d'information.
      */
     operator RationalLiteral() const override;
     /**
-     * @brief Opérateur de cast d'un objet NumericLiteral en objet RealLiteral.
+     * @brief Opérateur de cast d'un objet IntegerLiteral en objet RealLiteral.
      * @details La valeur de la littérale entière devient la partie entière de la littérale réelle dont
      * la mantisse est fixée à 0, il n'y a pas de perte d'information.
      */
     operator RealLiteral() const override;
+    /**
+     * @brief Cast d'un objet IntegerLiteral en objet ComplexLiteral.
+     * @details L'objet courant est défini comme partie réelle du ComplexLiteral, sa partie imaginaire est mise à 0.
+     */
+    operator ComplexLiteral() const override;
 	std::string toString() const override { return std::to_string(value); }
 };
 
@@ -145,7 +154,16 @@ public:
      * @return Un objet IntegerLiteral.
      */
 	const IntegerLiteral& getDen() const { return den; }
+    /**
+     * @brief Cast d'un objet RationalLiteral en objet RealLiteral.
+     * @details La valeur du réel est obtenue par division flottante du numérateur et du dénominateur.
+     */
     operator RealLiteral() const override;
+    /**
+     * @brief Cast d'un objet RationalLiteral en objet ComplexLiteral.
+     * @details L'objet courant est défini comme partie réelle du ComplexLiteral, sa partie imaginaire est mise à 0.
+     */
+    operator ComplexLiteral() const override;
 	std::string toString() const override { return num.toString() + '/' + den.toString(); }
 };
 
@@ -168,6 +186,11 @@ public:
      * @return Un nombre à virgule flottante.
      */
     double getValue() const { return value; }
+    /**
+     * @brief Cast d'un objet RealLiteral en objet ComplexLiteral.
+     * @details L'objet courant est défini comme partie réelle du ComplexLiteral, sa partie imaginaire est mise à 0.
+     */
+    operator ComplexLiteral() const override;
 	std::string toString() const override { return std::to_string(value); }
 };
 
