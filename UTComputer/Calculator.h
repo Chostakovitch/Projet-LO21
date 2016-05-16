@@ -10,6 +10,7 @@
 #include <QDebug>
 
 class Button;
+class Settings;
 
 class Calculator : public QWidget
 {
@@ -19,8 +20,8 @@ private:
     QTableWidget* viewPile;
     QLineEdit* commande;
     QVBoxLayout* layout;
-    //Pile* pile;
-    //Controleur* controleur;
+    //Manager* manager;
+    Setting* options;
 
 public:
     explicit Calculator(QWidget *parent = 0);
