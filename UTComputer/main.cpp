@@ -7,9 +7,11 @@
 #include "Operateurs.h"
 #include "LiteralFactory.h"
 #include "Operation.h"
+#include "Calculator.h"
 
 int main(int argc, char *argv[])
 {
+    /*
     //Parsing des littéraux
     auto l1 = LiteralFactory::getInstance().makeLiteralFromString("2.4");
     auto l2 = LiteralFactory::getInstance().makeLiteralFromString("5");
@@ -36,6 +38,12 @@ int main(int argc, char *argv[])
     w.show();
 
     return a.exec();*/
+
+    QApplication app(argc, argv);
+    Calculator calc;
+    calc.show();
+
+    return app.exec();
 
     return 0;
 }

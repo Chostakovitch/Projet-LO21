@@ -58,10 +58,12 @@ SOURCES       = ../UTComputer/main.cpp \
 		../UTComputer/Utility.cpp \
 		../UTComputer/Calculator.cpp \
 		../UTComputer/Button.cpp \
-		../UTComputer/Settings.cpp \
-		../UTComputer/MainFrame.cpp moc_utcomputer.cpp \
+		../UTComputer/MainFrame.cpp \
+		../UTComputer/CompositeLiteral.cpp \
+		../UTComputer/Settings.cpp moc_utcomputer.cpp \
 		moc_Calculator.cpp \
-		moc_Button.cpp
+		moc_Button.cpp \
+		moc_MainFrame.cpp
 OBJECTS       = main.o \
 		utcomputer.o \
 		Literal.o \
@@ -72,11 +74,13 @@ OBJECTS       = main.o \
 		Utility.o \
 		Calculator.o \
 		Button.o \
-		Settings.o \
 		MainFrame.o \
+		CompositeLiteral.o \
+		Settings.o \
 		moc_utcomputer.o \
 		moc_Calculator.o \
-		moc_Button.o
+		moc_Button.o \
+		moc_MainFrame.o
 DIST          = /Users/aureliedigeon/Qt/5.6/clang_64/mkspecs/features/spec_pre.prf \
 		/Users/aureliedigeon/Qt/5.6/clang_64/mkspecs/qdevice.pri \
 		/Users/aureliedigeon/Qt/5.6/clang_64/mkspecs/features/device_config.prf \
@@ -228,7 +232,9 @@ DIST          = /Users/aureliedigeon/Qt/5.6/clang_64/mkspecs/features/spec_pre.p
 		../UTComputer/Calculator.h \
 		../UTComputer/Button.h \
 		../UTComputer/Settings.h \
-		../UTComputer/MainFrame.h ../UTComputer/main.cpp \
+		../UTComputer/MainFrame.h \
+		../UTComputer/CompositeLiteral.h \
+		../UTComputer/Settings.h ../UTComputer/main.cpp \
 		../UTComputer/utcomputer.cpp \
 		../UTComputer/Literal.cpp \
 		../UTComputer/LiteralFactory.cpp \
@@ -238,8 +244,9 @@ DIST          = /Users/aureliedigeon/Qt/5.6/clang_64/mkspecs/features/spec_pre.p
 		../UTComputer/Utility.cpp \
 		../UTComputer/Calculator.cpp \
 		../UTComputer/Button.cpp \
-		../UTComputer/Settings.cpp \
-		../UTComputer/MainFrame.cpp
+		../UTComputer/MainFrame.cpp \
+		../UTComputer/CompositeLiteral.cpp \
+		../UTComputer/Settings.cpp
 QMAKE_TARGET  = UTComputer
 DESTDIR       = 
 TARGET        = UTComputer.app/Contents/MacOS/UTComputer
@@ -572,8 +579,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ../UTComputer/utcomputer.h ../UTComputer/Literal.h ../UTComputer/LiteralFactory.h ../UTComputer/Operateurs.h ../UTComputer/Operation.h ../UTComputer/OperatorManager.h ../UTComputer/Utility.h ../UTComputer/Calculator.h ../UTComputer/Button.h ../UTComputer/Settings.h ../UTComputer/MainFrame.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../UTComputer/main.cpp ../UTComputer/utcomputer.cpp ../UTComputer/Literal.cpp ../UTComputer/LiteralFactory.cpp ../UTComputer/Operateurs.cpp ../UTComputer/Operation.cpp ../UTComputer/OperatorManager.cpp ../UTComputer/Utility.cpp ../UTComputer/Calculator.cpp ../UTComputer/Button.cpp ../UTComputer/Settings.cpp ../UTComputer/MainFrame.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../UTComputer/utcomputer.h ../UTComputer/Literal.h ../UTComputer/LiteralFactory.h ../UTComputer/Operateurs.h ../UTComputer/Operation.h ../UTComputer/OperatorManager.h ../UTComputer/Utility.h ../UTComputer/Calculator.h ../UTComputer/Button.h ../UTComputer/Settings.h ../UTComputer/MainFrame.h ../UTComputer/CompositeLiteral.h ../UTComputer/Settings.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../UTComputer/main.cpp ../UTComputer/utcomputer.cpp ../UTComputer/Literal.cpp ../UTComputer/LiteralFactory.cpp ../UTComputer/Operateurs.cpp ../UTComputer/Operation.cpp ../UTComputer/OperatorManager.cpp ../UTComputer/Utility.cpp ../UTComputer/Calculator.cpp ../UTComputer/Button.cpp ../UTComputer/MainFrame.cpp ../UTComputer/CompositeLiteral.cpp ../UTComputer/Settings.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../UTComputer/utcomputer.ui $(DISTDIR)/
 
 
@@ -598,9 +605,9 @@ check: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_utcomputer.cpp moc_Calculator.cpp moc_Button.cpp
+compiler_moc_header_make_all: moc_utcomputer.cpp moc_Calculator.cpp moc_Button.cpp moc_MainFrame.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_utcomputer.cpp moc_Calculator.cpp moc_Button.cpp
+	-$(DEL_FILE) moc_utcomputer.cpp moc_Calculator.cpp moc_Button.cpp moc_MainFrame.cpp
 moc_utcomputer.cpp: /Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
 		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
 		../UTComputer/utcomputer.h
@@ -627,6 +634,11 @@ moc_Button.cpp: /Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Hea
 		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/qtoolbutton.h \
 		../UTComputer/Button.h
 	/Users/aureliedigeon/Qt/5.6/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/aureliedigeon/Qt/5.6/clang_64/mkspecs/macx-clang -I/Users/aureliedigeon/Documents/UTC/P16/LO21/Projet-LO21/UTComputer -I/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers -I/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtGui.framework/Headers -I/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtCore.framework/Headers -I. -F/Users/aureliedigeon/Qt/5.6/clang_64/lib ../UTComputer/Button.h -o moc_Button.cpp
+
+moc_MainFrame.cpp: /Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QFrame \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/qframe.h \
+		../UTComputer/MainFrame.h
+	/Users/aureliedigeon/Qt/5.6/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/aureliedigeon/Qt/5.6/clang_64/mkspecs/macx-clang -I/Users/aureliedigeon/Documents/UTC/P16/LO21/Projet-LO21/UTComputer -I/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers -I/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtGui.framework/Headers -I/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtCore.framework/Headers -I. -F/Users/aureliedigeon/Qt/5.6/clang_64/lib ../UTComputer/MainFrame.h -o moc_MainFrame.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -964,11 +976,18 @@ Button.o: ../UTComputer/Button.cpp /Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWi
 		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QToolButton
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Button.o ../UTComputer/Button.cpp
 
+MainFrame.o: ../UTComputer/MainFrame.cpp ../UTComputer/MainFrame.h \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/QFrame \
+		/Users/aureliedigeon/Qt/5.6/clang_64/lib/QtWidgets.framework/Headers/qframe.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainFrame.o ../UTComputer/MainFrame.cpp
+
+CompositeLiteral.o: ../UTComputer/CompositeLiteral.cpp ../UTComputer/CompositeLiteral.h \
+		../UTComputer/Literal.h \
+		../UTComputer/Operateurs.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o CompositeLiteral.o ../UTComputer/CompositeLiteral.cpp
+
 Settings.o: ../UTComputer/Settings.cpp ../UTComputer/Settings.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Settings.o ../UTComputer/Settings.cpp
-
-MainFrame.o: ../UTComputer/MainFrame.cpp ../UTComputer/MainFrame.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainFrame.o ../UTComputer/MainFrame.cpp
 
 moc_utcomputer.o: moc_utcomputer.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_utcomputer.o moc_utcomputer.cpp
@@ -978,6 +997,9 @@ moc_Calculator.o: moc_Calculator.cpp
 
 moc_Button.o: moc_Button.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_Button.o moc_Button.cpp
+
+moc_MainFrame.o: moc_MainFrame.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_MainFrame.o moc_MainFrame.cpp
 
 ####### Install
 

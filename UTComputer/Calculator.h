@@ -19,7 +19,7 @@ private:
     Q_OBJECT
     QLineEdit* message;
     QTableWidget* viewPile;
-    QLineEdit* commande;
+    QLineEdit* command;
     QVBoxLayout* layout;
     //Manager* manager;
     Settings* settings;
