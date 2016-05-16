@@ -6,9 +6,7 @@
 #include "Calculator.h"
 #include "Settings.h"
 
-
-Calculator::Calculator(QWidget *parent){
-    settings = new Settings();
-
+Calculator::Calculator(QWidget *parent) {
+    options = new Settings();
 }
 

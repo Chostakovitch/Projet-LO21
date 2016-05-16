@@ -11,7 +11,7 @@
  * aux opérateurs manipulables par l'application et leur associe une instance d'Operation pour définir leur comportenment.
  */
 OperatorManager::OperatorManager() {
-    operators.push_back(std::make_shared<Operator>("+", 2, std::make_shared<PlusOperation>())); //Addition
+    operators.push_back(std::make_shared<Operator>("+", 2, std::make_shared<PlusOperation>(), true)); //Addition
 }
 
 const OperatorManager& OperatorManager::getInstance() {

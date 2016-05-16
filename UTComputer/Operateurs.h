@@ -30,6 +30,12 @@ class Operator : public Operand {
      * @brief Pointeur sur objet Operation, qui représente le comportement de l'opérateur.
      */
     std::shared_ptr<Operation> operation;
+    /**
+     * @brief Vaut true si l'opérateur est __symbolique__, false s'il est __parenthésé__.
+     * @details Etant donné un opérateur de symbole S, il est symbolique s'il est binaire et si son opération s'écrit L1 S L2.
+     * Il est parenthésé si son opération s'écrit S(L1, ...).
+     */
+    bool isSymbolic;
 public:
     /**
      * @brief Constructeur d'objet Operator.
@@ -37,7 +43,7 @@ public:
      * @param arity Entier positif représentant le nombre d'opérandes sur lequel l'opérateur s'applique.
      * @param operation Pointeur sur Operation, définissant le comportement de l'opérateur.
      */
-    Operator(std::string symbol, unsigned int arity, std::shared_ptr<Operation> operation) : symbol(symbol), arity(arity), operation(operation) { }
+    Operator(std::string symbol, unsigned int arity, std::shared_ptr<Operation> operation, bool isSymbolic) : symbol(symbol), arity(arity), operation(operation), isSymbolic(isSymbolic) { }
     /**
      * @brief Accesseur pour arity.
      * @return Entier non-signé.

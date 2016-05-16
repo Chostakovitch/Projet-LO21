@@ -21,7 +21,7 @@ private:
     QLineEdit* commande;
     QVBoxLayout* layout;
     //Manager* manager;
-    Setting* options;
+    Settings* options;
 
 public:
     explicit Calculator(QWidget *parent = 0);
