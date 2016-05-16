@@ -2,10 +2,16 @@
 #define BUTTON_H
 
 
-class Button
+#include <QToolButton>
+
+class Button : public QToolButton
 {
+    Q_OBJECT
+
 public:
-    Button();
+    explicit Button(const QString &text, QWidget *parent = 0);
+
+    QSize sizeHint() const Q_DECL_OVERRIDE;
 };
 
 #endif // BUTTON_H

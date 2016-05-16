@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+CONFIG   -= x86_64
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -19,7 +20,9 @@ SOURCES += main.cpp\
     Operateurs.cpp \
     Operation.cpp \
     OperatorManager.cpp \
-    Utility.cpp
+    Utility.cpp \
+    Calculator.cpp \
+    Button.cpp
 
 HEADERS  += utcomputer.h \
     Literal.h \
@@ -27,6 +30,8 @@ HEADERS  += utcomputer.h \
     Operateurs.h \
     Operation.h \
     OperatorManager.h \
-    Utility.h
+    Utility.h \
+    Calculator.h \
+    Button.h
 
 FORMS    += utcomputer.ui

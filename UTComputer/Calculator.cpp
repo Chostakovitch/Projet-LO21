@@ -1,6 +1,11 @@
-#include "calculator.h"
+#include <QtWidgets>
 
-Calculator::Calculator()
-{
+#include <cmath>
+
+#include "Button.h"
+#include "Calculator.h"
+
+Calculator::Calculator(QWidget *parent){
 
 }
+
