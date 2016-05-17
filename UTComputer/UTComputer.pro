@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     Button.cpp \
     MainFrame.cpp \
     CompositeLiteral.cpp \
-    Settings.cpp
+    Settings.cpp \
+    ExpressionParser.cpp
 
 HEADERS  += utcomputer.h \
     Literal.h \
@@ -39,6 +40,7 @@ HEADERS  += utcomputer.h \
     Settings.h \
     MainFrame.h \
     CompositeLiteral.h \
-    Settings.h
+    Settings.h \
+    ExpressionParser.h
 
 FORMS    += utcomputer.ui
