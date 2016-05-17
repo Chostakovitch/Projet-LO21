@@ -15,10 +15,10 @@
  */
 LiteralFactory::LiteralFactory() {
     //Push dans l'ordre de priorité descendante
-    allocatorsPriority.push_back(std::bind(&LiteralFactory::makeInteger, this, std::placeholders::_1));
-	allocatorsPriority.push_back(std::bind(&LiteralFactory::makeReal, this, std::placeholders::_1));
-	allocatorsPriority.push_back(std::bind(&LiteralFactory::makeExpression, this, std::placeholders::_1));
-	allocatorsPriority.push_back(std::bind(&LiteralFactory::makeCompositeProgram, this, std::placeholders::_1));
+    allocatorsPriority.push_back(std::bind(&makeInteger, this, std::placeholders::_1));
+    allocatorsPriority.push_back(std::bind(&makeReal, this, std::placeholders::_1));
+    allocatorsPriority.push_back(std::bind(&makeExpression, this, std::placeholders::_1));
+    allocatorsPriority.push_back(std::bind(&makeCompositeProgram, this, std::placeholders::_1));
 }
 
 const LiteralFactory& LiteralFactory::getInstance() {

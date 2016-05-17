@@ -14,12 +14,18 @@
  */
 OperatorManager::OperatorManager() {
     //Création des opérateurs symboliques
-    operators.push_back(std::make_shared<Operator>("+", 2, std::make_shared<PlusOperation>(), true)); //Addition
-    operators.push_back(std::make_shared<Operator>("*", 2, std::make_shared<PlusOperation>(), true)); //Exemple
+    operators.push_back(std::make_shared<SymbolicOperator>("+", 2, std::make_shared<PlusOperation>(), true, 0)); //Addition
+    operators.push_back(std::make_shared<SymbolicOperator>("*", 2, std::make_shared<PlusOperation>(), true, 1)); //Exemple
 
     //Création des opérateurs parenthésés
-    operators.push_back(std::make_shared<Operator>("DUP", 2, std::make_shared<Operation>())); //Exemple
-    operators.push_back(std::make_shared<Operator>("STO", 2, std::make_shared<Operation>())); //Exemple
+    operators.push_back(std::make_shared<Operator>("DUP", 2, std::make_shared<Operation>(), false)); //Exemple
+    operators.push_back(std::make_shared<Operator>("STO", 2, std::make_shared<Operation>(), false)); //Exemple
+
+    //Définition de la priorité des casts numériques
+    numericPriority.push_back(&applyOperation<IntegerLiteral>);
+    numericPriority.push_back(&applyOperation<RationalLiteral>);
+    numericPriority.push_back(&applyOperation<RealLiteral>);
+    numericPriority.push_back(&applyOperation<ComplexLiteral>);
 }
 
 const OperatorManager& OperatorManager::getInstance() {
@@ -34,43 +40,36 @@ const std::shared_ptr<Operator>& OperatorManager::getOperator(const std::string&
     throw std::invalid_argument("Operator not found");
 }
 
-Arguments<std::shared_ptr<Literal>> OperatorManager::dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const {
+Arguments<std::shared_ptr<Operand>> OperatorManager::dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const {
     if (op->getArity() != args.size()) throw std::invalid_argument("Wrong number of operands.");
-    //Cas le plus spécialisé : tous les objets sont représentables sous forme d'entiers
-	try {
-        return op->getOperation()->eval((Arguments<IntegerLiteral>)args);
-	}
-    catch (std::bad_cast& e) {
-        //Cas où tous les objets sont représentables sous forme de rationnels
-        try {
-            return op->getOperation()->eval((Arguments<RationalLiteral>)args);
-		} 
-        catch(std::bad_cast&) {
-            //Cas où tous les objets sont représentables sous forme de réels
-			try {
-                return op->getOperation()->eval((Arguments<RealLiteral>)args);
-            }
-            catch (std::bad_cast&) {
-                //Cas où tous les objets sont représentables sous forme de complexes
-				try {
-                    return op->getOperation()->eval((Arguments<ComplexLiteral>)args);
-				}
-                catch (std::bad_cast&) {
-                    /* Cas le plus général : on essaye de convertir en expression et d'appliquer l'opération générique de concaténation.
-                    Cette opération ne dépend pas de l'opérateur (uniquement de son symbole), aucune classe d'Operation n'est donc appelée */
-                    try {
-                        return Arguments<std::shared_ptr<Literal>>{ opExpression(op, (Arguments<ExpressionLiteral>)args) };
-                    }
-                    catch(std::bad_cast&) {
-                        throw std::invalid_argument("Failed to standardize operands.");
-                    }
-				}
-			}
-		}
+    //Si l'opération définit une méthode d'évaluation générique, on l'appelle ici
+    try {
+        return op->getOperation()->eval(args);
     }
-    //Cas où les opérandes sont unifiés mais où l'opération n'est pas implémentée
+    //Sinon, on tente d'appliquer l'opération sur des types homogènes numériques concrèts
     catch(std::invalid_argument& e) {
-        throw std::invalid_argument(std::string("No operation suitable : ") + e.what());
+        if(op)
+        for(auto caller : numericPriority) {
+            try {
+                return caller(op->getOperation(), args);
+            }
+            catch(std::bad_cast&) {}
+            //Cas où les littéraux sont homogènes et l'opération existe, mais échoue.
+            catch(std::invalid_argument& e) {
+                throw std::invalid_argument(std::string("No operation suitable for operator " + op->toString() + " with these operands : ") + e.what());
+            }
+        }
+    }
+    //Aucune conversion vers des littérales numériques n'a été trouvée : on tente de caster en littérales expressions.
+    try {
+        //Si l'opérateur est numérique, il faut utiliser la méthode d'évaluation membre.
+        if(op->isNumeric()) return Arguments<std::shared_ptr<Operand>>{opExpression(op, (Arguments<ExpressionLiteral>)args)};
+        //Sinon, on tente de trouver une méthode d'évaluation sur LiteralExpression (ex : opérateur EVAL -> non numérique et s'applique sur LiteralExpression).
+        return applyOperation<ExpressionLiteral>(op->getOperation(), args);
+    }
+    //Aucun comportement valable pour cet opérateur et ces opérandes.
+    catch(std::exception& e) {
+        throw std::invalid_argument(std::string("Failed to standardize operands : ") + e.what());
     }
 }
 
@@ -79,13 +78,16 @@ bool OperatorManager::FindOperator::operator()(const std::shared_ptr<Operator>& 
 }
 
 bool OperatorManager::PriorityComparator::operator()(const std::shared_ptr<Operator> &op) {
-    //return op->isSymbolic() && (priority > op->getPriority());
+    //Une priorité n'existe que dans le cas d'un opérateur symbolique
+    auto op_symbol = std::dynamic_pointer_cast<SymbolicOperator>(op);
+    return op_symbol && (priority > op_symbol->getPriority());
 }
 
 std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr<Operator> op, const Arguments<ExpressionLiteral>& args) const {
     std::ostringstream oss;
-    //Cas d'un opérateur parenthésé, on l'applique simplement
-    /*if(!op->isSymbolic()) {
+    auto op_symbol = std::dynamic_pointer_cast<SymbolicOperator>(op);
+    //Cas d'un opérateur fonction, on l'applique simplement
+    if(!op_symbol) {
         oss << op->toString() << "(";
         //Ajout des opérandes
         for(auto it = args.begin(); it != args.end(); ++it) {
@@ -99,9 +101,9 @@ std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr
     }
     //Cas d'un opérateur symbolique, il faut vérifier la priorité des opérateurs présents dans les expressions
     else {
-        //On récupère un vecteur de tous les opérateurs définis ayant une priorité inférieure à la priorité de l'opérateur courant
+        //On récupère un vecteur de tous les opérateurs symboliques définis ayant une priorité inférieure à la priorité de l'opérateur courant
         std::vector<std::vector<std::shared_ptr<Operator>>::const_iterator> res;
-        Utility::select_iterator(operators.begin(), operators.end(), std::back_inserter(res), PriorityComparator(op->getPriority()));
+        Utility::select_iterator(operators.begin(), operators.end(), std::back_inserter(res), PriorityComparator(op_symbol->getPriority()));
         //Par définition du caractère symbolique, on connaît déjà l'arité : 2. On récupère les éléments non-parenthésés des expressions
         std::string left = Utility::getOutside(args.at(0).getExpression(), '(', ')');
         std::string right = Utility::getOutside(args.at(1).getExpression(), '(', ')');
@@ -127,5 +129,5 @@ std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr
         oss << args.at(1).getExpression();
         if(parenthizeRight) oss << ')';
     }
-    return std::make_shared<ExpressionLiteral>(oss.str());*/
+    return std::make_shared<ExpressionLiteral>(oss.str());
 }

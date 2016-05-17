@@ -8,7 +8,11 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <functional>
 
+#include "Operation.h"
+
+class Operand;
 class Operator;
 class Literal;
 class ExpressionLiteral;
@@ -30,6 +34,24 @@ class OperatorManager
      * @brief Ensemble des opérateurs applicables.
      */
     std::vector<std::shared_ptr<Operator>> operators;
+    template <typename U>
+    /**
+     * @brief Applique l'opération demandée après avoir casté les arguments en type T.
+     * @param op Pointeur sur Operation.
+     * @param args Pointeurs sur Literal.
+     * @exception bad_cast si aucune conversion entre Literal et T n'existe.
+     * @exception invalid_argument si aucune opération n'est définie pour le type T.
+     * @return Résultat de l'opération.
+     */
+    static Arguments<std::shared_ptr<Operand>> applyOperation(std::shared_ptr<Operation> op, Arguments<std::shared_ptr<Literal>> args) {
+        return op->eval((Arguments<U>)args);
+    }
+    /**
+     * @brief Vecteur de fonctions d'application d'opération sur des littérales numériques.
+     * @details Ce vecteur définit un ensemble d'instances du template applyOperation, en priorisant l'ordre des casts en __littérales numériques__.
+     * Usuellement, les littérales les plus spécialisées sont essayées en premier, et les plus générales en dernier.
+     */
+    std::vector<std::function<Arguments<std::shared_ptr<Operand>>(std::shared_ptr<Operation>, Arguments<std::shared_ptr<Literal>>)>> numericPriority;
     /**
      * @brief Foncteur utilisé comme prédicat pour identifier un opérateur dans une collection d'opérateurs par son symbole.
      */
@@ -57,16 +79,16 @@ class OperatorManager
         /**
          * @brief Priorité à comparer.
          */
-        int priority;
+        unsigned int priority;
         /**
          * @brief Constructeur d'objet PriorityComparator.
          * @param priority Entier.
          */
-        PriorityComparator(int priority) : priority(priority) { }
+        PriorityComparator(unsigned int priority) : priority(priority) { }
         /**
          * @brief Opérateur fonction qui compare la priorité de l'objet Operator et la priorité courante.
-         * @param op Pointeur sur objet Operator à comparer.
-         * @return true si la priorité courante est inférieure, false sinon
+         * @param op Pointeur sur objet SymbolicOperator à comparer.
+         * @return true si la priorité courante est inférieure, false sinon.
          */
         bool operator()(const std::shared_ptr<Operator>& op);
     };
@@ -101,12 +123,12 @@ public:
      * @param op Objet Operator à utiliser pour l'opération.
      * @param args Objet Arguments de pointeurs sur Literal représentants les opérandes sur lesquelles agit l'opérateur.
      * @exception invalid_argument Si aucun type englobant n'a été trouvé ou si aucune opération n'est définie pour le type des littérales.
-     * @return Objet Arguments de pointeurs sur Literal représentant le(s) résultat(s) de l'opération.
+     * @return Objet Arguments de pointeurs sur Operand représentant le(s) résultat(s) de l'opération.
      */
-    Arguments<std::shared_ptr<Literal>> dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const;
+    Arguments<std::shared_ptr<Operand>> dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const;
     /**
-     * @brief Effectue une opération entre un ensemble d'objet ExpressionLiteral. Cette opération ne dépend pas de l'opérateur mais uniquement
-     * de sa priorité et de son symbole, c'est pourquoi elle est définie à part des autres opérations.
+     * @brief Effectue une opération entre un ensemble d'objet ExpressionLiteral. L'algorithme ne dépend pas de l'opérateur mais uniquement de
+     * son symbole et des autres opérateurs définis, c'est pourquoi elle est définie à part des autres opérations.
      * @param op Pointeur sur Operator.
      * @param args Arguments d'objets ExpressionLiteral.
      * @return Arguments de pointeurs sur Literal.
