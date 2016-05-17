@@ -227,3 +227,5 @@ UTComputer/Doxyfile
 build-UTComputer-Desktop_Qt_5_6_0_clang_64bit-Debug/
 *.RX4172
 *.o
+build-UTComputer-Desktop_Qt_5_6_0_clang_64bit-Debug/Makefile
+*.o

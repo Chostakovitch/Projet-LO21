@@ -14,13 +14,12 @@
  */
 OperatorManager::OperatorManager() {
     //Création des opérateurs symboliques
-    operators.push_back(std::make_shared<Operator>("+", 2, std::make_shared<PlusOperation>(), 0)); //Addition
-    operators.push_back(std::make_shared<Operator>("*", 2, std::make_shared<PlusOperation>(), 1)); //Exemple
+    operators.push_back(std::make_shared<Operator>("+", 2, std::make_shared<PlusOperation>(), true)); //Addition
+    operators.push_back(std::make_shared<Operator>("*", 2, std::make_shared<PlusOperation>(), true)); //Exemple
 
     //Création des opérateurs parenthésés
     operators.push_back(std::make_shared<Operator>("DUP", 2, std::make_shared<Operation>())); //Exemple
     operators.push_back(std::make_shared<Operator>("STO", 2, std::make_shared<Operation>())); //Exemple
-
 }
 
 const OperatorManager& OperatorManager::getInstance() {
@@ -41,33 +40,37 @@ Arguments<std::shared_ptr<Literal>> OperatorManager::dispatchOperation(std::shar
 	try {
         return op->getOperation()->eval((Arguments<IntegerLiteral>)args);
 	}
-    catch (std::exception& e) {
+    catch (std::bad_cast& e) {
         //Cas où tous les objets sont représentables sous forme de rationnels
         try {
             return op->getOperation()->eval((Arguments<RationalLiteral>)args);
 		} 
-        catch(std::exception&) {
+        catch(std::bad_cast&) {
             //Cas où tous les objets sont représentables sous forme de réels
 			try {
                 return op->getOperation()->eval((Arguments<RealLiteral>)args);
             }
-            catch (std::exception&) {                
+            catch (std::bad_cast&) {
                 //Cas où tous les objets sont représentables sous forme de complexes
 				try {
                     return op->getOperation()->eval((Arguments<ComplexLiteral>)args);
 				}
-                catch (std::exception&) {
+                catch (std::bad_cast&) {
                     /* Cas le plus général : on essaye de convertir en expression et d'appliquer l'opération générique de concaténation.
                     Cette opération ne dépend pas de l'opérateur (uniquement de son symbole), aucune classe d'Operation n'est donc appelée */
                     try {
                         return Arguments<std::shared_ptr<Literal>>{ opExpression(op, (Arguments<ExpressionLiteral>)args) };
                     }
-                    catch(std::exception&) {
-                        throw std::invalid_argument("No suitable operator for these operands.");
+                    catch(std::bad_cast&) {
+                        throw std::invalid_argument("Failed to standardize operands.");
                     }
 				}
 			}
 		}
+    }
+    //Cas où les opérandes sont unifiés mais où l'opération n'est pas implémentée
+    catch(std::invalid_argument& e) {
+        throw std::invalid_argument(std::string("No operation suitable : ") + e.what());
     }
 }
 
@@ -76,13 +79,13 @@ bool OperatorManager::FindOperator::operator()(const std::shared_ptr<Operator>& 
 }
 
 bool OperatorManager::PriorityComparator::operator()(const std::shared_ptr<Operator> &op) {
-    return op->isSymbolic() && (priority > op->getPriority());
+    //return op->isSymbolic() && (priority > op->getPriority());
 }
 
 std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr<Operator> op, const Arguments<ExpressionLiteral>& args) const {
     std::ostringstream oss;
     //Cas d'un opérateur parenthésé, on l'applique simplement
-    if(!op->isSymbolic()) {
+    /*if(!op->isSymbolic()) {
         oss << op->toString() << "(";
         //Ajout des opérandes
         for(auto it = args.begin(); it != args.end(); ++it) {
@@ -124,5 +127,5 @@ std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr
         oss << args.at(1).getExpression();
         if(parenthizeRight) oss << ')';
     }
-    return std::make_shared<ExpressionLiteral>(oss.str());
+    return std::make_shared<ExpressionLiteral>(oss.str());*/
 }
