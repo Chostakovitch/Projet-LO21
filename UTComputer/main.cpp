@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
     for(auto res : result4) std::cout << res->toString() << std::endl;
 
     QApplication a(argc, argv);
-    Calculator w;
+    UTComputer w;
     w.show();
 
     return a.exec();

@@ -10,7 +10,6 @@ class Button : public QToolButton
 
 public:
     explicit Button(const QString &text, QWidget *parent = 0);
-
     QSize sizeHint() const Q_DECL_OVERRIDE;
 };
 

@@ -8,9 +8,7 @@
 #include "Settings.h"
 #include "MainFrame.h"
 
-Calculator::Calculator(QWidget *parent) {
-    settings = new Settings();
-
+Calculator::Calculator(QWidget *parent)  {
     QVBoxLayout *mainLayout = new QVBoxLayout;
     QVBoxLayout *topLayout = new QVBoxLayout;
 
@@ -20,6 +18,8 @@ Calculator::Calculator(QWidget *parent) {
     topLayout->addWidget(message);
 
     viewPile = new QTableWidget();
+    viewPile->setRowCount(6);
+    viewPile->setStyleSheet("background-color:black; color:white;");
     topLayout->addWidget(viewPile);
 
     command = new QLineEdit();
@@ -27,10 +27,9 @@ Calculator::Calculator(QWidget *parent) {
 
     mainFrame = new MainFrame();
 
-    mainLayout->addWidget(mainFrame);
     mainLayout->addLayout(topLayout);
+    mainLayout->addWidget(mainFrame);
 
     setLayout(mainLayout);
-    setWindowTitle(tr("Calculator"));
 }
 

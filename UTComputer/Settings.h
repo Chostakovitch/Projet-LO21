@@ -7,7 +7,7 @@ class Settings
     bool displayKeyboard;
     bool beepMessage;
 public:
-    Settings(unsigned int n = 10, bool d = true, bool b = true);
+    Settings(unsigned int n = 6, bool d = true, bool b = true);
     unsigned int getNbLinesDisplayPile() { return nbLinesDisplayPile; }
     bool getDisplayKeyboard() { return displayKeyboard;}
     bool getBeepMessage() { return beepMessage; }

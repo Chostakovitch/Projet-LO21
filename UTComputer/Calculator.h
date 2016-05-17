@@ -12,6 +12,7 @@
 class Button;
 class Settings;
 class MainFrame;
+class Manager;
 
 class Calculator : public QWidget
 {
@@ -21,8 +22,6 @@ private:
     QTableWidget* viewPile;
     QLineEdit* command;
     QVBoxLayout* layout;
-    //Manager* manager;
-    Settings* settings;
     MainFrame* mainFrame;
 
 public:
