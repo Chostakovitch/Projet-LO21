@@ -12,3 +12,7 @@ const std::shared_ptr<Litteral>& Manager::getIdentifier(const std::string& id) c
     return identifiers.at(id);
 }
 
+void Manager::addIdentifier(const std::string& id, std::shared_ptr<Litteral> lit) {
+    identifiers[id] = lit;
+}
+

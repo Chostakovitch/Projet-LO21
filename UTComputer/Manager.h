@@ -14,8 +14,8 @@ public:
     Manager& operator= (const Manager&) = delete;
     const Manager& getInstance();
 
-    const std::shared_ptr<Litteral>& getIdentifier(const std::string& id) const;
-
+    const std::shared_ptr<Litteral>& getIdentifier(const std::string&) const;
+    void addIdentifier(const std::string&, const std::shared_ptr<Litteral>);
 };
 
 #endif // MANAGER_H

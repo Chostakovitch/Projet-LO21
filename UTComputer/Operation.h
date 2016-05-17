@@ -60,4 +60,11 @@ public:
     Arguments<std::shared_ptr<Literal>> eval(const Arguments<RationalLiteral>& args) override;
     Arguments<std::shared_ptr<Literal>> eval(const Arguments<RealLiteral>& args) override;
 };
+
+class STOOperarion : public Operation {
+    Arguments<std::shared_ptr<Literal>> eval(const Arguments<IntegerLiteral>& args) override;
+    Arguments<std::shared_ptr<Literal>> eval(const Arguments<RationalLiteral>& args) override;
+    Arguments<std::shared_ptr<Literal>> eval(const Arguments<RealLiteral>& args) override;
+};
+
 #endif

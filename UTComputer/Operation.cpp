@@ -1,5 +1,6 @@
 ﻿#include "Operation.h"
 #include "OperatorManager.h"
+#include "Manager.h"
 
 Arguments<std::shared_ptr<Literal>> Operation::eval(const Arguments<IntegerLiteral>&) {
 	throw std::invalid_argument("Not implemented."); 
