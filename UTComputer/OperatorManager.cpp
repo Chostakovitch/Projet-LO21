@@ -18,7 +18,8 @@ OperatorManager::OperatorManager() {
     operators.push_back(std::make_shared<Operator>("*", 2, std::make_shared<PlusOperation>(), true)); //Exemple
 
     //Création des opérateurs parenthésés
-    operators.push_back(std::make_shared<Operator>("DUP", 2, std::make_shared<Operation>(), false)); //Exemple
+    operators.push_back(std::make_shared<Operator>("DUP", 2, std::make_shared<Operation>())); //Exemple
+    operators.push_back(std::make_shared<Operator>("STO", 2, std::make_shared<Operation>())); //Exemple
 }
 
 const OperatorManager& OperatorManager::getInstance() {
