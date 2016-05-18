@@ -26,10 +26,11 @@ Calculator::Calculator(QWidget *parent)  {
     command = new QLineEdit();
     topLayout->addWidget(command);
 
-    mainFrame = new MainFrame();
+    keyBoard = new MainFrame();
+    //keyBoard->hide();
 
     mainLayout->addLayout(topLayout);
-    mainLayout->addWidget(mainFrame);
+    mainLayout->addWidget(keyBoard);
 
     setLayout(mainLayout);
 }
