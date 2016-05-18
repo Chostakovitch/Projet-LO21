@@ -51,7 +51,12 @@ class LiteralFactory
      * @param prog Pointeur sur un objet ProgramLiteral à remplir.
      */
 	void makeLeafProgram(const std::string &s, std::shared_ptr<ProgramLiteral> prog) const;
-	std::vector<std::function<std::shared_ptr<Literal>(const std::string&)>> allocatorsPriority;
+    /**
+     * @brief Vecteur de fonctions de création de Literal.
+     * @details Les fonctions sont pushées dans l'ordre croissant de généralité. On essayera d'abord de fabriquer
+     * les types les moins généraux, et ensuite les plus généraux.
+     */
+    std::vector<std::function<std::shared_ptr<Literal>(const std::string&)>> allocatorsPriority;
 public:
     /**
      * @brief Récupération de l'instance du singleton.

@@ -32,16 +32,10 @@ class Operator : public Operand {
     std::shared_ptr<Operation> operation;
     /**
      * @brief Vaut true si l'opérateur est __numérique__, false sinon.
-     * @details Un opérateur est numérique s'il produit UNE littérale à partir d'une littérale numérique OU de plusieurs littérales.
-     * @details Etant donné un opérateur de symbole S, il est symbolique s'il est binaire, d'un seul caractère et si son opération s'écrit L1 S L2 (infixe).
-     * Il est parenthésé si son opération s'écrit S(L1, ...) (préfixe parenthésé).
+     * @details La numéricité d'un opérateur est sémantique et est définie informellement par l'utilisateur de la classe. Un opérateur est
+     * numérique s'il effectue un calcul entre opérandes.
      */
     bool numeric;
-    /**
-     * @brief Entier représentant la priorité relative de l'opérateur.
-     * @details Cette priorité devrait valoir -1 si l'opérateur est parenthésé, un nombre positif s'il est symbolique.
-     */
-    int priority;
 public:
     /**
      * @brief Constructeur d'objet Operator.
@@ -62,9 +56,42 @@ public:
      */
     const std::shared_ptr<Operation>& getOperation() { return operation; }
     /**
+     * @brief Accesseur pour numeric.
+     * @return Booléen.
+     */
+    bool isNumeric() { return numeric; }
+    /**
      * @brief Retourn le symbole de l'opérateur.
      * @return Objet string.
      */
 	std::string toString() const override { return symbol; }
 };
+
+/**
+ * @brief Un objet SymbolicOperator est un opérateur s'écrivant sous forme infixe.
+ * @details L'écriture infixe implique l'existence de la notion de priorité, ce qui le différencie de l'opérateur fonction (préfixe parenthésé).
+ */
+class SymbolicOperator : public Operator {
+    /**
+     * @brief Entier positif représentant la priorité relative de l'instance de l'opérateur.
+     */
+    unsigned int priority;
+public:
+    /**
+     * @brief Constructeur d'un opérateur symbolique.
+     * @param symbol Symbole.
+     * @param arity Arité.
+     * @param operation Pointeur sur classe Operation.
+     * @param numeric Indique si l'opérateur est numérique (i.e. réalise un calcul).
+     * @param priority Priorité relative de l'opérateur.
+     */
+    SymbolicOperator(std::string symbol, unsigned int arity, std::shared_ptr<Operation> operation, bool numeric, unsigned int priority) \
+        : Operator(symbol, arity, operation, numeric), priority(priority) { }
+    /**
+     * @brief Accesseur pour priority.
+     * @return Entier non-signé.
+     */
+    unsigned int getPriority() { return priority; }
+};
+
 #endif
