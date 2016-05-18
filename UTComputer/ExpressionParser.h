@@ -31,9 +31,17 @@ class ExpressionParser
      */
     char left_del;
     /**
-     * @brief Délimiteur de sous-expression à droite
+     * @brief Délimiteur de sous-expression à droite.
      */
     char right_del;
+    /**
+     * @brief Séparateur d'arguments de fonction.
+     */
+    char function_param_sep;
+    /**
+     * @brief Séparateur de la partie entière et décimale.
+     */
+    char decimal_sep;
     /**
      * @brief Pile temporaire servant au parsing.
      */
@@ -46,9 +54,12 @@ public:
     /**
      * @brief Constructeur standard.
      * @param s Chaîne à parser, sans espaces, en notation infixe.
+     * @param  left_del Délimiteur gauche de sous-expression.
+     * @param right_del Délimiteur droit de sous-expression.
+     * @param function_param_sep Séparateur d'arguments de fonction.
      */
-    explicit ExpressionParser(const std::string& s, char left_del = '(', char right_del = ')') \
-        : expr(s), left_del(left_del), right_del(right_del), stack(std::stack<std::shared_ptr<Operand>>()), queue(std::queue<std::shared_ptr<Operand>>()) { }
+    explicit ExpressionParser(const std::string& s, char left_del = '(', char right_del = ')', char function_param_sep = ',', char decimal_sep = '.') \
+        : expr(s), left_del(left_del), right_del(right_del), function_param_sep(function_param_sep), decimal_sep(decimal_sep), stack(std::stack<std::shared_ptr<Operand>>()), queue(std::queue<std::shared_ptr<Operand>>()) { }
     /**
      * @brief Lance la transformation en suite d'opérandes en notation postfixe.
      * @details Tous les opérateurs symboliques sont associatifs à gauche. On ne considère pas les cas d'opérateurs
