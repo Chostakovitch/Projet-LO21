@@ -31,6 +31,7 @@ private slots:
 
 public:
     explicit UTComputer(QWidget *parent = 0);
+    Settings* getSettings() const { return settings; }
 
 };
 

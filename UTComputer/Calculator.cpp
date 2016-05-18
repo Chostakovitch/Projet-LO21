@@ -7,6 +7,7 @@
 #include "Calculator.h"
 #include "Settings.h"
 #include "MainFrame.h"
+#include "utcomputer.h"
 
 Calculator::Calculator(QWidget *parent)  {
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -18,7 +19,7 @@ Calculator::Calculator(QWidget *parent)  {
     topLayout->addWidget(message);
 
     viewPile = new QTableWidget();
-    viewPile->setRowCount(6);
+    viewPile->setRowCount(dynamic_cast<UTComputer*>(parent)->getSettings()->getNbLinesDisplayPile());
     viewPile->setStyleSheet("background-color:black; color:white;");
     topLayout->addWidget(viewPile);
 
