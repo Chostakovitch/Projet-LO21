@@ -7,7 +7,6 @@
 
 UTComputer::UTComputer(QWidget *parent) : QMainWindow(parent){
     settings = new Settings();
-
     central = new Calculator(this);
 
     setCentralWidget(central);
@@ -36,8 +35,8 @@ void UTComputer::createActions() {
     redoAct->setStatusTip(tr("Redo the last operation"));
     connect(redoAct, &QAction::triggered, this, &UTComputer::redo);
 
-    paramAct = new QAction(tr("&Parameters"), this);
-    paramAct->setShortcuts(QKeySequence::Preferences);
+    paramAct = new QAction(tr("&Preferences"), this);
+    paramAct->setShortcut(QKeySequence(tr("Ctrl+,")));
     paramAct->setStatusTip(tr("Open the preferences"));
     connect(paramAct, &QAction::triggered, this, &UTComputer::param);
 }

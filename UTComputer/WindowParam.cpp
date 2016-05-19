@@ -10,9 +10,9 @@
 #include <QHeaderView>
 #include <QPushButton>
 
-WindowParam::WindowParam(QWidget* parent): QWidget(parent){
+WindowParam::WindowParam(QWidget* parent) : QWidget(parent){
     QTabWidget* tab = new QTabWidget();
-    tab->addTab(new ParamTab(), "Paramétres");
+    tab->addTab(new ParamTab(), "Paramètres");
     tab->addTab(new VariableTab(), "Variable");
     tab->addTab(new ProgramTab(), "Programmes");
 
