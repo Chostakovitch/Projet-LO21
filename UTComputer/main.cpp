@@ -8,6 +8,7 @@
 #include "LiteralFactory.h"
 #include "Operation.h"
 #include "Calculator.h"
+#include "Manager.h"
 
 int main(int argc, char *argv[])
 {
@@ -32,9 +33,24 @@ int main(int argc, char *argv[])
     std::cout << l3->toString() << " " << op3->toString() << " " << l2->toString() << " = ";
     for(auto res : result4) std::cout << res->toString() << std::endl;*/
 
+    auto a1 = LiteralFactory::getInstance().makeLiteralFromString("[4 + 3]");
+    Manager::getInstance().addIdentifier("PROG1", a1);
+    auto a2 = LiteralFactory::getInstance().makeLiteralFromString("[4 + 3]");
+    Manager::getInstance().addIdentifier("PROG2", a2);
+    auto a3 = LiteralFactory::getInstance().makeLiteralFromString("\"4+3\"");
+    Manager::getInstance().addIdentifier("EXP1", a3);
+
+    std::cout << "Tableau des prog :" << std::endl;
+    auto tab = Manager::getInstance().getProgramsIdentifiers();
+    for(auto res :tab) std::cout << res.first << std::endl;
+
+    std::cout << "Tableau des variables :" << std::endl;
+    auto tab2 = Manager::getInstance().getVariablesIdentifiers();
+    for(auto res :tab2) std::cout << res.first << std::endl;
+
     QApplication a(argc, argv);
     UTComputer w;
     w.show();
-
     return a.exec();
+
 }
