@@ -28,7 +28,7 @@ SOURCES += main.cpp\
     Settings.cpp \
     ExpressionParser.cpp \
     Manager.cpp \
-    WindowParam.cpp
+    WindowParam.cpp \
 
 HEADERS  += utcomputer.h \
     Literal.h \
@@ -45,6 +45,6 @@ HEADERS  += utcomputer.h \
     Settings.h \
     ExpressionParser.h \
     Manager.h \
-    WindowParam.h
+    WindowParam.h \
 
 FORMS    += utcomputer.ui
