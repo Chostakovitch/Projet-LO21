@@ -31,10 +31,10 @@ int main(int argc, char *argv[])
     std::cout << l3->toString() << " " << op3->toString() << " " << l2->toString() << " = ";
     for(auto res : result4) std::cout << res->toString() << std::endl;
 
-   /* QApplication a(argc, argv);
+    QApplication a(argc, argv);
     UTComputer w;
     w.show();
 
-    return a.exec();*/
+    return a.exec();
     return 0;
 }

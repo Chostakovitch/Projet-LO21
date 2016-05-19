@@ -18,7 +18,7 @@ OperatorManager::OperatorManager() {
     operators.push_back(std::make_shared<SymbolicOperator>("*", 2, std::make_shared<PlusOperation>(), true, 1)); //Exemple
 
     //Création des opérateurs parenthésés
-    operators.push_back(std::make_shared<Operator>("DUP", 2, std::make_shared<Operation>(), false)); //Exemple
+    operators.push_back(std::make_shared<Operator>("DUP", 2, std::make_shared<Operation>(), true)); //Exemple
     operators.push_back(std::make_shared<Operator>("STO", 2, std::make_shared<Operation>(), false)); //Exemple
 
     //Définition de la priorité des casts numériques
@@ -48,7 +48,6 @@ Arguments<std::shared_ptr<Operand>> OperatorManager::dispatchOperation(std::shar
     }
     //Sinon, on tente d'appliquer l'opération sur des types homogènes numériques concrèts
     catch(std::invalid_argument& e) {
-        if(op)
         for(auto caller : numericPriority) {
             try {
                 return caller(op->getOperation(), args);
@@ -69,7 +68,7 @@ Arguments<std::shared_ptr<Operand>> OperatorManager::dispatchOperation(std::shar
     }
     //Aucun comportement valable pour cet opérateur et ces opérandes.
     catch(std::exception& e) {
-        throw std::invalid_argument(std::string("Failed to standardize operands : ") + e.what());
+        throw std::invalid_argument(std::string("Failed to apply operation for these operands. Operator : ") + op->toString() + std::string(" : ") + e.what());
     }
 }
 

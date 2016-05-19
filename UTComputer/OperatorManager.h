@@ -9,6 +9,7 @@
 #include <memory>
 #include <string>
 #include <functional>
+#include <iostream>
 
 #include "Operation.h"
 
