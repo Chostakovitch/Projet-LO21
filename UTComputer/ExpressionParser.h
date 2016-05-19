@@ -68,7 +68,7 @@ public:
     void parse();
     /**
      * @brief Consume une entité dans l'expression courante.
-     * @return Chaîne de caractère correspondant à une entité.
+     * @return Chaîne de caractère correspondant à une entité ou chaîne vide si aucun jeton n'a été trouvé.
      */
     std::string readToken();
     /**

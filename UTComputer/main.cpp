@@ -9,6 +9,7 @@
 #include "Operation.h"
 #include "Calculator.h"
 #include "Manager.h"
+#include "ExpressionParser.h"
 
 int main(int argc, char *argv[])
 {
@@ -31,7 +32,7 @@ int main(int argc, char *argv[])
     std::cout << l1->toString() << " " << op3->toString() << " " << l2->toString() << " = ";
     for(auto res : result3) std::cout << res->toString() << std::endl;
     std::cout << l3->toString() << " " << op3->toString() << " " << l2->toString() << " = ";
-    for(auto res : result4) std::cout << res->toString() << std::endl;*/
+    for(auto res : result4) std::cout << res->toString() << std::endl;
 
     auto a1 = LiteralFactory::getInstance().makeLiteralFromString("[4 + 3]");
     Manager::getInstance().addIdentifier("PROG1", a1);
@@ -46,11 +47,19 @@ int main(int argc, char *argv[])
 
     std::cout << "Tableau des variables :" << std::endl;
     auto tab2 = Manager::getInstance().getVariablesIdentifiers();
-    for(auto res :tab2) std::cout << res.first << std::endl;
+    for(auto res :tab2) std::cout << res.first << std::endl;*/
 
-    QApplication a(argc, argv);
+    std::string expr = "(3+45.8)^4*F(X1,3.4,VAR)+SIN(X)";
+    std::cout << "Expression : " << expr << std::endl;
+    ExpressionParser e(expr);
+    std::string token;
+    while(!(token = e.readToken()).empty()) std::cout << token << " ";
+    std::cout << std::endl;
+
+    /*QApplication a(argc, argv);
     UTComputer w;
     w.show();
-    return a.exec();
+    return a.exec();*/
 
+    return 0;
 }
