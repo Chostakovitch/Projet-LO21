@@ -15,11 +15,13 @@ class UTComputer : public QMainWindow
     Settings* settings;
 
     QWidget* central;
-    QMenuBar *menu;
 
     QAction *undoAct;
     QAction *redoAct;
     QAction *paramAct;
+
+    QMenu* paramMenu;
+    QMenu* editMenu;
 
     void createMenus();
     void createActions();

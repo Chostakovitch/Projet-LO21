@@ -6,6 +6,8 @@
 
 class WindowParam : public QWidget
 {
+    Q_OBJECT
+
 public:
     WindowParam(QWidget* parent = 0);
 };

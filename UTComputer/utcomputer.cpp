@@ -9,7 +9,6 @@ UTComputer::UTComputer(QWidget *parent) : QMainWindow(parent){
     settings = new Settings();
 
     central = new Calculator(this);
-    menu = new QMenuBar(central);
 
     setCentralWidget(central);
 
@@ -44,14 +43,11 @@ void UTComputer::createActions() {
 }
 
 void UTComputer::createMenus() {
-    QMenu* paramMenu = new QMenu(tr("&Parameters"));
+    paramMenu = menuBar()->addMenu(tr("&Parameters"));
     paramMenu->addAction(paramAct);
 
-    QMenu* editMenu = new QMenu(tr("&Edit"));
+    editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(undoAct);
     editMenu->addAction(redoAct);
-
-    menu->addMenu(paramMenu);
-    menu->addMenu(editMenu);
 }
 
