@@ -22,7 +22,7 @@ private:
     QTableWidget* viewPile;
     QLineEdit* command;
     QVBoxLayout* layout;
-    MainFrame* mainFrame;
+    MainFrame* keyBoard;
 
 public:
     explicit Calculator(QWidget *parent = 0);

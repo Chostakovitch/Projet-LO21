@@ -11,6 +11,7 @@
 
 int main(int argc, char *argv[])
 {
+    /*
     //Fonctionnement des opérations sur littérales expressions
     auto l1 = LiteralFactory::getInstance().makeLiteralFromString("\"4+3\"");
     auto l2 = LiteralFactory::getInstance().makeLiteralFromString("\"VAR*3\"");
@@ -29,12 +30,11 @@ int main(int argc, char *argv[])
     std::cout << l1->toString() << " " << op3->toString() << " " << l2->toString() << " = ";
     for(auto res : result3) std::cout << res->toString() << std::endl;
     std::cout << l3->toString() << " " << op3->toString() << " " << l2->toString() << " = ";
-    for(auto res : result4) std::cout << res->toString() << std::endl;
+    for(auto res : result4) std::cout << res->toString() << std::endl;*/
 
     QApplication a(argc, argv);
     UTComputer w;
     w.show();
 
     return a.exec();
-    return 0;
 }

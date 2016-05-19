@@ -43,7 +43,7 @@ public:
      * @param arity Entier positif représentant le nombre d'opérandes sur lequel l'opérateur s'applique.
      * @param operation Pointeur sur Operation, définissant le comportement de l'opérateur.
      */
-    Operator(std::string symbol, unsigned int arity, std::shared_ptr<Operation> operation, bool numeric) : \
+    Operator(std::string symbol, unsigned int arity, std::shared_ptr<Operation> operation, bool numeric = false) : \
         symbol(symbol), arity(arity), operation(operation), numeric(numeric) { }
     /**
      * @brief Accesseur pour arity.

@@ -1,6 +1,7 @@
 ﻿#include "utcomputer.h"
 #include "Settings.h"
 #include "calculator.h"
+#include "WindowParam.h"
 #include <QMenuBar>
 #include <QtWidgets>
 
@@ -20,7 +21,10 @@ UTComputer::UTComputer(QWidget *parent) : QMainWindow(parent){
 
 void UTComputer::undo() { }
 void UTComputer::redo() { }
-void UTComputer::param() { }
+void UTComputer::param() {
+    WindowParam* window = new WindowParam();
+    window->show();
+}
 
 void UTComputer::createActions() {
     undoAct = new QAction(tr("&Undo"), this);
