@@ -2,21 +2,23 @@
 #define MANAGER_H
 
 #include <map>
+#include <vector>
 #include <memory>
 
-class Litteral;
+class Literal;
 
 class Manager
 {
-    std::map<const std::string, std::shared_ptr<Litteral>> identifiers;
+    std::map<const std::string, std::shared_ptr<Literal>> identifiers;
     Manager();
 public:
     Manager(const Manager&) = delete;
     Manager& operator= (const Manager&) = delete;
-    const Manager& getInstance();
+    static Manager& getInstance();
 
-    const std::shared_ptr<Litteral>& getIdentifier(const std::string&) const;
-    void addIdentifier(const std::string&, const std::shared_ptr<Litteral>);
+    const std::shared_ptr<Literal>& getIdentifier(const std::string&) const;
+    void addIdentifier(const std::string&, const std::shared_ptr<Literal>) ;
+    const std::map<const std::string,std::shared_ptr<Literal>> getProgramsIdentifiers();
+    const std::map<const std::string,std::shared_ptr<Literal>> getVariablesIdentifiers();
 };
-
 #endif // MANAGER_H
