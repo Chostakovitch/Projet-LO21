@@ -20,16 +20,16 @@ void Manager::addIdentifier(const std::string& id, std::shared_ptr<Literal> lit)
 
 const std::map<const std::string,std::shared_ptr<Literal>> Manager::getProgramsIdentifiers() {
     std::map<const std::string,std::shared_ptr<Literal>> result;
-    for (std::map<const std::string, std::shared_ptr<Literal>>::iterator it = identifiers.begin(); it != identifiers.end(); it++) {
-        if (std::dynamic_pointer_cast<ProgramLiteral>((*it).second)) result[(*it).first] = (*it).second;
+    for (auto it : identifiers) {
+        if (std::dynamic_pointer_cast<ProgramLiteral>(it.second)) result[it.first] = it.second;
     }
     return result;
 }
 
 const std::map<const std::string,std::shared_ptr<Literal>> Manager::getVariablesIdentifiers() {
     std::map<const std::string,std::shared_ptr<Literal>> result;
-    for (std::map<const std::string, std::shared_ptr<Literal>>::iterator it = identifiers.begin(); it != identifiers.end(); it++) {
-        if (!std::dynamic_pointer_cast<ProgramLiteral>((*it).second)) result[(*it).first] = (*it).second;
+    for (auto it : identifiers) {
+        if (!std::dynamic_pointer_cast<ProgramLiteral>(it.second)) result[it.first] = it.second;
     }
     return result;
 }
