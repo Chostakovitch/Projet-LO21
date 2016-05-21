@@ -11,9 +11,6 @@ class Manager;
 class UTComputer : public QMainWindow
 {
     Q_OBJECT
-    Manager* manager;
-    Settings* settings;
-
     QWidget* central;
 
     QAction *undoAct;
@@ -33,8 +30,6 @@ private slots:
 
 public:
     explicit UTComputer(QWidget *parent = 0);
-    Settings* getSettings() const { return settings; }
-
 };
 
 #endif // UTCOMPUTER_H
