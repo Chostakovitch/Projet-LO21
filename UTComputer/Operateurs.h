@@ -65,6 +65,18 @@ public:
      * @return Objet string.
      */
 	std::string toString() const override { return symbol; }
+    /**
+      * @brief Destructeur virtuel pur avec implémentation pour rendre la classe abstraite.
+      */
+    ~Operator() = 0;
+};
+
+/**
+ * @brief Un objet FunctionOperator est un opérateur s'écrivant sous forme préfixe parenthésée.
+ */
+class FunctionOperator : public Operator {
+public:
+    using Operator::Operator;
 };
 
 /**
@@ -76,6 +88,10 @@ class SymbolicOperator : public Operator {
      * @brief Entier positif représentant la priorité relative de l'instance de l'opérateur.
      */
     unsigned int priority;
+    /**
+     * @brief Vaut true si l'opérateur est associatif à gauche, false sinon.
+     */
+    bool leftAssociative;
 public:
     /**
      * @brief Constructeur d'un opérateur symbolique.
@@ -85,13 +101,18 @@ public:
      * @param numeric Indique si l'opérateur est numérique (i.e. réalise un calcul).
      * @param priority Priorité relative de l'opérateur.
      */
-    SymbolicOperator(std::string symbol, unsigned int arity, std::shared_ptr<Operation> operation, bool numeric, unsigned int priority) \
-        : Operator(symbol, arity, operation, numeric), priority(priority) { }
+    SymbolicOperator(std::string symbol, unsigned int arity, std::shared_ptr<Operation> operation, bool numeric, unsigned int priority, bool leftAssociative = true) \
+        : Operator(symbol, arity, operation, numeric), priority(priority), leftAssociative(leftAssociative) { }
     /**
      * @brief Accesseur pour priority.
      * @return Entier non-signé.
      */
     unsigned int getPriority() { return priority; }
+    /**
+     * @brief Accesseur pour leftAssociative.
+     * @return Booléen.
+     */
+    bool isLeftAssociative() { return leftAssociative; }
 };
 
 #endif

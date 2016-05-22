@@ -13,7 +13,8 @@
 
 class Operand;
 class Literal;
-class Operator;
+class FunctionOperator;
+class SymbolicOperator;
 
 /**
  * @brief Un objet ExpressionParser est un objet utilitaire de parsing d'expressions arithmétiques.
@@ -44,12 +45,13 @@ class ExpressionParser
     char decimal_sep;
     /**
      * @brief Pile temporaire servant au parsing.
+     * @details Cette pile contient les opérateurs en attente d'enfilage.
      */
     std::stack<std::shared_ptr<Operand>> stack;
     /**
      * @brief File de sortie postfixe.
      */
-    std::queue<std::shared_ptr<Operand>> queue;
+    std::vector<std::shared_ptr<Operand>> queue;
 public:
     /**
      * @brief Constructeur standard.
@@ -59,13 +61,14 @@ public:
      * @param function_param_sep Séparateur d'arguments de fonction.
      */
     explicit ExpressionParser(const std::string& s, char left_del = '(', char right_del = ')', char function_param_sep = ',', char decimal_sep = '.') \
-        : expr(s), left_del(left_del), right_del(right_del), function_param_sep(function_param_sep), decimal_sep(decimal_sep), stack(std::stack<std::shared_ptr<Operand>>()), queue(std::queue<std::shared_ptr<Operand>>()) { }
+        : expr(s), left_del(left_del), right_del(right_del), function_param_sep(function_param_sep), decimal_sep(decimal_sep) { }
     /**
      * @brief Lance la transformation en suite d'opérandes en notation postfixe.
      * @details Tous les opérateurs symboliques sont associatifs à gauche. On ne considère pas les cas d'opérateurs
      * associatifs à droite qui seront des fonctions.
+     * @return Vecteur de pointeurs sur Operand.
      */
-    void parse();
+    std::vector<std::shared_ptr<Operand>> parse();
     /**
      * @brief Consume une entité dans l'expression courante.
      * @return Chaîne de caractère correspondant à une entité ou chaîne vide si aucun jeton n'a été trouvé.
@@ -84,14 +87,14 @@ public:
      * @exception invalid_argument si token ne représente pas une fonction.
      * @return Pointeur sur Operator.
      */
-    std::shared_ptr<Operator> getFunction(std::string token);
+    std::shared_ptr<FunctionOperator> getFunction(std::string token);
     /**
      * @brief Récupère un objet Operator __symbolique__ existant.
      * @param token Chaîne de caractères représentant un opérateur infixe.
      * @exception invalid_argument si token ne représente pas un opération symbolique.
      * @return Pointeur sur Operator.
      */
-    std::shared_ptr<Operator> getOperator(std::string token);
+    std::shared_ptr<SymbolicOperator> getOperator(std::string token);
 };
 
 #endif // EXPRESSIONPARSER_H

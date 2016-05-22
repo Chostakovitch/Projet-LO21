@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     std::cout << l1->toString() << " " << op3->toString() << " " << l2->toString() << " = ";
     for(auto res : result3) std::cout << res->toString() << std::endl;
     std::cout << l3->toString() << " " << op3->toString() << " " << l2->toString() << " = ";
-    for(auto res : result4) std::cout << res->toString() << std::endl;*/
+    for(auto res : result4) std::cout << res->toString() << std::endl;
 
     std::cout << "backup 1 :" << std::endl;
     Manager::getInstance().afficherBackUp();
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     Manager::getInstance().afficherBackUp();
 
     // Declenche une erreur comme prevu
-    /*std::cout << "Redo" << std::endl;
+    std::cout << "Redo" << std::endl;
     Manager::getInstance().redo();
     std::cout << "backup 10 :" << std::endl;
     Manager::getInstance().afficherBackUp();*/
@@ -89,16 +89,34 @@ int main(int argc, char *argv[])
 
     std::cout << "Tableau des variables :" << std::endl;
     auto tab2 = Manager::getInstance().getVariablesIdentifiers();
-    for(auto res :tab2) std::cout << res.first << std::endl;
+    for(auto res :tab2) std::cout << res.first << std::endl;*/
 
-
-
-    std::string expr = "(3+45.8)^4*F(X1,3.4,VAR)+SIN(X)";
-    std::cout << "Expression : " << expr << std::endl;
-    ExpressionParser e(expr);
-    std::string token;
-    while(!(token = e.readToken()).empty()) std::cout << token << " ";
-    std::cout << std::endl;*/
+    auto l1 = LiteralFactory::getInstance().makeLiteralFromString("4");
+    auto l2 = LiteralFactory::getInstance().makeLiteralFromString("4.5");
+    auto l3 = LiteralFactory::getInstance().makeLiteralFromString("[4+3]");
+    Manager::getInstance().addIdentifier("X", l1);
+    Manager::getInstance().addIdentifier("X1", l2);
+    Manager::getInstance().addIdentifier("X2", l3);
+    std::string expr = "(3+45.8)+4*POW(X1,3.4)*(SIN(X)+5$2)";
+    std::string expr1 = "X2";
+    std::string expr2 = "(4+3";
+    std::string expr3 = "4/2";
+    std::string expr4 = "X3";
+    std::string expr5 = "4+3)";
+    std::vector<std::string> v1{expr, expr1, expr2, expr3, expr4, expr5};
+    for(auto s : v1) {
+        std::cout << "Expression : " << s << std::endl;
+        ExpressionParser e(s);
+        try {
+            for(auto l : e.parse()) {
+                std::cout << l->toString() << " ";
+            }
+        }
+        catch(std::exception& e) {
+            std::cout << e.what();
+        }
+        std::cout << std::endl << std::endl;
+    }
 
     /*QApplication a(argc, argv);
     UTComputer w;
