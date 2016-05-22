@@ -73,7 +73,7 @@ void LiteralFactory::makeLeafProgram(const std::string &s, std::shared_ptr<Progr
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeCompositeProgram(const std::string& s) const {
-	std::shared_ptr<ProgramLiteral> prog(new ProgramLiteral);
+    auto prog = std::make_shared<ProgramLiteral>();
 	std::string copy(s);
 	size_t first, last;
 	if (s.front() == '[' && s.back() == ']') {
@@ -116,7 +116,7 @@ std::shared_ptr<Literal> LiteralFactory::makeLiteralFromString(std::string str) 
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeLiteral(int n) const {
-	return std::shared_ptr<Literal>(new IntegerLiteral(n));
+    return std::make_shared<IntegerLiteral>(n);
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeLiteral(int num, int den) const {
@@ -130,17 +130,17 @@ std::shared_ptr<Literal> LiteralFactory::makeLiteral(int num, int den) const {
 	num /= gcd;
 	den /= gcd;
     if (den == 1) return makeLiteral(num); //Cas d'une simplification en entier
-    return std::shared_ptr<RationalLiteral>(new RationalLiteral(num, den));
+    return std::make_shared<RationalLiteral>(num, den);
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeLiteral(double f) const {
 	double intpart;
     //modf renvoie la partie fractionnaire et stocke la partie entière dans intpart
 	if (std::modf(f, &intpart) == 0) return makeLiteral((int)intpart);
-	return std::shared_ptr<Literal>(new RealLiteral(f));
+    return std::make_shared<RealLiteral>(f);
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeLiteral(const std::string &s) const {
-	return std::shared_ptr<ExpressionLiteral>(new ExpressionLiteral(s));
+    return std::make_shared<ExpressionLiteral>(s);
 }
 

@@ -18,20 +18,19 @@ void Manager::addIdentifier(const std::string& id, std::shared_ptr<Literal> lit)
     identifiers[id] = lit;
 }
 
-const std::map<const std::string,std::shared_ptr<Literal>> Manager::getProgramsIdentifiers() {
+const std::map<const std::string,std::shared_ptr<Literal>> Manager::getProgramsIdentifiers() const {
     std::map<const std::string,std::shared_ptr<Literal>> result;
-    for (std::map<const std::string, std::shared_ptr<Literal>>::iterator it = identifiers.begin(); it != identifiers.end(); it++) {
-        if (std::dynamic_pointer_cast<ProgramLiteral>((*it).second)) result[(*it).first] = (*it).second;
+    for (auto& prog : identifiers) {
+        if (std::dynamic_pointer_cast<ProgramLiteral>(prog.second)) result[prog.first] = prog.second;
     }
     return result;
 }
 
-const std::map<const std::string,std::shared_ptr<Literal>> Manager::getVariablesIdentifiers() {
+const std::map<const std::string,std::shared_ptr<Literal>> Manager::getVariablesIdentifiers() const {
     std::map<const std::string,std::shared_ptr<Literal>> result;
-    for (std::map<const std::string, std::shared_ptr<Literal>>::iterator it = identifiers.begin(); it != identifiers.end(); it++) {
-        if (!std::dynamic_pointer_cast<ProgramLiteral>((*it).second)) result[(*it).first] = (*it).second;
+    for (auto& var : identifiers) {
+        if (!std::dynamic_pointer_cast<ProgramLiteral>(var.second)) result[var.first] = var.second;
     }
     return result;
 }
-
 

@@ -49,11 +49,12 @@ int main(int argc, char *argv[])
     auto tab2 = Manager::getInstance().getVariablesIdentifiers();
     for(auto res :tab2) std::cout << res.first << std::endl;*/
 
-    std::string expr = "(3+45.8)^4*F(X1,3.4,VAR)+SIN(X)";
+    std::string expr = "3+4";
     std::cout << "Expression : " << expr << std::endl;
     ExpressionParser e(expr);
-    std::string token;
-    while(!(token = e.readToken()).empty()) std::cout << token << " ";
+    for(auto l : e.parse()) {
+        std::cout << l->toString() << " " << std::endl;
+    }
     std::cout << std::endl;
 
     /*QApplication a(argc, argv);

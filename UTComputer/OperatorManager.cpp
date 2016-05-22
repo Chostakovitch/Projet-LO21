@@ -18,8 +18,8 @@ OperatorManager::OperatorManager() {
     operators.push_back(std::make_shared<SymbolicOperator>("*", 2, std::make_shared<PlusOperation>(), true, 1)); //Exemple
 
     //Création des opérateurs parenthésés
-    operators.push_back(std::make_shared<Operator>("DUP", 2, std::make_shared<Operation>(), true)); //Exemple
-    operators.push_back(std::make_shared<Operator>("STO", 2, std::make_shared<Operation>(), false)); //Exemple
+    operators.push_back(std::make_shared<FunctionOperator>("DUP", 2, std::make_shared<Operation>(), true)); //Exemple
+    operators.push_back(std::make_shared<FunctionOperator>("STO", 2, std::make_shared<Operation>(), false)); //Exemple
 
     //Définition de la priorité des casts numériques
     numericPriority.push_back(&applyOperation<IntegerLiteral>);
