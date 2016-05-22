@@ -11,72 +11,82 @@ std::vector<std::shared_ptr<Operand>> ExpressionParser::parse() {
     //Tant qu'il reste des jetons à lire
     std::string token;
     while(!expr.empty()) {
+        //Jeton vide, intraitable
         if((token = readToken()).empty()) throw std::invalid_argument("Unreadable token.");
+
         //Cas où le jeton est une littérale, on l'enfile
-        if(auto lit = getLiteral(token)) queue.push(lit);
+        if(auto lit = getLiteral(token)) queue.push_back(lit);
+
         //Cas où le jeton est une fonction, on l'empile
         else if(auto fun = getFunction(token)) stack.push(fun);
+
         //Cas où le jeton est un séparateur d'arguments de fonction
         else if(token.at(0) == function_param_sep) {
             //Jusqu'à ce qu'on trouve un délimiteur gauche, on dépile et enfile chaque opérateur
-            while(stack.top()->toString().at(0) != left_del) {
-                queue.push(stack.top());
+            while(!stack.empty() && stack.top()->toString().at(0) != left_del) {
+                queue.push_back(stack.top());
                 stack.pop();
             }
             if(stack.empty()) throw std::invalid_argument("Parentheses mismatch.");
         }
+
         //Cas où le jeton est un opérateur symbolique
         else if(auto op = getOperator(token)) {
-            //Tant qu'on trouve un opérateur symbolique sur la pile
-            while(auto op2 = std::dynamic_pointer_cast<SymbolicOperator>(stack.top())) {
-                /* Si l'opérateur est associatif à gauche et de priorité inférieure ou égale au nouveau,
-                   ou s'il est associatif à droite et de priorité inférieure au nouveau, on le dépile et l'enfile*/
-                if((op->isLeftAssociative() && op->getPriority() <= op2->getPriority()) \
-                        || (!op->isLeftAssociative() && op->getPriority() < op2->getPriority())) {
-                    queue.push(op2);
+            /* Tant qu'on trouve un opérateur symbolique sur la pile,
+             * Si l'opérateur est associatif à gauche et de priorité inférieure ou égale au nouveau,
+             * ou s'il est associatif à droite et de priorité inférieure au nouveau, on le dépile et l'enfile*/
+            std::shared_ptr<SymbolicOperator> op2;
+            while(!stack.empty() \
+                  && (op2 = std::dynamic_pointer_cast<SymbolicOperator>(stack.top())) \
+                  && ( \
+                        (op->isLeftAssociative() && op->getPriority() <= op2->getPriority()) \
+                      || \
+                        (!op->isLeftAssociative() && op->getPriority() < op2->getPriority()) \
+                     ) \
+                 )
+                {
+                    queue.push_back(op2);
                     stack.pop();
                 }
-            }
             stack.push(op);
         }
+
         //Délimiteur gauche, on l'empile
-        else if(token.at(0) == left_del) stack.push(LiteralFactory::getInstance().makeLiteral(left_del));
+        else if(token.at(0) == left_del) stack.push(LiteralFactory::getInstance().makeLiteral(std::string(1, left_del)));
+
         //Délimiteur droit
         else if(token.at(0) == right_del) {
             //Tant qu'on ne trouve pas de délimiteur gauche
-            while(stack.top()->toString().at(0) != left_del) {
-                queue.push(stack.top());
+            while(!stack.empty() && stack.top()->toString().at(0) != left_del) {
+                queue.push_back(stack.top());
                 stack.pop();
             }
             if(stack.empty()) throw std::invalid_argument("Parentheses mismatch.");
             //On dépile la parenthèse
             stack.pop();
             //S'il reste une fonction sur la pile
-            if(auto fun = std::dynamic_pointer_cast<FunctionOperator>(stack.top())) {
-                queue.push(fun);
+            std::shared_ptr<FunctionOperator> fun;
+            if(!stack.empty() && (fun = std::dynamic_pointer_cast<FunctionOperator>(stack.top()))) {
+                queue.push_back(fun);
                 stack.pop();
             }
         }
+
         //Jeton non-reconnu
         else {
             throw std::invalid_argument("Unrecognized token.");
         }
     }
+
     //Tant qu'il reste des opérateurs sur la pile
     while(!stack.empty()) {
         //S'il reste un délimiteur gauche, expression malformée
         if(stack.top()->toString().at(0) == left_del) throw std::invalid_argument("Parentheses mismatch.");
-        queue.push(stack.top());
+        queue.push_back(stack.top());
         stack.pop();
     }
 
-    std::vector<std::shared_ptr<Operand>> res;
-    res.reserve(queue.size());
-    while(!queue.empty()) {
-        res.push_back(queue.front());
-        queue.pop();
-    }
-    return res;
+    return queue;
 }
 
 /**
@@ -86,8 +96,8 @@ std::vector<std::shared_ptr<Operand>> ExpressionParser::parse() {
  *      - Une suite de lettres capitales et/ou de chiffres commençant par une lettre capitale.
  */
 std::string ExpressionParser::readToken() {
-    //Plus aucun jeton à lire.
     std::string res;
+    //Plus aucun jeton à lire.
     if(expr.empty()) return res;
     //Un jeton a au moins un caractère qu'on consumme directement.
     char c = expr.at(0);
