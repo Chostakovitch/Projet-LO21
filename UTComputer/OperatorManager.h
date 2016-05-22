@@ -115,6 +115,7 @@ public:
      * @return Référence constante sur un shared_ptr sur Operator.
      */
     const std::shared_ptr<Operator>& getOperator(const std::string& opcode) const;
+    bool isOperator(const std::string& opcode) const;
     /**
      * @brief Effectue l'opération associée à un opérateur sur des littérales.
      * @details Cette fonction appelle la classe Operation associée à l'opérateur passé en arguments, et détermine la surcharge d'évaluation

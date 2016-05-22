@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     Manager::getInstance().afficherBackUp();
 
     auto a1 = LiteralFactory::getInstance().makeLiteralFromString("[4 + 3]");
-    Manager::getInstance().addIdentifier("PROG1", a1);
+    Manager::getInstance().addIdentifier("STO", a1);
     std::cout << "backup 2 :" << std::endl;
     Manager::getInstance().afficherBackUp();
 

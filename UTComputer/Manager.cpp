@@ -1,7 +1,10 @@
 #include "Manager.h"
 #include "Literal.h"
 #include "CompositeLiteral.h"
+#include "OperatorManager.h"
 #include <memory>
+#include <iostream>
+#include <cctype>
 
 Manager::Manager() : settings (new Settings()) { saveState(); currentState = 0;}
 
@@ -15,6 +18,9 @@ const std::shared_ptr<Literal>& Manager::getIdentifier(const std::string& id) co
 }
 
 void Manager::addIdentifier(const std::string& id, std::shared_ptr<Literal> lit) {
+    if (id.empty() || std::islower(id[0])) throw std::invalid_argument("An identifier must begin with a uppercase character.");
+    if (!std::all_of(id.begin(), id.end(), [](char c) { return (isupper(c) || isdigit(c));})) throw std::invalid_argument("An identifier must constain only uppercase character and digit.");
+    if (OperatorManager::getInstance().isOperator(id)) throw std::invalid_argument("This name is already assigned to a program.");
     identifiers[id] = lit;
     saveState();
 }

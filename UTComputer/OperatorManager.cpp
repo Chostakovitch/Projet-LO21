@@ -40,6 +40,15 @@ const std::shared_ptr<Operator>& OperatorManager::getOperator(const std::string&
     throw std::invalid_argument("Operator not found");
 }
 
+bool OperatorManager::isOperator(const std::string& opcode) const {
+    try {
+        getOperator(opcode);
+        return true;
+    } catch(std::exception e) {
+        return false;
+    }
+}
+
 Arguments<std::shared_ptr<Operand>> OperatorManager::dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const {
     if (op->getArity() != args.size()) throw std::invalid_argument("Wrong number of operands.");
     //Si l'opération définit une méthode d'évaluation générique, on l'appelle ici
