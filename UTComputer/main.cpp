@@ -32,16 +32,58 @@ int main(int argc, char *argv[])
     std::cout << l1->toString() << " " << op3->toString() << " " << l2->toString() << " = ";
     for(auto res : result3) std::cout << res->toString() << std::endl;
     std::cout << l3->toString() << " " << op3->toString() << " " << l2->toString() << " = ";
-    for(auto res : result4) std::cout << res->toString() << std::endl;
+    for(auto res : result4) std::cout << res->toString() << std::endl;*/
+
+    std::cout << "backup 1 :" << std::endl;
+    Manager::getInstance().afficherBackUp();
 
     auto a1 = LiteralFactory::getInstance().makeLiteralFromString("[4 + 3]");
     Manager::getInstance().addIdentifier("PROG1", a1);
+    std::cout << "backup 2 :" << std::endl;
+    Manager::getInstance().afficherBackUp();
+
     auto a2 = LiteralFactory::getInstance().makeLiteralFromString("[4 + 3]");
     Manager::getInstance().addIdentifier("PROG2", a2);
+    std::cout << "backup 3 :" << std::endl;
+    Manager::getInstance().afficherBackUp();
+
     auto a3 = LiteralFactory::getInstance().makeLiteralFromString("\"4+3\"");
     Manager::getInstance().addIdentifier("EXP1", a3);
+    std::cout << "backup 4 :" << std::endl;
+    Manager::getInstance().afficherBackUp();
 
-    std::cout << "Tableau des prog :" << std::endl;
+    std::cout << "Changement de nom de PROG1 en TMP" << std::endl;
+    Manager::getInstance().changeIdentifier("PROG1", "TMP", a1);
+    std::cout << "backup 5 :" << std::endl;
+    Manager::getInstance().afficherBackUp();
+
+    std::cout << "Undo" << std::endl;
+    Manager::getInstance().undo();
+    std::cout << "backup 6 :" << std::endl;
+    Manager::getInstance().afficherBackUp();
+
+    std::cout << "Undo" << std::endl;
+    Manager::getInstance().undo();
+    std::cout << "backup 7 :" << std::endl;
+    Manager::getInstance().afficherBackUp();
+
+    std::cout << "Redo" << std::endl;
+    Manager::getInstance().redo();
+    std::cout << "backup 8 :" << std::endl;
+    Manager::getInstance().afficherBackUp();
+
+    auto a4 = LiteralFactory::getInstance().makeLiteralFromString("\"4+3\"");
+    Manager::getInstance().addIdentifier("EXP2", a4);
+    std::cout << "backup 9 :" << std::endl;
+    Manager::getInstance().afficherBackUp();
+
+    // Declenche une erreur comme prevu
+    /*std::cout << "Redo" << std::endl;
+    Manager::getInstance().redo();
+    std::cout << "backup 10 :" << std::endl;
+    Manager::getInstance().afficherBackUp();*/
+
+    /*std::cout << "Tableau des prog :" << std::endl;
     auto tab = Manager::getInstance().getProgramsIdentifiers();
     for(auto res :tab) std::cout << res.first << std::endl;
 

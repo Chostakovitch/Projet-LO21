@@ -19,7 +19,7 @@ Calculator::Calculator(QWidget *parent)  {
     topLayout->addWidget(message);
 
     viewPile = new QTableWidget();
-    viewPile->setRowCount(dynamic_cast<UTComputer*>(parent)->getSettings()->getNbLinesDisplayPile());
+    viewPile->setRowCount(10);
     viewPile->setStyleSheet("background-color:black; color:white;");
     topLayout->addWidget(viewPile);
 
