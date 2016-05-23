@@ -56,7 +56,6 @@ void Manager::handleOperandLine(std::string command) {
     if(leftPos != std::string::npos && rightPos != std::string::npos) {
         command.erase(std::remove(command.begin() + leftPos, command.begin() + rightPos + 1, ' '), command.begin() + rightPos + 1);
     }
-    std::cout << command << std::endl;
     //Split sur les espaces
     std::istringstream iss(command);
     std::vector<std::string> tokens{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};

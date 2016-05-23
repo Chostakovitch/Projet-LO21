@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
     auto tab2 = Manager::getInstance().getVariablesIdentifiers();
     for(auto res :tab2) std::cout << res.first << std::endl;*/
 
-    Manager::getInstance().handleOperandLine("\"SIN(8) + 4\" X1 STO");
+    Manager::getInstance().handleOperandLine("\"SIN(8) + 4\"");
     Manager::getInstance().handleOperandLine("4 3 +");
     Manager::getInstance().handleOperandLine("*");
     for(auto& e : Manager::getInstance().getStackContent()) std::cout << e->toString() << " " << std::endl;
