@@ -91,38 +91,11 @@ int main(int argc, char *argv[])
     auto tab2 = Manager::getInstance().getVariablesIdentifiers();
     for(auto res :tab2) std::cout << res.first << std::endl;*/
 
-    auto l1 = LiteralFactory::getInstance().makeLiteralFromString("4");
-    auto l2 = LiteralFactory::getInstance().makeLiteralFromString("4.5");
-    auto l3 = LiteralFactory::getInstance().makeLiteralFromString("[4+3]");
-    Manager::getInstance().addIdentifier("X", l1);
-    Manager::getInstance().addIdentifier("X1", l2);
-    Manager::getInstance().addIdentifier("X2", l3);
-    std::string expr = "(3+45.8)+4*POW(X1,3.4)*(SIN(X)+5$2)";
-    std::string expr1 = "X2";
-    std::string expr2 = "(4+3";
-    std::string expr3 = "4/2";
-    std::string expr4 = "X3";
-    std::string expr5 = "4+3)";
-    std::vector<std::string> v1{expr, expr1, expr2, expr3, expr4, expr5};
-    for(auto s : v1) {
-        std::cout << "Expression : " << s << std::endl;
-        ExpressionParser e(s);
-        try {
-            for(auto l : e.parse()) {
-                std::cout << l->toString() << " ";
-            }
-        }
-        catch(std::exception& e) {
-            std::cout << e.what();
-        }
-        std::cout << std::endl << std::endl;
-    }
-
-    auto l4 = LiteralFactory::getInstance().makeLiteralFromString("\"4+3\"");
-    auto l5 = LiteralFactory::getInstance().makeLiteralFromString("\"4\"");
-    auto op1 = OperatorManager::getInstance().getOperator("*");
-    auto res = OperatorManager::getInstance().dispatchOperation(op1, Arguments<std::shared_ptr<Literal>>{l4, l5});
-    for(auto r : res) std::cout << r->toString() << std::endl;
+    Manager::getInstance().handleOperandLine("\"SIN(8) + 4\" X1 STO");
+    Manager::getInstance().handleOperandLine("4 3 +");
+    Manager::getInstance().handleOperandLine("*");
+    for(auto& e : Manager::getInstance().getStackContent()) std::cout << e->toString() << " " << std::endl;
+    putchar('\n');
 
     /*QApplication a(argc, argv);
     UTComputer w;

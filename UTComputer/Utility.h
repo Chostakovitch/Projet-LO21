@@ -23,5 +23,12 @@ namespace Utility {
      * @return La concaténation des chaînes externes ou bien la chaîne elle-même si les délimiteurs n'ont pas été trouvés
      */
     std::string getOutside(std::string s, char left, char right);
+
+    /**
+     * @brief Indique si un caractère est un symbole affichable, hors lettres et chiffres.
+     * @param c Caractère à valider.
+     * @return Booléen.
+     */
+    bool isSymbol(char c);
 }
 #endif

@@ -53,7 +53,14 @@ class OperatorManager
      * Usuellement, les littérales les plus spécialisées sont essayées en premier, et les plus générales en dernier.
      */
     std::vector<std::function<Arguments<std::shared_ptr<Operand>>(std::shared_ptr<Operation>, Arguments<std::shared_ptr<Literal>>)>> numericPriority;
-
+    /**
+     * @brief Symbole utilisé pour l'opérateur de soustraction (utilisé pour le parsing qui ne différencie pas de la négation).
+     */
+    const std::string minus_symbol;
+    /**
+     * @brief Pointeur sur l'opérateur utilisé pour l'évalution des programmes (que l'on doit rajouter manuellement pour un atome sur un programme).
+     */
+    const std::shared_ptr<FunctionOperator> evalOperator;
 public:
     /**
      * @brief Suppression du constructeur de recopie.
@@ -75,6 +82,16 @@ public:
      * @return Référence constante sur un shared_ptr sur Operator.
      */
     const std::shared_ptr<Operator>& getOperator(const std::string& opcode) const;
+    /**
+     * @brief Accesseur pour minus_symbol.
+     * @return std::string représentant l'opérateur de soustraction.
+     */
+    std::string getMinusSymbol() const { return minus_symbol; }
+    /**
+     * @brief Accesseur pour evalOperator.
+     * @return Pointeur sur Operator représentant l'opérateur d'évaluation de programme.
+     */
+    const std::shared_ptr<Operator> getEvalOperator() const { return evalOperator; }
     bool isOperator(const std::string& opcode) const;
     /**
      * @brief Effectue l'opération associée à un opérateur sur des littérales.
