@@ -6,6 +6,7 @@
 #include "Utility.h"
 #include <memory>
 #include <algorithm>
+#include <iterator>
 #include <sstream>
 
 /**
@@ -103,7 +104,7 @@ std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr
     else {
         //On récupère un vecteur de tous les opérateurs symboliques définis ayant une priorité inférieure à la priorité de l'opérateur courant
         std::vector<std::shared_ptr<Operator>> res;
-        std::copy_if(operators.begin(), operators.end(), res.begin(), [&op_symbol](const std::shared_ptr<Operator> op) {
+        std::copy_if(operators.begin(), operators.end(), std::back_inserter(res), [&op_symbol](const std::shared_ptr<Operator> op) {
             auto s_op = std::dynamic_pointer_cast<SymbolicOperator>(op);
             return s_op && s_op->getPriority() <= op_symbol->getPriority();
         });
