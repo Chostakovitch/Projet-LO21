@@ -6,13 +6,19 @@
 
 class Pile
 {
-    std::stack<Literal> p;
+    std::vector<std::shared_ptr<Literal>> p;
 public:
-    Pile();
-    //unsigned int size () { return p.size(); }
-    //Literal pop() { return p.pop; }
-    //Literal top() { return p.top(); }
+    unsigned int size () { return p.size(); }
+    bool empty() { return p.empty(); }
+    std::shared_ptr<Literal> pop() {
+        std::shared_ptr<Literal> temp = p.back();
+        p.pop_back();
+        return temp;
+    }
+    void push(std::shared_ptr<Literal> l) { p.push_back(l);}
 
+    std::vector<std::shared_ptr<Literal>>::iterator begin() { return p.begin(); }
+    std::vector<std::shared_ptr<Literal>>::iterator end() { return p.end(); }
 };
 
 #endif // PILE_H

@@ -7,23 +7,24 @@
 #include <stack>
 #include <iostream>
 #include "Settings.h"
+#include "Pile.h"
 
 class Literal;
-class Pile;
 class Settings;
 class Operand;
 
+//Question : shared_ptr ? ne copie pas l'intérieur
 class Memento {
 private:
     std::map<const std::string, std::shared_ptr<Literal>> identifiers;
-    std::vector<std::shared_ptr<Literal>> pile;
-    Settings settings;
+    std::shared_ptr<Pile> pile;
+    std::shared_ptr<Settings> settings;
 public:
-    Memento (const std::map<const std::string, std::shared_ptr<Literal>> i, std::vector<std::shared_ptr<Literal>> p, Settings* s):
-        identifiers (i), pile(p), settings(*s) {}
+    Memento (const std::map<const std::string, std::shared_ptr<Literal>> i, std::shared_ptr<Pile> p, std::shared_ptr<Settings> s):
+        identifiers (i), pile(p), settings(s) {}
     std::map<const std::string, std::shared_ptr<Literal>> getIdentifiers() const { return identifiers; }
-    std::vector<std::shared_ptr<Literal>> getPile() { return pile; }
-    Settings getSettings() { return settings; }
+    std::shared_ptr<Pile> getPile() { return pile; }
+    std::shared_ptr<Settings> getSettings() { return settings; }
 
     friend class Manager;
 };
@@ -31,9 +32,8 @@ public:
 class Manager
 {
     std::map<const std::string, std::shared_ptr<Literal>> identifiers;
-    // TO DO : a-t-on vraiment besoin d'un wrapper ?
-    std::vector<std::shared_ptr<Literal>> pile;
-    Settings* settings;
+    std::shared_ptr<Pile> pile;
+    std::shared_ptr<Settings> settings; //Pourquoi shared_ptr ?
 
     //Memento :
     std::vector<std::shared_ptr<Memento>> backup;
@@ -55,6 +55,7 @@ public:
     static Manager& getInstance();
 
     const std::shared_ptr<Literal>& getIdentifier(const std::string&) const;
+    const std::shared_ptr<Settings> getSettings() { return settings; }
     void addIdentifier(const std::string&, const std::shared_ptr<Literal>) ;
     void changeIdentifier(const std::string&, const std::string&, const std::shared_ptr<Literal>);
     const std::map<const std::string,std::shared_ptr<Literal>> getProgramsIdentifiers() const;
@@ -81,7 +82,7 @@ public:
         }
     }
 
-    std::vector<std::shared_ptr<Literal>> getStackContent() {
+    std::shared_ptr<Pile> getPile() {
         return pile;
     }
 };

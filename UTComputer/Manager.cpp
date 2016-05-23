@@ -9,7 +9,8 @@
 #include <iterator>
 #include <sstream>
 
-Manager::Manager() : settings (new Settings()) { saveState(); currentState = 0;}
+//TODO : voir Settings
+Manager::Manager() : settings(new Settings()), pile(std::make_shared<Pile>()) { saveState(); currentState = 0;}
 
 Manager& Manager::getInstance() {
     static Manager instance;
@@ -99,15 +100,15 @@ void Manager::eval(std::vector<std::shared_ptr<Operand>> operands) {
     //Pour chaque opérande
     for(auto operand : operands) {
         //Si on trouve une littérale, on l'empile
-        if(auto lit = std::dynamic_pointer_cast<Literal>(operand)) pile.push_back(lit);
+        if(auto lit = std::dynamic_pointer_cast<Literal>(operand)) pile->push(lit);
         //Si on trouve un opérateur, on déclenche l'évaluation
         else if(auto op = std::dynamic_pointer_cast<Operator>(operand)) {
-            if(pile.size() < op->getArity()) throw std::invalid_argument(std::string("Not enough operands for operator : ") + op->toString());
+            if(pile->size() < op->getArity()) throw std::invalid_argument(std::string("Not enough operands for operator : ") + op->toString());
             //Construction des arguments
             Arguments<std::shared_ptr<Literal>> args;
+            args.reserve(pile->size());
             for(unsigned int i = 0; i < op->getArity(); ++i) {
-                args.push_back(pile.back());
-                pile.pop_back();
+                args.insert(args.begin(), pile->pop());
             }
             //On tente d'effectuer l'opération (si elle est implémentée et si les types correspondent)
             try {
@@ -135,17 +136,17 @@ std::shared_ptr<Memento> Manager::saveState() {
 void Manager::restoreState(std::shared_ptr<Memento> memento){
     pile = memento->getPile();
     identifiers = memento->getIdentifiers();
-    *settings = memento->getSettings();
+    settings = memento->getSettings();
 }
 
 void Manager::undo() {
-    if (currentState == 0) throw std::out_of_range("There are nothing to undo.");
+    if (currentState == 0) throw std::out_of_range("There is nothing to undo.");
     currentState--;
     restoreState(backup[currentState]);
 }
 
 void Manager::redo() {
-    if (currentState == backup.size()-1) throw std::out_of_range("There are nothing to redo.");
+    if (currentState == backup.size() - 1) throw std::out_of_range("There is nothing to redo.");
     currentState++;
     restoreState(backup[currentState]);
 }

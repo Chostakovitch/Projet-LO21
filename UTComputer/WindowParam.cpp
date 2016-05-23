@@ -1,4 +1,5 @@
 #include "WindowParam.h"
+#include "Manager.h"
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <QFormLayout>
@@ -27,10 +28,12 @@ WindowParam::WindowParam(QWidget* parent) : QWidget(parent){
 ParamTab::ParamTab(QWidget* parent) : QWidget(parent) {
     QSpinBox *nbLineInViewPile = new QSpinBox();
     nbLineInViewPile->setMinimum(0);
-    nbLineInViewPile->setValue(6);
+    nbLineInViewPile->setValue(Manager::getInstance().getSettings()->getNbLinesDisplayPile());
 
     QCheckBox *beepMessage = new QCheckBox("");
+    beepMessage->setChecked(Manager::getInstance().getSettings()->getBeepMessage());
     QCheckBox *displayKeyboard = new QCheckBox("");
+    displayKeyboard->setChecked(Manager::getInstance().getSettings()->getDisplayKeyboard());
 
     QFormLayout *formLayout = new QFormLayout;
     formLayout->addRow(tr("&Nombre de ligne affichées pour la pile :"), nbLineInViewPile);
@@ -45,10 +48,6 @@ VariableTab::VariableTab(QWidget* parent) : QWidget(parent) {
     viewVariable->setRowCount(5);
     viewVariable->horizontalHeader()->hide();
     viewVariable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    QTableWidgetItem *newItem1 = new QTableWidgetItem(tr("PI"));
-    QTableWidgetItem *newItem2 = new QTableWidgetItem(tr("3.14"));
-    viewVariable->setItem(0,0, newItem1);
-    viewVariable->setItem(0,1, newItem2);
 
     QPushButton *buttonAdd = new QPushButton("&Add", this);
 
@@ -64,8 +63,6 @@ ProgramTab::ProgramTab(QWidget* parent) : QWidget(parent) {
     viewProgram->setRowCount(5);
     viewProgram->horizontalHeader()->hide();
     viewProgram->setSelectionBehavior(QAbstractItemView::SelectRows);
-    QTableWidgetItem *newItem1 = new QTableWidgetItem(tr("YOLOPROG"));
-    viewProgram->setItem(0,0, newItem1);
 
     QPushButton *buttonAdd = new QPushButton("&Add", this);
 

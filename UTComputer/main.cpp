@@ -91,10 +91,13 @@ int main(int argc, char *argv[])
     auto tab2 = Manager::getInstance().getVariablesIdentifiers();
     for(auto res :tab2) std::cout << res.first << std::endl;*/
 
+    auto pile = Manager::getInstance().getPile();
     Manager::getInstance().handleOperandLine("\"SIN(8) + 4\"");
     Manager::getInstance().handleOperandLine("4 3 +");
     Manager::getInstance().handleOperandLine("*");
-    for(auto& e : Manager::getInstance().getStackContent()) std::cout << e->toString() << " " << std::endl;
+    for(auto it = pile->begin(); it != pile->end(); ++it) {
+        std::cout << (*it)->toString() << " " << std::endl;
+    }
     putchar('\n');
 
     /*QApplication a(argc, argv);

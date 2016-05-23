@@ -17,7 +17,7 @@
  * @exception std::invalid_argument si la chaîne est mal formée.
  */
 ExpressionParser::ExpressionParser(const std::string& s, char left_del, char right_del, char function_param_sep, char decimal_sep) \
-    : expr(s), left_del(left_del), right_del(right_del), function_param_sep(function_param_sep), decimal_sep(decimal_sep) {
+    : expr(s), left_del(left_del), right_del(right_del), function_param_sep(function_param_sep), decimal_sep(decimal_sep), stack(std::stack<std::shared_ptr<Operand>>()), queue(std::vector<std::shared_ptr<Operand>>()) {
     //Remplacement du moins unaire représentant la négation par un moins binaire (soustraction de 0)
     std::string from = OperatorManager::getInstance().getMinusSymbol();
     std::string to = std::string("0") + from;
