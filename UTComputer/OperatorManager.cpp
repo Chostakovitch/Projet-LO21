@@ -6,6 +6,7 @@
 #include "Utility.h"
 #include <memory>
 #include <algorithm>
+#include <iterator>
 #include <sstream>
 
 /**
@@ -37,7 +38,7 @@ const OperatorManager& OperatorManager::getInstance() {
 
 const std::shared_ptr<Operator>& OperatorManager::getOperator(const std::string& opcode) const {
     //Recherche d'un opérateur défini dont le symbole est le même que la chaîne passée en argument.
-    auto op = std::find_if(operators.begin(), operators.end(), FindOperator(opcode));
+    auto op = std::find_if(operators.begin(), operators.end(), [&opcode](const std::shared_ptr<Operator>& op) { return op->toString() == opcode; });
     if(op != operators.end()) return *op;
     throw std::invalid_argument("Operator not found");
 }
@@ -83,16 +84,6 @@ Arguments<std::shared_ptr<Operand>> OperatorManager::dispatchOperation(std::shar
     }
 }
 
-bool OperatorManager::FindOperator::operator()(const std::shared_ptr<Operator>& op) {
-    return op->toString() == symbol;
-}
-
-bool OperatorManager::PriorityComparator::operator()(const std::shared_ptr<Operator> &op) {
-    //Une priorité n'existe que dans le cas d'un opérateur symbolique
-    auto op_symbol = std::dynamic_pointer_cast<SymbolicOperator>(op);
-    return op_symbol && (priority > op_symbol->getPriority());
-}
-
 std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr<Operator> op, const Arguments<ExpressionLiteral>& args) const {
     std::ostringstream oss;
     auto op_symbol = std::dynamic_pointer_cast<SymbolicOperator>(op);
@@ -112,8 +103,12 @@ std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr
     //Cas d'un opérateur symbolique, il faut vérifier la priorité des opérateurs présents dans les expressions
     else {
         //On récupère un vecteur de tous les opérateurs symboliques définis ayant une priorité inférieure à la priorité de l'opérateur courant
-        std::vector<std::vector<std::shared_ptr<Operator>>::const_iterator> res;
-        Utility::select_iterator(operators.begin(), operators.end(), std::back_inserter(res), PriorityComparator(op_symbol->getPriority()));
+        std::vector<std::shared_ptr<Operator>> res;
+        std::copy_if(operators.begin(), operators.end(), std::back_inserter(res), [&op_symbol](const std::shared_ptr<Operator> op) {
+            auto s_op = std::dynamic_pointer_cast<SymbolicOperator>(op);
+            return s_op && s_op->getPriority() <= op_symbol->getPriority();
+        });
+
         //Par définition du caractère symbolique, on connaît déjà l'arité : 2. On récupère les éléments non-parenthésés des expressions
         std::string left = Utility::getOutside(args.at(0).getExpression(), '(', ')');
         std::string right = Utility::getOutside(args.at(1).getExpression(), '(', ')');
@@ -124,7 +119,7 @@ std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr
 
         //On itère sur tous les opérateurs existants de priorité inférieure
         for(auto it : res) {
-            std::string symbol = (*it)->toString();
+            std::string symbol = it->toString();
             //A gauche ou à droite, s'il existe un opérateur non parenthésé de priorité inférieure, il faut mettre des parenthèses
             if(left.find(symbol) != std::string::npos) parenthizeLeft = true;
             if(right.find(symbol) != std::string::npos) parenthizeRight = true;

@@ -53,46 +53,6 @@ class OperatorManager
      * Usuellement, les littérales les plus spécialisées sont essayées en premier, et les plus générales en dernier.
      */
     std::vector<std::function<Arguments<std::shared_ptr<Operand>>(std::shared_ptr<Operation>, Arguments<std::shared_ptr<Literal>>)>> numericPriority;
-    /**
-     * @brief Foncteur utilisé comme prédicat pour identifier un opérateur dans une collection d'opérateurs par son symbole.
-     */
-    struct FindOperator {
-        /**
-         * @brief Symbole de l'objet Operator à identifier.
-         */
-        std::string symbol;
-        /**
-         * @brief Constructeur d'objet FindOperator.
-         * @param symbol Symbole de l'opérateur à identifier.
-         */
-        FindOperator(const std::string& symbol) : symbol(symbol) { }
-        /**
-         * @brief Opérateur fonction qui compare le symbole de l'objet Operator et le symbole courant.
-         * @param op Pointeur sur objet Operator à comparer.
-         * @return true si le symbole est identique, false sinon.
-         */
-        bool operator()(const std::shared_ptr<Operator>& op);
-    };
-    /**
-     * @brief Foncteur utilisé comme prédicat pour comparer les priorités de deux opérateurs.
-     */
-    struct PriorityComparator {
-        /**
-         * @brief Priorité à comparer.
-         */
-        unsigned int priority;
-        /**
-         * @brief Constructeur d'objet PriorityComparator.
-         * @param priority Entier.
-         */
-        PriorityComparator(unsigned int priority) : priority(priority) { }
-        /**
-         * @brief Opérateur fonction qui compare la priorité de l'objet Operator et la priorité courante.
-         * @param op Pointeur sur objet SymbolicOperator à comparer.
-         * @return true si la priorité courante est inférieure, false sinon.
-         */
-        bool operator()(const std::shared_ptr<Operator>& op);
-    };
 
 public:
     /**

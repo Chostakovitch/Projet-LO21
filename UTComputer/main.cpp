@@ -118,7 +118,13 @@ int main(int argc, char *argv[])
         std::cout << std::endl << std::endl;
     }*/
 
-    QApplication a(argc, argv);
+    auto l4 = LiteralFactory::getInstance().makeLiteralFromString("\"4+3\"");
+    auto l5 = LiteralFactory::getInstance().makeLiteralFromString("\"4\"");
+    auto op1 = OperatorManager::getInstance().getOperator("*");
+    auto res = OperatorManager::getInstance().dispatchOperation(op1, Arguments<std::shared_ptr<Literal>>{l4, l5});
+    for(auto r : res) std::cout << r->toString() << std::endl;
+
+    /*QApplication a(argc, argv);
     UTComputer w;
     w.show();
     return a.exec();

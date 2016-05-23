@@ -5,6 +5,7 @@
 #include <memory>
 #include <iostream>
 #include <cctype>
+#include <algorithm>
 
 Manager::Manager() : settings (new Settings()) { saveState(); currentState = 0;}
 
