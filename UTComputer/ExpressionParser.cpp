@@ -2,7 +2,31 @@
 #include "Manager.h"
 #include "LiteralFactory.h"
 #include "OperatorManager.h"
+#include "Utility.h"
 #include <cctype>
+#include <algorithm>
+
+/**
+ * @brief Constructeur de base.
+ * @param s Chaîne à parser
+ * @param left_del Délimiteur gauche de fonction ou de priorité.
+ * @param right_del Délimiteur droite de fonction ou de priorité.
+ * @param function_param_sep Séparateur d'arguments de fonction.
+ * @param decimal_sep Séparateur des décimales pour les nombres.
+ * @details Transformation préalable du "-" unaire en "NEG".
+ * @exception std::invalid_argument si la chaîne est mal formée.
+ */
+ExpressionParser::ExpressionParser(const std::string& s, char left_del, char right_del, char function_param_sep, char decimal_sep) \
+    : expr(s), left_del(left_del), right_del(right_del), function_param_sep(function_param_sep), decimal_sep(decimal_sep) {
+    //Remplacement du moins unaire représentant la négation par un moins binaire (soustraction de 0)
+    std::string from = OperatorManager::getInstance().getMinusSymbol();
+    std::string to = std::string("0") + from;
+    size_t pos = 0;
+    while((pos = expr.find(from, pos)) != std::string::npos) {
+        if(pos == 0 || Utility::isSymbol(expr.at(pos - 1))) expr.replace(pos, from.length(), to);
+        pos += to.length();
+    }
+}
 
 /**
  * @details Implémentation de l'algorithme de Shunting-Yard.
@@ -104,7 +128,7 @@ std::string ExpressionParser::readToken() {
     expr.erase(0, 1);
     res += c;
     //Cas n°1 : le premier élément est un symbole.
-    if(!std::isalnum(c) && std::isgraph(c)) return res;
+    if(Utility::isSymbol(c)) return res;
     //Cas n°2 : le premier élément est une lettre capitale, on trouve l'atome correspondant.
     if(std::isupper(c)) {
         while(!expr.empty() && (c = expr.at(0)) && (std::isupper(c) || std::isdigit(c))) {

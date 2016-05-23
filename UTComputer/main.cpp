@@ -124,6 +124,12 @@ int main(int argc, char *argv[])
     auto res = OperatorManager::getInstance().dispatchOperation(op1, Arguments<std::shared_ptr<Literal>>{l4, l5});
     for(auto r : res) std::cout << r->toString() << std::endl;
 
+    Manager::getInstance().handleOperandLine("\"SIN(8) + 4\" X1 STO");
+    Manager::getInstance().handleOperandLine("4 3 +");
+    Manager::getInstance().handleOperandLine("*");
+    for(auto& e : Manager::getInstance().getStackContent()) std::cout << e->toString() << " " << std::endl;
+    putchar('\n');
+
     /*QApplication a(argc, argv);
     UTComputer w;
     w.show();

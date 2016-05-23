@@ -60,8 +60,7 @@ public:
      * @param right_del Délimiteur droit de sous-expression.
      * @param function_param_sep Séparateur d'arguments de fonction.
      */
-    explicit ExpressionParser(const std::string& s, char left_del = '(', char right_del = ')', char function_param_sep = ',', char decimal_sep = '.') \
-        : expr(s), left_del(left_del), right_del(right_del), function_param_sep(function_param_sep), decimal_sep(decimal_sep) { }
+    explicit ExpressionParser(const std::string& s, char left_del = '(', char right_del = ')', char function_param_sep = ',', char decimal_sep = '.');
     /**
      * @brief Lance la transformation en suite d'opérandes en notation postfixe.
      * @details Tous les opérateurs symboliques sont associatifs à gauche. On ne considère pas les cas d'opérateurs

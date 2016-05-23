@@ -13,16 +13,19 @@
  * @details Ce constructeur privé crée une seule fois les instances d'Operator correspondant
  * aux opérateurs manipulables par l'application et leur associe une instance d'Operation pour définir leur comportenment.
  */
-OperatorManager::OperatorManager() {
+OperatorManager::OperatorManager() : minus_symbol("-") {
     //Création des opérateurs symboliques
     operators.push_back(std::make_shared<SymbolicOperator>("+", 2, std::make_shared<PlusOperation>(), true, 0)); //Addition
     operators.push_back(std::make_shared<SymbolicOperator>("*", 2, std::make_shared<PlusOperation>(), true, 1)); //Exemple
     operators.push_back(std::make_shared<SymbolicOperator>("$", 2, std::make_shared<PlusOperation>(), true, 2)); //Exemple
+    operators.push_back(std::make_shared<SymbolicOperator>(minus_symbol, 2, std::make_shared<PlusOperation>(), true, 2)); //Exemple
 
     //Création des opérateurs parenthésés
     operators.push_back(std::make_shared<FunctionOperator>("POW", 2, std::make_shared<Operation>(), true)); //Exemple
     operators.push_back(std::make_shared<FunctionOperator>("SIN", 2, std::make_shared<Operation>(), true)); //Exemple
     operators.push_back(std::make_shared<FunctionOperator>("STO", 2, std::make_shared<Operation>(), false)); //Exemple
+    auto eval = std::make_shared<FunctionOperator>("EVAL", 1, std::make_shared<PlusOperation>(), false); //Exemple
+    operators.push_back(eval);
 
     //Définition de la priorité des casts numériques
     numericPriority.push_back(&applyOperation<IntegerLiteral>);
