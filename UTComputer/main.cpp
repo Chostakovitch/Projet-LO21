@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
     auto tab2 = Manager::getInstance().getVariablesIdentifiers();
     for(auto res :tab2) std::cout << res.first << std::endl;*/
 
-    auto l1 = LiteralFactory::getInstance().makeLiteralFromString("4");
+    /*auto l1 = LiteralFactory::getInstance().makeLiteralFromString("4");
     auto l2 = LiteralFactory::getInstance().makeLiteralFromString("4.5");
     auto l3 = LiteralFactory::getInstance().makeLiteralFromString("[4+3]");
     Manager::getInstance().addIdentifier("X", l1);
@@ -116,12 +116,12 @@ int main(int argc, char *argv[])
             std::cout << e.what();
         }
         std::cout << std::endl << std::endl;
-    }
+    }*/
 
-    /*QApplication a(argc, argv);
+    QApplication a(argc, argv);
     UTComputer w;
     w.show();
-    return a.exec();*/
+    return a.exec();
 
-    return 0;
+    //return 0;
 }

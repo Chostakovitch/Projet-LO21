@@ -13,7 +13,7 @@ Manager& Manager::getInstance() {
     return instance;
 }
 
-const std::shared_ptr<Literal>& Manager::getIdentifier(const std::string& id) const {
+const std::shared_ptr<Literal> Manager::getIdentifier(const std::string& id) const {
     return identifiers.at(id);
 }
 
@@ -46,6 +46,7 @@ const std::map<const std::string,std::shared_ptr<Literal>> Manager::getVariables
     return result;
 }
 
+
 std::shared_ptr<Memento> Manager::saveState() {
     for (unsigned int i= currentState+1; i< backup.size(); i++) backup.pop_back();
     std::shared_ptr<Memento> memento(new Memento(identifiers, pile, settings));
@@ -57,17 +58,17 @@ std::shared_ptr<Memento> Manager::saveState() {
 void Manager::restoreState(std::shared_ptr<Memento> memento){
     pile = memento->getPile();
     identifiers = memento->getIdentifiers();
-    *settings = memento->getSettings();
+    settings = memento->getSettings();
 }
 
 void Manager::undo() {
-    if (currentState == 0) throw std::out_of_range("There are nothing to undo.");
+    if (currentState == 0) throw std::out_of_range("There is nothing to undo.");
     currentState--;
     restoreState(backup[currentState]);
 }
 
 void Manager::redo() {
-    if (currentState == backup.size()-1) throw std::out_of_range("There are nothing to redo.");
+    if (currentState == backup.size()-1) throw std::out_of_range("There is nothing to redo.");
     currentState++;
     restoreState(backup[currentState]);
 }

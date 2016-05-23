@@ -28,7 +28,7 @@ public:
     explicit Calculator(QWidget *parent = 0);
 
 public slots:
-    //void refresh();
+    void refresh();
     //void getNextCommande();
 
 };

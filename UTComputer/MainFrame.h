@@ -11,10 +11,10 @@ class MainFrame : public QFrame
 public:
     MainFrame(QWidget *parent = 0);
 private:
-    Button *createButton(const QString &text, const char *member);
+    std::shared_ptr<Button> createButton(const QString &text, const char *member);
 
     enum { NumDigitButtons = 10 };
-    Button *digitButtons[NumDigitButtons];
+    std::shared_ptr<Button> digitButtons[NumDigitButtons];
 };
 
 #endif // MAINFRAME_H

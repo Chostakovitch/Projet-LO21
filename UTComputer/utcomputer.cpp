@@ -2,11 +2,11 @@
 #include "Settings.h"
 #include "calculator.h"
 #include "WindowParam.h"
+#include "Manager.h"
 #include <QMenuBar>
 #include <QtWidgets>
 
 UTComputer::UTComputer(QWidget *parent) : QMainWindow(parent){
-    settings = new Settings();
     central = new Calculator(this);
 
     setCentralWidget(central);
@@ -17,8 +17,17 @@ UTComputer::UTComputer(QWidget *parent) : QMainWindow(parent){
     setWindowTitle(tr("Calculator"));
 }
 
-void UTComputer::undo() { }
-void UTComputer::redo() { }
+void UTComputer::undo() {
+    Manager::getInstance().undo();
+}
+void UTComputer::redo() {
+    Manager::getInstance().redo();
+}
+
+void UTComputer::refresh() {
+    central->refresh();
+}
+
 void UTComputer::param() {
     WindowParam* window = new WindowParam();
     window->show();

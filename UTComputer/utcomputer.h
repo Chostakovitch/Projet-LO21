@@ -5,13 +5,12 @@
 #include <QWidget>
 #include <QMenuBar>
 
-class Settings;
-class Manager;
+class Calculator;
 
 class UTComputer : public QMainWindow
 {
     Q_OBJECT
-    QWidget* central;
+    Calculator* central;
 
     QAction *undoAct;
     QAction *redoAct;
@@ -27,6 +26,7 @@ private slots:
     void undo();
     void redo();
     void param();
+    void refresh();
 
 public:
     explicit UTComputer(QWidget *parent = 0);
