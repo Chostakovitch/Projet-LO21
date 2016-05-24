@@ -17,14 +17,14 @@ class Operand;
 class Memento {
 private:
     std::map<const std::string, std::shared_ptr<Literal>> identifiers;
-    std::shared_ptr<Pile> pile;
-    std::shared_ptr<Settings> settings;
+    Pile pile;
+    Settings settings;
 public:
-    Memento (const std::map<const std::string, std::shared_ptr<Literal>> i, std::shared_ptr<Pile> p, std::shared_ptr<Settings> s):
-        identifiers (i), pile(p), settings(s) {}
+    Memento (const std::map<const std::string, std::shared_ptr<Literal>>& i, const Pile& p, const Settings& s):
+        identifiers(i), pile(p), settings(s) {}
     std::map<const std::string, std::shared_ptr<Literal>> getIdentifiers() const { return identifiers; }
-    std::shared_ptr<Pile> getPile() { return pile; }
-    std::shared_ptr<Settings> getSettings() { return settings; }
+    const Pile& getPile() const { return pile; }
+    const Settings& getSettings() const { return settings; }
 
     friend class Manager;
 };
@@ -32,8 +32,8 @@ public:
 class Manager
 {
     std::map<const std::string, std::shared_ptr<Literal>> identifiers;
-    std::shared_ptr<Pile> pile;
-    std::shared_ptr<Settings> settings; //Pourquoi shared_ptr ?
+    Pile pile;
+    Settings settings;
 
     //Memento :
     std::vector<std::shared_ptr<Memento>> backup;
@@ -55,7 +55,7 @@ public:
     static Manager& getInstance();
 
     const std::shared_ptr<Literal>& getIdentifier(const std::string&) const;
-    const std::shared_ptr<Settings> getSettings() { return settings; }
+    const Settings& getSettings() { return settings; }
     void addIdentifier(const std::string&, const std::shared_ptr<Literal>) ;
     void changeIdentifier(const std::string&, const std::string&, const std::shared_ptr<Literal>);
     const std::map<const std::string,std::shared_ptr<Literal>> getProgramsIdentifiers() const;
@@ -82,7 +82,8 @@ public:
         }
     }
 
-    std::shared_ptr<Pile> getPile() {
+    // Pour les tests
+    const Pile& getPile() {
         return pile;
     }
 };

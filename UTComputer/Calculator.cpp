@@ -21,7 +21,7 @@ Calculator::Calculator(QWidget *parent)  {
     topLayout->addWidget(message);
 
     viewPile = new QTableWidget();
-    viewPile->setRowCount(Manager::getInstance().getSettings()->getNbLinesDisplayPile());
+    viewPile->setRowCount(Manager::getInstance().getSettings().getNbLinesDisplayPile());
     viewPile->setStyleSheet("background-color:black; color:white;");
     /*std::vector<std::string> pile = Manager::getInstance().getPileToString();
     unsigned int rowCount = Manager::getInstance().getSettings()->getNbLinesDisplayPile() > pile.size() ?
@@ -37,7 +37,7 @@ Calculator::Calculator(QWidget *parent)  {
     topLayout->addWidget(command);
 
     keyBoard = new MainFrame();
-    keyBoard->setVisible(Manager::getInstance().getSettings()->getDisplayKeyboard());
+    keyBoard->setVisible(Manager::getInstance().getSettings().getDisplayKeyboard());
 
     mainLayout->addLayout(topLayout);
     mainLayout->addWidget(keyBoard);
@@ -46,8 +46,8 @@ Calculator::Calculator(QWidget *parent)  {
 }
 
 void Calculator::refresh() {
-    viewPile->setRowCount(Manager::getInstance().getSettings()->getNbLinesDisplayPile());
-    keyBoard->setVisible(Manager::getInstance().getSettings()->getDisplayKeyboard());
+    viewPile->setRowCount(Manager::getInstance().getSettings().getNbLinesDisplayPile());
+    keyBoard->setVisible(Manager::getInstance().getSettings().getDisplayKeyboard());
 
     // Refresh viewPile
 

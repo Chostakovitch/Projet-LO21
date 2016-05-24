@@ -9,8 +9,7 @@
 #include <iterator>
 #include <sstream>
 
-//TODO : voir Settings
-Manager::Manager() : settings(new Settings()), pile(std::make_shared<Pile>()) { saveState(); currentState = 0;}
+Manager::Manager() { saveState(); currentState = 0;}
 
 Manager& Manager::getInstance() {
     static Manager instance;
@@ -32,6 +31,7 @@ void Manager::addIdentifier(const std::string& id, std::shared_ptr<Literal> lit)
 void Manager::changeIdentifier(const std::string& key, const std::string& newKey, const std::shared_ptr<Literal> newValue) {
     identifiers.erase(key);
     addIdentifier(newKey, newValue);
+    saveState();
 }
 
 const std::map<const std::string,std::shared_ptr<Literal>> Manager::getProgramsIdentifiers() const {
@@ -75,15 +75,16 @@ void Manager::handleOperandLine(std::string command) {
                 //Non-opérateur, on tente de trouver un identificateur
                 try {
                     auto id = getIdentifier(op);
-                    //Atome correspondant à un programme : on l'évalue.
-                    if(std::dynamic_pointer_cast<ProgramLiteral>(id)) ops.push_back(OperatorManager::getInstance().getEvalOperator());
                     //On pushe la littérale correspondant à l'identificateur.
                     ops.push_back(id);
+
+                    //Atome correspondant à un programme : on l'évalue.
+                    if(std::dynamic_pointer_cast<ProgramLiteral>(id)) ops.push_back(OperatorManager::getInstance().getEvalOperator());
                 }
                 //Non-identificateur, on crée une littérale expression si possible.
                 catch(std::out_of_range&) {
                     //Atome bien formé, on l'encapsule dans une LiteralExpression.
-                    if(!command.empty() && std::isupper(op.at(0)) && std::find_if(op.begin(), op.end(), [](char c) { return !(std::isdigit(c) || std::isupper(c)); }) == op.end()) {
+                    if(!op.empty() && std::isupper(op.at(0)) && std::find_if(op.begin(), op.end(), [](char c) { return !(std::isdigit(c) || std::isupper(c)); }) == op.end()) {
                         ops.push_back(LiteralFactory::getInstance().makeLiteral(op));
                     }
                     //Impossible de construire une opérande, on le signale
@@ -93,22 +94,29 @@ void Manager::handleOperandLine(std::string command) {
         }
     }
     //On évalue ensuite les opérandes
-    eval(ops);
+    try {
+        eval(ops);
+        saveState();
+    }
+    //Si quelque chose s'est mal passé, on restaure la pile avant l'évaluation
+    catch(std::exception&) { //Affiner
+        restoreState(backup[currentState]);
+    }
 }
 
 void Manager::eval(std::vector<std::shared_ptr<Operand>> operands) {
     //Pour chaque opérande
     for(auto operand : operands) {
         //Si on trouve une littérale, on l'empile
-        if(auto lit = std::dynamic_pointer_cast<Literal>(operand)) pile->push(lit);
+        if(auto lit = std::dynamic_pointer_cast<Literal>(operand)) pile.push(lit);
         //Si on trouve un opérateur, on déclenche l'évaluation
         else if(auto op = std::dynamic_pointer_cast<Operator>(operand)) {
-            if(pile->size() < op->getArity()) throw std::invalid_argument(std::string("Not enough operands for operator : ") + op->toString());
+            if(pile.size() < op->getArity()) throw std::invalid_argument(std::string("Not enough operands for operator : ") + op->toString());
             //Construction des arguments
             Arguments<std::shared_ptr<Literal>> args;
-            args.reserve(pile->size());
+            args.reserve(pile.size());
             for(unsigned int i = 0; i < op->getArity(); ++i) {
-                args.insert(args.begin(), pile->pop());
+                args.insert(args.begin(), pile.pop());
             }
             //On tente d'effectuer l'opération (si elle est implémentée et si les types correspondent)
             try {
@@ -118,7 +126,6 @@ void Manager::eval(std::vector<std::shared_ptr<Operand>> operands) {
             //Impossible d'effectuer l'opération : on restitue la pile avant l'opération en cours.
             //TODO : classe d'exception avec objet Operand responsable de l'exception s'il existe par exemple
             catch(std::exception& e) {
-                //TODO : restauration de la pile avant l'opération (avec Memento)
                 throw std::invalid_argument(std::string("Failed to apply operation") + e.what() + std::string(" Stack restored."));
             }
         }
@@ -126,7 +133,7 @@ void Manager::eval(std::vector<std::shared_ptr<Operand>> operands) {
 }
 
 std::shared_ptr<Memento> Manager::saveState() {
-    for (unsigned int i= currentState+1; i< backup.size(); i++) backup.pop_back();
+    for (unsigned int i = currentState + 1; i < backup.size(); i++) backup.pop_back();
     std::shared_ptr<Memento> memento(new Memento(identifiers, pile, settings));
     backup.push_back(memento);
     currentState++;

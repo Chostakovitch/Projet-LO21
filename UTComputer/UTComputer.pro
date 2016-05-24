@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     ExpressionParser.cpp \
     Manager.cpp \
     WindowParam.cpp \
-    Pile.cpp
+    Pile.cpp \
+    UTEexception.cpp
 
 HEADERS  += utcomputer.h \
     Literal.h \
@@ -47,6 +48,7 @@ HEADERS  += utcomputer.h \
     ExpressionParser.h \
     Manager.h \
     WindowParam.h \
-    Pile.h
+    Pile.h \
+    UTException.h
 
 FORMS    += utcomputer.ui

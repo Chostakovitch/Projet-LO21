@@ -8,9 +8,9 @@ class Settings
     bool beepMessage;
 public:
     Settings(unsigned int n = 6, bool d = true, bool b = true): nbLinesDisplayPile(n), displayKeyboard(d), beepMessage(b) {}
-    unsigned int getNbLinesDisplayPile() { return nbLinesDisplayPile; }
-    bool getDisplayKeyboard() { return displayKeyboard;}
-    bool getBeepMessage() { return beepMessage; }
+    unsigned int getNbLinesDisplayPile() const { return nbLinesDisplayPile; }
+    bool getDisplayKeyboard() const { return displayKeyboard;}
+    bool getBeepMessage() const { return beepMessage; }
 };
 
 #endif // SETTINGS_H

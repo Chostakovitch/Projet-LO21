@@ -28,12 +28,12 @@ WindowParam::WindowParam(QWidget* parent) : QWidget(parent){
 ParamTab::ParamTab(QWidget* parent) : QWidget(parent) {
     QSpinBox *nbLineInViewPile = new QSpinBox();
     nbLineInViewPile->setMinimum(0);
-    nbLineInViewPile->setValue(Manager::getInstance().getSettings()->getNbLinesDisplayPile());
+    nbLineInViewPile->setValue(Manager::getInstance().getSettings().getNbLinesDisplayPile());
 
     QCheckBox *beepMessage = new QCheckBox("");
-    beepMessage->setChecked(Manager::getInstance().getSettings()->getBeepMessage());
+    beepMessage->setChecked(Manager::getInstance().getSettings().getBeepMessage());
     QCheckBox *displayKeyboard = new QCheckBox("");
-    displayKeyboard->setChecked(Manager::getInstance().getSettings()->getDisplayKeyboard());
+    displayKeyboard->setChecked(Manager::getInstance().getSettings().getDisplayKeyboard());
 
     QFormLayout *formLayout = new QFormLayout;
     formLayout->addRow(tr("&Nombre de ligne affichées pour la pile :"), nbLineInViewPile);
