@@ -30,7 +30,7 @@ SOURCES += main.cpp\
     Manager.cpp \
     WindowParam.cpp \
     Pile.cpp \
-    UTEexception.cpp
+    UTException.cpp
 
 HEADERS  += utcomputer.h \
     Literal.h \

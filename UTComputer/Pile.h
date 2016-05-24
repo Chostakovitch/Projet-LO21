@@ -17,8 +17,8 @@ public:
     }
     void push(std::shared_ptr<Literal> l) { p.push_back(l);}
 
-    std::vector<std::shared_ptr<Literal>>::iterator begin() { return p.begin(); }
-    std::vector<std::shared_ptr<Literal>>::iterator end() { return p.end(); }
+    std::vector<std::shared_ptr<Literal>>::const_iterator begin() const { return p.begin(); }
+    std::vector<std::shared_ptr<Literal>>::const_iterator end() const { return p.end(); }
 };
 
 #endif // PILE_H

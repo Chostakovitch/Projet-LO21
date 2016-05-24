@@ -8,6 +8,10 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <iostream>
+#include <sstream>
+#include <algorithm>
+#include <iterator>
 
 class IntegerLiteral;
 class RationalLiteral;
@@ -26,6 +30,13 @@ public:
      * @return Une chaîne de caractères.
      */
 	virtual std::string toString() const = 0;
+    /**
+     * @brief Ecriture sur un flux de la représentation de l'opérande.
+     * @param Flux de sortie.
+     * @param Operande à représenter.
+     * @return Flux de sortie écrit.
+     */
+    friend std::ostream& operator<<(std::ostream& os, const Operand& op) { os << op.toString(); return os; }
     /**
      * @brief Destructeur virtuel.
      */
@@ -254,7 +265,7 @@ public:
 };
 
 /**
- * @brief Wrapper vide de la classe vector.
+ * @brief Wrapper vide de std::vector.
  */
 template <typename T>
 class Arguments : public std::vector<T> {
@@ -273,6 +284,22 @@ template <typename T>
 class Arguments<std::shared_ptr<T>> : public std::vector<std::shared_ptr<T>> {
 public:
     using std::vector<std::shared_ptr<T>>::vector;
+    /**
+     * @brief Affichage d'un vecteur de pointeurs.
+     * @return Chaîne formatée.
+     */
+    std::string toString() const {
+        std::ostringstream oss;
+        oss << "[";
+        for(const auto& e : *this) {
+            if(&e != &(this->back())) oss << *e << ", ";
+        }
+        oss << *(this->back()) << "]";
+        return oss.str();
+    }
+    /**
+     * @brief Cast d'un vecteur de pointeurs vers un vecteur de types pointés.
+     */
     template <typename U>
     operator Arguments<U>() const {
         Arguments<U> dest;

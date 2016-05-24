@@ -5,6 +5,7 @@
 #include "Operation.h"
 #include "Utility.h"
 #include <memory>
+#include "UTException.h"
 #include <algorithm>
 #include <iterator>
 #include <sstream>
@@ -39,11 +40,11 @@ const OperatorManager& OperatorManager::getInstance() {
 	return instance;
 }
 
-const std::shared_ptr<Operator>& OperatorManager::getOperator(const std::string& opcode) const {
+const std::shared_ptr<Operator>& OperatorManager::getOperator(std::string opcode) const {
     //Recherche d'un opérateur défini dont le symbole est le même que la chaîne passée en argument.
     auto op = std::find_if(operators.begin(), operators.end(), [&opcode](const std::shared_ptr<Operator>& op) { return op->toString() == opcode; });
     if(op != operators.end()) return *op;
-    throw std::invalid_argument("Operator not found");
+    throw ParsingError(opcode, "Operator not found");
 }
 
 bool OperatorManager::isOperator(const std::string& opcode) const {
@@ -56,7 +57,7 @@ bool OperatorManager::isOperator(const std::string& opcode) const {
 }
 
 Arguments<std::shared_ptr<Operand>> OperatorManager::dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const {
-    if (op->getArity() != args.size()) throw std::invalid_argument("Wrong number of operands.");
+    if (op->getArity() != args.size()) throw TypeError(args, "Wrong number of operands.");
     //Si l'opération définit une méthode d'évaluation générique, on l'appelle ici
     try {
         return op->getOperation()->eval(args);
@@ -70,7 +71,7 @@ Arguments<std::shared_ptr<Operand>> OperatorManager::dispatchOperation(std::shar
             catch(std::bad_cast&) {}
             //Cas où les littéraux sont homogènes et l'opération existe, mais échoue.
             catch(std::invalid_argument& e) {
-                throw std::invalid_argument(std::string("No operation suitable for operator " + op->toString() + " with these operands : ") + e.what());
+                throw OperationError(op, args, "Operation doesn't define a behaviour for this type of operands.");
             }
         }
     }
@@ -82,8 +83,11 @@ Arguments<std::shared_ptr<Operand>> OperatorManager::dispatchOperation(std::shar
         return applyOperation<ExpressionLiteral>(op->getOperation(), args);
     }
     //Aucun comportement valable pour cet opérateur et ces opérandes.
-    catch(std::exception& e) {
-        throw std::invalid_argument(std::string("Failed to apply operation for these operands. Operator : ") + op->toString() + std::string(" : ") + e.what());
+    catch(UTException& e) {
+        throw OperationError(op, args, "Operation doesn't define a behaviour for ExpressionLiteral.");
+    }
+    catch(std::bad_cast& e) {
+        throw OperationError(op, args, "Operands can't be uniformized (promotion failed).");
     }
 }
 

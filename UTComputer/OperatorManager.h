@@ -81,7 +81,7 @@ public:
      * @exception invalid_argument si aucun opérateur ne possède le symbole demandé.
      * @return Référence constante sur un shared_ptr sur Operator.
      */
-    const std::shared_ptr<Operator>& getOperator(const std::string& opcode) const;
+    const std::shared_ptr<Operator>& getOperator(std::string opcode) const;
     /**
      * @brief Accesseur pour minus_symbol.
      * @return std::string représentant l'opérateur de soustraction.

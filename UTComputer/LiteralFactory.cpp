@@ -1,6 +1,7 @@
 ﻿#include "LiteralFactory.h"
 #include "OperatorManager.h"
 #include "Utility.h"
+#include "UTException.h"
 #include <algorithm>
 #include <sstream>
 #include <vector>
@@ -27,16 +28,23 @@ const LiteralFactory& LiteralFactory::getInstance() {
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeInteger(const std::string& s) const {
-    int n = std::stoi(s); //Déclenche une exception si s ne contient pas d'entier
-    auto d = std::to_string(n);
-    if(std::to_string(n) != s || n < 0) throw std::invalid_argument("Unsigned number needed.");
-    return makeLiteral(n);
+    try {
+        int n = std::stoi(s);
+        auto d = std::to_string(n);
+        bool a = std::to_string(n) != s || n < 0;
+        if(std::to_string(n) != s || n < 0) throw ParsingError(s, "Unsigned number needed.");
+        return makeLiteral(n);
+    }
+    catch(std::exception& e) { throw ParsingError(s, e.what()); }
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeReal(const std::string& s) const {
-    double d = std::stod(s); //Déclenche une exception si s n'est pas représentable en virgule flottante
-    if(d < 0) throw std::invalid_argument("Positive flotting point number needed.");
-    return makeLiteral(d);
+    try {
+        double d = std::stod(s);
+        if(d < 0) throw ParsingError(s, "Positive flotting point number needed.");
+        return makeLiteral(d);
+    }
+    catch(std::exception& e) { throw ParsingError(s, e.what()); }
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeExpression(const std::string& s) const {
@@ -47,7 +55,7 @@ std::shared_ptr<Literal> LiteralFactory::makeExpression(const std::string& s) co
         copy.erase(copy.size() - 1);
         return makeLiteral(copy);
     }
-    throw std::invalid_argument("Expressions must be surrounded by double quotes.");
+    throw ParsingError(s, "Expressions must be surrounded by double quotes.");
 }
 
 void LiteralFactory::makeLeafProgram(const std::string &s, std::shared_ptr<ProgramLiteral> prog) const {
@@ -61,13 +69,13 @@ void LiteralFactory::makeLeafProgram(const std::string &s, std::shared_ptr<Progr
              prog->add(makeLiteralFromString(str));
         }
         //Sinon, on tente de récupérer l'instance d'un opérateur
-        catch (std::invalid_argument&) {
+        catch (UTException& e1) {
             try {
                  prog->add(OperatorManager::getInstance().getOperator(str));
             }
             //L'opérande n'est pas reconnue
-            catch (std::invalid_argument&) {
-                throw std::invalid_argument("Unrecognized symbol.");
+            catch (UTException& e2) {
+                throw ParsingError(str, "Unrecognized symbol.").add(e2).add(e1);
             }
         }
     }
@@ -98,22 +106,23 @@ std::shared_ptr<Literal> LiteralFactory::makeCompositeProgram(const std::string&
 
         //Sous-programme malformé
         else {
-            throw std::invalid_argument("Square bracket unclosed.");
+            throw ParsingError(s, "Square bracket unclosed in subprogram.");
         }
         return prog;
     }
-    throw std::invalid_argument("Programs and subprograms must be surrounded by square brackets.");
+    throw ParsingError(s, "Programs and subprograms must be surrounded by square brackets.");
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeLiteralFromString(std::string str) const {
     //On essaye de parser dans l'ordre de priorité, sachant que chaque fonction peut déclencher une exception
+    ParsingError exc(str, "No literal could match the string.");
     for (auto alloc : allocatorsPriority) {
         try {
             return alloc(str);
         }
-        catch(std::exception&) {}
+        catch(UTException& e) { exc.add(e); }
     }
-    throw std::invalid_argument("No literal could match the string.");
+    throw exc;
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeLiteral(int n) const {

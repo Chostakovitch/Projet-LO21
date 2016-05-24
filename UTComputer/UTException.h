@@ -4,8 +4,8 @@
 #include <memory>
 #include <vector>
 
+#include "Literal.h"
 class Operator;
-class Literal;
 
 /**
  * @brief Un objet UTException représente une exception générée par UTComputer à tout moment
@@ -14,10 +14,47 @@ class Literal;
 class UTException : public std::exception
 {
 protected:
+    /**
+     * @brief Message représentant l'exception.
+     */
+    std::string msg;
+    /**
+     * @brief Informations sur la raison de l'exception.
+     */
     std::string info;
+    /**
+     * @brief Exceptions sous-jacentes pour complément d'information.
+     */
+    std::vector<std::shared_ptr<UTException>> subexcs;
 public:
-    explicit UTException(const std::string& info) : info(info) { }
-    virtual const char* what() const throw() override { return info.c_str(); }
+    /**
+     * @brief Constructeur explicite.
+     * @param info Information sur l'exception.
+     */
+    explicit UTException(const std::string& info);
+    /**
+     * @brief Retourne les informations de l'expression.
+     * @return Chaîne de caractères C.
+     */
+    virtual const char* what() const throw() override { return msg.c_str(); }
+    /**
+     * @brief Retourne les détails de l'exception, i.e. incluant ses expressions sous-jacentes.
+     * @return std::string.
+     */
+    std::string details() const;
+    /**
+     * @brief Ajout d'une expression parente.
+     * @param exc Exception à ajouter.
+     */
+    UTException& add(const UTException& exc) { subexcs.push_back(exc.clone()); return *this; }
+    /**
+     * @brief Renvoie un pointeur vers un objet similaire à l'actuel.
+     * @return Pointeur sur UTException.
+     */
+    virtual std::shared_ptr<UTException> clone() const { return std::make_shared<UTException>(*this); }
+    /**
+     * @brief Destructeur virtuel vide.
+     */
     virtual ~UTException() { }
 };
 
@@ -26,10 +63,13 @@ public:
  * en objets métiers ou lorsque une expression mal formée est rencontrée.
  */
 class ParsingError : public UTException {
+    /**
+     * @brief Chaîne de caractères impossible à parser.
+     */
     std::string token;
 public:
-    ParsingError(std::string token, std::string info) : UTException(info), token(token) { }
-    const char* what() const throw() override;
+    ParsingError(std::string token, std::string info);
+    std::shared_ptr<UTException> clone() const override { return std::make_shared<ParsingError>(*this); }
 };
 
 /**
@@ -37,20 +77,31 @@ public:
  * Exemple : Types incompatibles, opération non-implémentée.
  */
 class OperationError : public UTException {
+    /**
+     * @brief Operator qui n'a pas pu effectuer l'opération.
+     */
     std::shared_ptr<Operator> op;
-    OperationError(std::shared_ptr<Operator> op, std::string info) : UTException(info), op(op) { }
-    const char* what() const throw() override;
+    /**
+     * @brief Operandes n'ayant pas pu être utilisées dans l'opération.
+     */
+    Arguments<std::shared_ptr<Literal>> ops;
+public:
+    OperationError(const std::shared_ptr<Operator>& op, const Arguments<std::shared_ptr<Literal>>& ops, std::string info);
+    std::shared_ptr<UTException> clone() const override { return std::make_shared<OperationError>(*this); }
 };
 
 /**
- * @brief Un objet CastError décrit une erreur rencontrée lors du cast d'une littérale vers une autre littérale.
+ * @brief Un objet TypeError décrit une erreur concernant les types des littérales.
  * Plus généralement, cette classe doit être utilisée quand des littérales ne peuvent pas être uniformisées.
  */
-class CastError : public UTException {
-    std::vector<std::shared_ptr<Literal>> ops;
+class TypeError : public UTException {
+    /**
+     * @brief Littérales ne pouvant pas être uniformisées.
+     */
+    Arguments<std::shared_ptr<Literal>> ops;
 public:
-    CastError(const std::vector<std::shared_ptr<Literal>>& ops, std::string info) : UTException(info), ops(ops) { }
-    const char* what() const throw() override;
+    TypeError(const Arguments<std::shared_ptr<Literal>>& ops, std::string info);
+    std::shared_ptr<UTException> clone() const override { return std::make_shared<TypeError>(*this); }
 };
 
 #endif // UTEXCEPTION_H

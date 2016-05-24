@@ -1,27 +1,28 @@
 ﻿#include "Operation.h"
 #include "OperatorManager.h"
 #include "Manager.h"
+#include "UTException.h"
 
-Arguments<std::shared_ptr<Operand> > Operation::eval(const Arguments<std::shared_ptr<Literal>> &) {
-    throw std::invalid_argument("Not implemented.");
+Arguments<std::shared_ptr<Operand>> Operation::eval(const Arguments<std::shared_ptr<Literal>>&) {
+    throw UTException("Generic operation not implemented.");
 }
 
 Arguments<std::shared_ptr<Operand>> Operation::eval(const Arguments<IntegerLiteral>&) {
-	throw std::invalid_argument("Not implemented."); 
+    throw UTException("Operation not implemented for IntegerLiteral.");
 }
 Arguments<std::shared_ptr<Operand>> Operation::eval(const Arguments<RationalLiteral>&) {
-	throw std::invalid_argument("Not implemented."); 
+    throw UTException("Operation not implemented for RationalLiteral.");
 }
 Arguments<std::shared_ptr<Operand>> Operation::eval(const Arguments<ComplexLiteral>&) {
-    throw std::invalid_argument("Not implemented.");
+    throw UTException("Operation not implemented for ComplexLiteral.");
 }
 
 Arguments<std::shared_ptr<Operand>> Operation::eval(const Arguments<RealLiteral>&) {
-    throw std::invalid_argument("Not implemented.");
+    throw UTException("Operation not implemented for RealLiteral.");
 }
 
 Arguments<std::shared_ptr<Operand>> Operation::eval(const Arguments<ExpressionLiteral>&) {
-    throw std::invalid_argument("Not implemented.");
+    throw UTException("Operation not implemented for ExpressionLiteral.");
 }
 
 Arguments<std::shared_ptr<Operand>> PlusOperation::eval(const Arguments<IntegerLiteral>& args) {

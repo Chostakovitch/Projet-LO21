@@ -155,22 +155,22 @@ std::shared_ptr<Literal> ExpressionParser::getLiteral(std::string token) {
         return id;
     }
     //Construction d'une littérale
-    catch(std::out_of_range& e) {
+    catch(UTException& e) {
         try {
             return LiteralFactory::getInstance().makeLiteralFromString(token);
         }
-        catch(std::exception&) { return nullptr; }
+        catch(UTException&) { return nullptr; }
     }
 }
 
 std::shared_ptr<FunctionOperator> ExpressionParser::getFunction(std::string token) {
     try {
         return std::dynamic_pointer_cast<FunctionOperator>(OperatorManager::getInstance().getOperator(token));
-    } catch(std::exception&) { return nullptr; }
+    } catch(UTException&) { return nullptr; }
 }
 
 std::shared_ptr<SymbolicOperator> ExpressionParser::getOperator(std::string token) {
     try {
         return std::dynamic_pointer_cast<SymbolicOperator>(OperatorManager::getInstance().getOperator(token));
-    } catch(std::exception&) { return nullptr; }
+    } catch(UTException&) { return nullptr; }
 }
