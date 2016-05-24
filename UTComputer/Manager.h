@@ -13,7 +13,6 @@ class Literal;
 class Settings;
 class Operand;
 
-//Question : shared_ptr ? ne copie pas l'intérieur
 class Memento {
 private:
     std::map<const std::string, std::shared_ptr<Literal>> identifiers;
