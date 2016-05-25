@@ -2,6 +2,7 @@
 #include "Manager.h"
 #include "LiteralFactory.h"
 #include "OperatorManager.h"
+#include "UTException.h"
 #include "Utility.h"
 #include <cctype>
 #include <algorithm>
@@ -36,7 +37,7 @@ std::vector<std::shared_ptr<Operand>> ExpressionParser::parse() {
     std::string token;
     while(!expr.empty()) {
         //Jeton vide, intraitable
-        if((token = readToken()).empty()) throw std::invalid_argument("Unreadable token.");
+        if((token = readToken()).empty()) throw ParsingError(token, "Empty token.");
 
         //Cas où le jeton est une littérale, on l'enfile
         if(auto lit = getLiteral(token)) queue.push_back(lit);
@@ -51,7 +52,7 @@ std::vector<std::shared_ptr<Operand>> ExpressionParser::parse() {
                 queue.push_back(stack.top());
                 stack.pop();
             }
-            if(stack.empty()) throw std::invalid_argument("Parentheses mismatch.");
+            if(stack.empty()) throw ParsingError(expr, "Parentheses mismatch.");
         }
 
         //Cas où le jeton est un opérateur symbolique
@@ -85,7 +86,7 @@ std::vector<std::shared_ptr<Operand>> ExpressionParser::parse() {
                 queue.push_back(stack.top());
                 stack.pop();
             }
-            if(stack.empty()) throw std::invalid_argument("Parentheses mismatch.");
+            if(stack.empty()) throw ParsingError(expr, "Parentheses mismatch.");
             //On dépile la parenthèse
             stack.pop();
             //S'il reste une fonction sur la pile
@@ -98,14 +99,14 @@ std::vector<std::shared_ptr<Operand>> ExpressionParser::parse() {
 
         //Jeton non-reconnu
         else {
-            throw std::invalid_argument("Unrecognized token.");
+            throw ParsingError(token, "Unrecognized token.");
         }
     }
 
     //Tant qu'il reste des opérateurs sur la pile
     while(!stack.empty()) {
         //S'il reste un délimiteur gauche, expression malformée
-        if(stack.top()->toString().at(0) == left_del) throw std::invalid_argument("Parentheses mismatch.");
+        if(stack.top()->toString().at(0) == left_del) throw ParsingError(expr, "Parentheses mismatch.");
         queue.push_back(stack.top());
         stack.pop();
     }
@@ -150,26 +151,26 @@ std::shared_ptr<Literal> ExpressionParser::getLiteral(std::string token) {
     //Identificateur d'une variable
     try {
         auto id = Manager::getInstance().getIdentifier(token);
-        if(std::dynamic_pointer_cast<ProgramLiteral>(id)) throw std::invalid_argument("A program identifier can't be part of expression.");
+        if(std::dynamic_pointer_cast<ProgramLiteral>(id)) throw ParsingError(id->toString(), "A program identifier can't be part of expression.");
         return id;
     }
     //Construction d'une littérale
-    catch(std::out_of_range& e) {
+    catch(UTException& e) {
         try {
             return LiteralFactory::getInstance().makeLiteralFromString(token);
         }
-        catch(std::exception&) { return nullptr; }
+        catch(UTException&) { return nullptr; }
     }
 }
 
 std::shared_ptr<FunctionOperator> ExpressionParser::getFunction(std::string token) {
     try {
         return std::dynamic_pointer_cast<FunctionOperator>(OperatorManager::getInstance().getOperator(token));
-    } catch(std::exception&) { return nullptr; }
+    } catch(UTException&) { return nullptr; }
 }
 
 std::shared_ptr<SymbolicOperator> ExpressionParser::getOperator(std::string token) {
     try {
         return std::dynamic_pointer_cast<SymbolicOperator>(OperatorManager::getInstance().getOperator(token));
-    } catch(std::exception&) { return nullptr; }
+    } catch(UTException&) { return nullptr; }
 }

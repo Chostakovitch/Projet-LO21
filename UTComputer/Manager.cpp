@@ -2,6 +2,7 @@
 #include "Literal.h"
 #include "CompositeLiteral.h"
 #include "OperatorManager.h"
+#include "UTException.h"
 #include <memory>
 #include <iostream>
 #include <cctype>
@@ -17,13 +18,18 @@ Manager& Manager::getInstance() {
 }
 
 const std::shared_ptr<Literal>& Manager::getIdentifier(const std::string& id) const {
-    return identifiers.at(id);
+    try {
+        return identifiers.at(id);
+    }
+    catch(std::out_of_range&) {
+        throw ParsingError(id, "Identifier does not exist.");
+    }
 }
 
 void Manager::addIdentifier(const std::string& id, std::shared_ptr<Literal> lit) {
-    if (id.empty() || std::islower(id[0])) throw std::invalid_argument("An identifier must begin with a uppercase character.");
-    if (!std::all_of(id.begin(), id.end(), [](char c) { return (isupper(c) || isdigit(c));})) throw std::invalid_argument("An identifier must constain only uppercase character and digit.");
-    if (OperatorManager::getInstance().isOperator(id)) throw std::invalid_argument("This name is already assigned to a program.");
+    if (id.empty() || std::islower(id[0])) throw ParsingError(id, "An identifier must begin with a uppercase character.");
+    if (!std::all_of(id.begin(), id.end(), [](char c) { return (isupper(c) || isdigit(c));})) throw ParsingError(id, "An identifier must constain only uppercase character and digit.");
+    if (OperatorManager::getInstance().isOperator(id)) throw ParsingError(id, "This name is already assigned to a program.");
     identifiers[id] = lit;
     saveState();
 }
@@ -51,27 +57,41 @@ const std::map<const std::string,std::shared_ptr<Literal>> Manager::getVariables
 }
 
 void Manager::handleOperandLine(std::string command) {
-    //Suppression des espaces entre les guillemets
+    //Suppression des espaces entre les guillemets (pour les expressions)
     unsigned int leftPos = command.find_first_of('"');
     unsigned int rightPos = command.find_last_of('"');
     if(leftPos != std::string::npos && rightPos != std::string::npos) {
         command.erase(std::remove(command.begin() + leftPos, command.begin() + rightPos + 1, ' '), command.begin() + rightPos + 1);
     }
-    //Split sur les espaces
-    std::istringstream iss(command);
-    std::vector<std::string> tokens{std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{}};
+    //Séparation des programmes qui doivent rester entiers (pas de split sur les espaces)
+    leftPos = command.find_first_of("[");
+    rightPos = command.find_last_of("]");
+    std::vector<std::string> tokens;
+    //On a trouvé un programme, on effectue la séparation
+    if(leftPos != std::string::npos && rightPos != std::string::npos) {
+        std::istringstream leftiss(command.substr(0, leftPos));
+        std::istringstream rightiss(command.substr(rightPos + 1, command.size() - rightPos));
+        tokens.insert(tokens.end(), std::istream_iterator<std::string>{leftiss}, std::istream_iterator<std::string>{});
+        tokens.push_back(command.substr(leftPos, rightPos - leftPos + 1));
+        tokens.insert(tokens.end(), std::istream_iterator<std::string>{rightiss}, std::istream_iterator<std::string>{});
+    }
+    //Sinon, on splitte tous les espaces
+    else {
+        std::istringstream iss(command);
+        tokens.insert(tokens.end(), std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{});
+    }
     std::vector<std::shared_ptr<Operand>> ops;
     for(auto& op : tokens) {
         //On essaye de fabriquer une littérale
         try {
             ops.push_back(LiteralFactory::getInstance().makeLiteralFromString(op));
         }
-        catch(std::invalid_argument&) {
+        catch(UTException& e1) {
             //Non-littérale, on tente d'identifier un opérateur
             try {
                 ops.push_back(OperatorManager::getInstance().getOperator(op));
             }
-            catch(std::invalid_argument&) {
+            catch(UTException& e2) {
                 //Non-opérateur, on tente de trouver un identificateur
                 try {
                     auto id = getIdentifier(op);
@@ -82,13 +102,13 @@ void Manager::handleOperandLine(std::string command) {
                     if(std::dynamic_pointer_cast<ProgramLiteral>(id)) ops.push_back(OperatorManager::getInstance().getEvalOperator());
                 }
                 //Non-identificateur, on crée une littérale expression si possible.
-                catch(std::out_of_range&) {
+                catch(UTException& e3) {
                     //Atome bien formé, on l'encapsule dans une LiteralExpression.
                     if(!op.empty() && std::isupper(op.at(0)) && std::find_if(op.begin(), op.end(), [](char c) { return !(std::isdigit(c) || std::isupper(c)); }) == op.end()) {
                         ops.push_back(LiteralFactory::getInstance().makeLiteral(op));
                     }
                     //Impossible de construire une opérande, on le signale
-                    else throw std::invalid_argument(op + std::string(" : unable to parse operand (syntax error)."));
+                    else throw ParsingError(op, "Syntax error").add(e3).add(e2).add(e1);
                 }
             }
         }
@@ -99,8 +119,9 @@ void Manager::handleOperandLine(std::string command) {
         saveState();
     }
     //Si quelque chose s'est mal passé, on restaure la pile avant l'évaluation
-    catch(std::exception&) { //Affiner
+    catch(UTException& e) {
         restoreState(backup[currentState]);
+        throw e; //TODO : voir quoi faire ici
     }
 }
 
@@ -111,7 +132,7 @@ void Manager::eval(std::vector<std::shared_ptr<Operand>> operands) {
         if(auto lit = std::dynamic_pointer_cast<Literal>(operand)) pile.push(lit);
         //Si on trouve un opérateur, on déclenche l'évaluation
         else if(auto op = std::dynamic_pointer_cast<Operator>(operand)) {
-            if(pile.size() < op->getArity()) throw std::invalid_argument(std::string("Not enough operands for operator : ") + op->toString());
+            if(pile.size() < op->getArity()) throw OperationError(op, Arguments<std::shared_ptr<Literal>>(), "Not enough operands for operator");
             //Construction des arguments
             Arguments<std::shared_ptr<Literal>> args;
             args.reserve(pile.size());
@@ -124,9 +145,8 @@ void Manager::eval(std::vector<std::shared_ptr<Operand>> operands) {
                 eval(OperatorManager::getInstance().dispatchOperation(op, args));
             }
             //Impossible d'effectuer l'opération : on restitue la pile avant l'opération en cours.
-            //TODO : classe d'exception avec objet Operand responsable de l'exception s'il existe par exemple
-            catch(std::exception& e) {
-                throw std::invalid_argument(std::string("Failed to apply operation") + e.what() + std::string(" Stack restored."));
+            catch(UTException& e) {
+                throw OperationError(op, args, "Failed to apply operation").add(e);
             }
         }
     }
@@ -147,13 +167,13 @@ void Manager::restoreState(std::shared_ptr<Memento> memento){
 }
 
 void Manager::undo() {
-    if (currentState == 0) throw std::out_of_range("There is nothing to undo.");
+    if (currentState == 0) throw UTException("There is nothing to undo.");
     currentState--;
     restoreState(backup[currentState]);
 }
 
 void Manager::redo() {
-    if (currentState == backup.size() - 1) throw std::out_of_range("There is nothing to redo.");
+    if (currentState == backup.size() - 1) throw UTException("There is nothing to redo.");
     currentState++;
     restoreState(backup[currentState]);
 }

@@ -10,6 +10,7 @@
 #include "Calculator.h"
 #include "Manager.h"
 #include "ExpressionParser.h"
+#include "UTException.h"
 
 int main(int argc, char *argv[])
 {
@@ -99,6 +100,16 @@ int main(int argc, char *argv[])
     for(auto it = pile.begin(); it != pile.end(); ++it) {
         std::cout << (*it)->toString() << " " << std::endl;
     }
+    putchar('\n');
+    try {
+        Manager::getInstance().handleOperandLine("[1 [4 +]");
+        for(const auto& e : Manager::getInstance().getPile()) std::cout << e->toString() << " ";
+    }
+    catch(UTException& e) {
+        std::cout << "Resume : " << e.what();
+        std::cout << "\n\nDetails :\n" <<  e.details();
+    }
+
     putchar('\n');*/
 
     QApplication a(argc, argv);
