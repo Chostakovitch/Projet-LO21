@@ -50,6 +50,9 @@ HEADERS  += \
     WindowParam.h \
     Pile.h \
     UTException.h \
-    UTComputer.h
+    UTComputer.h \
+    Arguments.h
 
 FORMS    += utcomputer.ui
+
+DISTFILES +=

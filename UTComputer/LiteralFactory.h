@@ -101,6 +101,13 @@ public:
      */
 	std::shared_ptr<Literal> makeLiteral(double f) const;
     /**
+     * @brief Fabrique d'un objet ComplexLiteral.
+     * @param re Partie réelle.
+     * @param im Partie imaginaire.
+     * @return Pointeur sur Literal.
+     */
+    std::shared_ptr<Literal> makeLiteral(std::shared_ptr<NumericLiteral> re, std::shared_ptr<NumericLiteral> im) const;
+    /**
      * @brief Fabrique d'un objet ExpressionLiteral.
      * @param s Chaîne quelconque.
      * @return Pointeur sur Literal.

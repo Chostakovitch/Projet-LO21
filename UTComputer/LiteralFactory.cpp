@@ -149,6 +149,10 @@ std::shared_ptr<Literal> LiteralFactory::makeLiteral(double f) const {
     return std::make_shared<RealLiteral>(f);
 }
 
+std::shared_ptr<Literal> LiteralFactory::makeLiteral(std::shared_ptr<NumericLiteral> re, std::shared_ptr<NumericLiteral> im) const {
+    return std::make_shared<ComplexLiteral>(re, im);
+}
+
 std::shared_ptr<Literal> LiteralFactory::makeLiteral(const std::string &s) const {
     return std::make_shared<ExpressionLiteral>(s);
 }

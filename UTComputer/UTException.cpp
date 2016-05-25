@@ -14,9 +14,9 @@ OperationError::OperationError(const std::shared_ptr<Operator> &op, const Argume
     msg = oss.str();
 }
 
-TypeError::TypeError(const Arguments<std::shared_ptr<Literal> > &ops, std::string info) : UTException(info), ops(ops) {
+TypeError::TypeError(std::string info, const Arguments<std::shared_ptr<Literal>> &ops) : UTException(info), ops(ops) {
     std::ostringstream oss;
-    oss << "Unable to handle operands : <" << ops.toString() << "> (" << UTException::what() << ").";
+    oss << "Unable to handle or to cast operands : <" << ops.toString() << "> (" << UTException::what() << ").";
     msg = oss.str();
 }
 

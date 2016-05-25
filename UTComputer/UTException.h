@@ -4,8 +4,10 @@
 #include <memory>
 #include <vector>
 
-#include "Literal.h"
+#include "Arguments.h"
+
 class Operator;
+class Literal;
 
 /**
  * @brief Un objet UTException représente une exception générée par UTComputer à tout moment
@@ -109,7 +111,7 @@ class TypeError : public UTException {
 
     const char* classname() const override { return "TypeError";}
 public:
-    TypeError(const Arguments<std::shared_ptr<Literal>>& ops, std::string info);
+    TypeError(std::string info, const Arguments<std::shared_ptr<Literal>>& ops = Arguments<std::shared_ptr<Literal>>());
     std::shared_ptr<UTException> clone() const override { return std::make_shared<TypeError>(*this); }
 };
 
