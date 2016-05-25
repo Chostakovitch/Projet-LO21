@@ -100,6 +100,7 @@ int main(int argc, char *argv[])
     for(auto it = pile.begin(); it != pile.end(); ++it) {
         std::cout << (*it)->toString() << " " << std::endl;
     }
+
     putchar('\n');
     /*try {
         Manager::getInstance().handleOperandLine("[1 [4 +]");
