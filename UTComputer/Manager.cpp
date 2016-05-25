@@ -61,7 +61,7 @@ void Manager::handleOperandLine(std::string command) {
     unsigned int leftPos = command.find_first_of('"');
     unsigned int rightPos = command.find_last_of('"');
     if(leftPos != std::string::npos && rightPos != std::string::npos) {
-        command.erase(std::remove(command.begin() + leftPos, command.begin() + rightPos + 1, ' '), command.begin() + rightPos + 1);
+        command.erase(std::remove(command.begin() + leftPos, command.begin() + rightPos, ' '), command.begin() + rightPos);
     }
     //Séparation des programmes qui doivent rester entiers (pas de split sur les espaces)
     leftPos = command.find_first_of("[");

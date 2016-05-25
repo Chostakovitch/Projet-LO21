@@ -2,7 +2,6 @@
 #include "Operateurs.h"
 #include "Literal.h"
 #include <sstream>
-
 ParsingError::ParsingError(std::string token, std::string info) : UTException(info), token(token) {
     std::ostringstream oss;
     oss << "Unable to parse token : <" << token << "> (" << UTException::what() << ").";
@@ -29,7 +28,7 @@ std::string UTException::details() const {
     static int tab_count;
     std::string tabs(tab_count, '\t');
     std::ostringstream oss;
-    oss << tabs << what() << std::endl;
+    oss << tabs << classname() << " : " << what() << std::endl;
     if(!subexcs.empty()) oss << tabs << "{" << std::endl;
     for(auto& exc : subexcs) {
         ++tab_count;

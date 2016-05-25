@@ -26,6 +26,11 @@ protected:
      * @brief Exceptions sous-jacentes pour complément d'information.
      */
     std::vector<std::shared_ptr<UTException>> subexcs;
+    /**
+     * @brief Nom de classe représentant l'expression.
+     * @return Chaîne de caractères format C.
+     */
+    virtual const char* classname() const { return "UTException";}
 public:
     /**
      * @brief Constructeur explicite.
@@ -67,6 +72,7 @@ class ParsingError : public UTException {
      * @brief Chaîne de caractères impossible à parser.
      */
     std::string token;
+    const char* classname() const override { return "ParsingError";}
 public:
     ParsingError(std::string token, std::string info);
     std::shared_ptr<UTException> clone() const override { return std::make_shared<ParsingError>(*this); }
@@ -85,6 +91,7 @@ class OperationError : public UTException {
      * @brief Operandes n'ayant pas pu être utilisées dans l'opération.
      */
     Arguments<std::shared_ptr<Literal>> ops;
+    const char* classname() const override { return "OperationError";}
 public:
     OperationError(const std::shared_ptr<Operator>& op, const Arguments<std::shared_ptr<Literal>>& ops, std::string info);
     std::shared_ptr<UTException> clone() const override { return std::make_shared<OperationError>(*this); }
@@ -99,6 +106,8 @@ class TypeError : public UTException {
      * @brief Littérales ne pouvant pas être uniformisées.
      */
     Arguments<std::shared_ptr<Literal>> ops;
+
+    const char* classname() const override { return "TypeError";}
 public:
     TypeError(const Arguments<std::shared_ptr<Literal>>& ops, std::string info);
     std::shared_ptr<UTException> clone() const override { return std::make_shared<TypeError>(*this); }
