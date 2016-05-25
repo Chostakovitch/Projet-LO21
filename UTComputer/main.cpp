@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
     /*try {
         Manager::getInstance().handleOperandLine("[1 [4 +]");
     try {
-        Manager::getInstance().handleOperandLine("\"SIN(8) + 4\"");
+        Manager::getInstance().handleOperandLine("\"SIN(8) + 4\" 4");
         Manager::getInstance().handleOperandLine("4           3   +");
         Manager::getInstance().handleOperandLine("*");
         for(const auto& e : Manager::getInstance().getPile()) std::cout << e->toString() << " ";
