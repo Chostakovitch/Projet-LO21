@@ -66,6 +66,7 @@ public:
      * @param command Ligne de commande à évaluer.
      */
     void handleOperandLine(std::string command);
+    std::vector<std::string> getSymbolicOperatorToString() const;
 
     void undo();
     void redo();

@@ -114,10 +114,10 @@ int main(int argc, char *argv[])
         std::cout << "\n\nDetails :\n" <<  e.details();
     }*/
 
-    //QApplication a(argc, argv);
-    //UTComputer w;
-    //w.show();
-    //return a.exec();
+    QApplication a(argc, argv);
+    UTComputer w;
+    w.show();
+    return a.exec();
 
-    return 0;
+    //return 0;
 }
