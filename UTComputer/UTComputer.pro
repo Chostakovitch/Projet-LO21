@@ -14,7 +14,6 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        utcomputer.cpp \
     Literal.cpp \
     LiteralFactory.cpp \
     Operateurs.cpp \
@@ -30,9 +29,10 @@ SOURCES += main.cpp\
     Manager.cpp \
     WindowParam.cpp \
     Pile.cpp \
-    UTException.cpp
+    UTException.cpp \
+    UTComputer.cpp
 
-HEADERS  += utcomputer.h \
+HEADERS  += \
     Literal.h \
     LiteralFactory.h \
     Operateurs.h \
@@ -49,6 +49,8 @@ HEADERS  += utcomputer.h \
     Manager.h \
     WindowParam.h \
     Pile.h \
-    UTException.h
+    UTException.h \
+    UTComputer.h \
+    TypeList.h
 
 FORMS    += utcomputer.ui

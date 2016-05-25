@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <iterator>
 
+#include "TypeList.h"
+
 class IntegerLiteral;
 class RationalLiteral;
 class RealLiteral;
@@ -50,6 +52,13 @@ public:
  */
 class Literal : public Operand {
 public:
+    /**
+     * @brief Liste de types de littérales, de la plus spécialisée à la plus générale.
+     * @details Une littérale est plus spécialisée par rapport à une autre quand cette dernière
+     * ne peut pas être castée dans le type de la première sans subir de perte d'informations.
+     * Le cast inverse est garanti de ne pas subir de perte d'informations.
+     */
+    typedef cons<IntegerLiteral, RationalLiteral, RealLiteral, ComplexLiteral>::type priority;
     /**
      * @brief Opérateur de cast d'un objet Literal en objet IntegerLiteral.
      * @details Echoue si non re-défini dans une classe fille.

@@ -1,7 +1,7 @@
 ﻿#include <QApplication>
 #include <iostream>
 
-#include "utcomputer.h"
+#include "UTComputer.h"
 #include "OperatorManager.h"
 #include "Literal.h"
 #include "Operateurs.h"

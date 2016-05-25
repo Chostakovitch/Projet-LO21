@@ -8,7 +8,7 @@
 #include "Calculator.h"
 #include "Settings.h"
 #include "MainFrame.h"
-#include "utcomputer.h"
+#include "UTComputer.h"
 #include "Manager.h"
 
 Calculator::Calculator(QWidget *parent)  {

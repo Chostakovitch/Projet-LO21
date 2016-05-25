@@ -31,7 +31,6 @@ std::shared_ptr<Literal> LiteralFactory::makeInteger(const std::string& s) const
     try {
         int n = std::stoi(s);
         auto d = std::to_string(n);
-        bool a = std::to_string(n) != s || n < 0;
         if(std::to_string(n) != s || n < 0) throw ParsingError(s, "Unsigned number needed.");
         return makeLiteral(n);
     }
