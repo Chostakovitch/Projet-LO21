@@ -85,10 +85,7 @@ public:
 
 class STOOperarion : public Operation {
 public:
-   //A CHANGER POUR LA METHODE GENERIQUE
-    Arguments<std::shared_ptr<Operand>> eval(const Arguments<IntegerLiteral>& args);
-    Arguments<std::shared_ptr<Operand>> eval(const Arguments<RationalLiteral>& args);
-    Arguments<std::shared_ptr<Operand>> eval(const Arguments<RealLiteral>& args);
+    Arguments<std::shared_ptr<Operand>> eval(const Arguments<std::shared_ptr<Literal>>& args) override;
 };
 
 #endif

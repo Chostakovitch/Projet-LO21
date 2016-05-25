@@ -40,6 +40,12 @@ Arguments<std::shared_ptr<Operand>> PlusOperation::eval(const Arguments<RealLite
     return Arguments<std::shared_ptr<Operand>>{LiteralFactory::getInstance().makeLiteral(args.at(0).getValue() + args.at(1).getValue())};
 }
 
+Arguments<std::shared_ptr<Operand>> STOOperarion::eval(const Arguments<std::shared_ptr<Literal>>& args) {
+    // Verifier qu'on a bien une expression
+    //Manager::addIdentifier()
+    return Arguments<std::shared_ptr<Operand>>{};
+}
+
 
 
 

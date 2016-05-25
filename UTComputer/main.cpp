@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
     auto tab2 = Manager::getInstance().getVariablesIdentifiers();
     for(auto res :tab2) std::cout << res.first << std::endl;*/
 
-
+/*
     Manager::getInstance().handleOperandLine("\"SIN(8) + 4\"");
     Manager::getInstance().handleOperandLine("4        3 +");
     Manager::getInstance().handleOperandLine("*");
@@ -99,12 +99,12 @@ int main(int argc, char *argv[])
     for(auto it = pile.begin(); it != pile.end(); ++it) {
         std::cout << (*it)->toString() << " " << std::endl;
     }
-    putchar('\n');
+    putchar('\n');*/
 
-    /*QApplication a(argc, argv);
+    QApplication a(argc, argv);
     UTComputer w;
     w.show();
-    return a.exec();*/
+    return a.exec();
 
-    return 0;
+    //return 0;
 }
