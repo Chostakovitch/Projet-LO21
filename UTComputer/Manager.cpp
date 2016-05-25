@@ -64,8 +64,8 @@ void Manager::handleOperandLine(std::string command) {
         command.erase(std::remove(command.begin() + leftPos, command.begin() + rightPos + 1, ' '), command.begin() + rightPos + 1);
     }
     //Séparation des programmes qui doivent rester entiers (pas de split sur les espaces)
-    leftPos = command.find_first_of("[");
-    rightPos = command.find_last_of("]");
+    leftPos = command.find_first_of('[');
+    rightPos = command.find_last_of(']');
     std::vector<std::string> tokens;
     //On a trouvé un programme, on effectue la séparation
     if(leftPos != std::string::npos && rightPos != std::string::npos) {

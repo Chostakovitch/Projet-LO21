@@ -92,30 +92,28 @@ int main(int argc, char *argv[])
     auto tab2 = Manager::getInstance().getVariablesIdentifiers();
     for(auto res :tab2) std::cout << res.first << std::endl;*/
 
-/*
+
     Manager::getInstance().handleOperandLine("\"SIN(8) + 4\"");
-    Manager::getInstance().handleOperandLine("4        3 +");
-    Manager::getInstance().handleOperandLine("*");
+    //Manager::getInstance().handleOperandLine("4        3 +");
+    //Manager::getInstance().handleOperandLine("*");
     auto pile = Manager::getInstance().getPile();
     for(auto it = pile.begin(); it != pile.end(); ++it) {
         std::cout << (*it)->toString() << " " << std::endl;
     }
     putchar('\n');
-    try {
+    /*try {
         Manager::getInstance().handleOperandLine("[1 [4 +]");
         for(const auto& e : Manager::getInstance().getPile()) std::cout << e->toString() << " ";
     }
     catch(UTException& e) {
         std::cout << "Resume : " << e.what();
         std::cout << "\n\nDetails :\n" <<  e.details();
-    }
+    }*/
 
-    putchar('\n');*/
+    //QApplication a(argc, argv);
+    //UTComputer w;
+    //w.show();
+    //return a.exec();
 
-    QApplication a(argc, argv);
-    UTComputer w;
-    w.show();
-    return a.exec();
-
-    //return 0;
+    return 0;
 }

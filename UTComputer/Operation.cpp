@@ -43,7 +43,8 @@ Arguments<std::shared_ptr<Operand>> PlusOperation::eval(const Arguments<RealLite
 
 Arguments<std::shared_ptr<Operand>> STOOperarion::eval(const Arguments<std::shared_ptr<Literal>>& args) {
     // Verifier qu'on a bien une expression
-    //Manager::addIdentifier()
+    ExpressionLiteral exp = ExpressionLiteral(*args.at(1).get());
+    Manager::getInstance().addIdentifier(exp.toString(),args.at(0));
     return Arguments<std::shared_ptr<Operand>>{};
 }
 
