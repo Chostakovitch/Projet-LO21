@@ -112,6 +112,7 @@ public:
      * @param args Arguments d'objets ExpressionLiteral.
      * @return Arguments de pointeurs sur Literal.
      */
-     std::shared_ptr<ExpressionLiteral> opExpression(std::shared_ptr<Operator> op, const Arguments<ExpressionLiteral>& args) const;
+    std::shared_ptr<ExpressionLiteral> opExpression(std::shared_ptr<Operator> op, const Arguments<ExpressionLiteral>& args) const;
+    std::vector<std::shared_ptr<Operator>> getSymbolicOperators() const;
 };
 #endif

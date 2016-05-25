@@ -56,6 +56,13 @@ const std::map<const std::string,std::shared_ptr<Literal>> Manager::getVariables
     return result;
 }
 
+std::vector<std::string> Manager::getSymbolicOperatorToString() const {
+    auto operators = OperatorManager::getInstance().getSymbolicOperators();
+    std::vector<std::string> result(operators.size());
+    std::transform(operators.begin(), operators.end(), result.begin(), [](const std::shared_ptr<Operator>& o){ return o->toString(); });
+    return result;
+}
+
 void Manager::handleOperandLine(std::string command) {
     //Suppression des espaces entre les guillemets (pour les expressions)
     size_t leftPos = command.find_first_of('"');

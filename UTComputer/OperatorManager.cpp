@@ -56,6 +56,14 @@ bool OperatorManager::isOperator(const std::string& opcode) const {
     }
 }
 
+std::vector<std::shared_ptr<Operator>> OperatorManager::getSymbolicOperators() const {
+    std::vector<std::shared_ptr<Operator>> res;
+    std::copy_if(operators.begin(), operators.end(), std::back_inserter(res), [](const std::shared_ptr<Operator> op) {
+        return std::dynamic_pointer_cast<SymbolicOperator>(op);
+    });
+    return res;
+}
+
 Arguments<std::shared_ptr<Operand>> OperatorManager::dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const {
     if (op->getArity() != args.size()) throw TypeError(args, "Wrong number of operands.");
     //Si l'opération définit une méthode d'évaluation générique, on l'appelle ici
