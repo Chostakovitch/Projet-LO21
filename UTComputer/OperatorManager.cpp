@@ -51,7 +51,7 @@ bool OperatorManager::isOperator(const std::string& opcode) const {
     try {
         getOperator(opcode);
         return true;
-    } catch(std::exception e) {
+    } catch(ParsingError e) {
         return false;
     }
 }
@@ -63,15 +63,15 @@ Arguments<std::shared_ptr<Operand>> OperatorManager::dispatchOperation(std::shar
         return op->getOperation()->eval(args);
     }
     //Sinon, on tente d'appliquer l'opération sur des types homogènes numériques concrèts
-    catch(std::invalid_argument& e) {
+    catch(UTException& e) {
         for(auto caller : numericPriority) {
             try {
                 return caller(op->getOperation(), args);
             }
             catch(std::bad_cast&) {}
             //Cas où les littéraux sont homogènes et l'opération existe, mais échoue.
-            catch(std::invalid_argument& e) {
-                throw OperationError(op, args, "Operation doesn't define a behaviour for this type of operands.");
+            catch(UTException& e1) {
+                throw OperationError(op, args, "Operation doesn't define a behaviour for this type of operands.").add(e).add(e1);
             }
         }
     }

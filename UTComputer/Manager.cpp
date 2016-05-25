@@ -58,10 +58,10 @@ const std::map<const std::string,std::shared_ptr<Literal>> Manager::getVariables
 
 void Manager::handleOperandLine(std::string command) {
     //Suppression des espaces entre les guillemets (pour les expressions)
-    unsigned int leftPos = command.find_first_of('"');
-    unsigned int rightPos = command.find_last_of('"');
+    size_t leftPos = command.find_first_of('"');
+    size_t rightPos = command.find_last_of('"');
     if(leftPos != std::string::npos && rightPos != std::string::npos) {
-        command.erase(std::remove(command.begin() + leftPos, command.begin() + rightPos + 1, ' '), command.begin() + rightPos + 1);
+        command.erase(std::remove(command.begin() + leftPos, command.begin() + rightPos, ' '), command.begin() + rightPos);
     }
     //Séparation des programmes qui doivent rester entiers (pas de split sur les espaces)
     leftPos = command.find_first_of('[');
