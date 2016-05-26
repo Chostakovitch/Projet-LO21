@@ -31,7 +31,6 @@ std::shared_ptr<Literal> LiteralFactory::makeInteger(const std::string& s) const
     try {
         int n = std::stoi(s);
         auto d = std::to_string(n);
-        bool a = std::to_string(n) != s || n < 0;
         if(std::to_string(n) != s || n < 0) throw ParsingError(s, "Unsigned number needed.");
         return makeLiteral(n);
     }
@@ -148,6 +147,10 @@ std::shared_ptr<Literal> LiteralFactory::makeLiteral(double f) const {
     //modf renvoie la partie fractionnaire et stocke la partie entière dans intpart
     if (std::modf(f, &intpart) == 0) return makeLiteral((int)intpart);
     return std::make_shared<RealLiteral>(f);
+}
+
+std::shared_ptr<Literal> LiteralFactory::makeLiteral(std::shared_ptr<NumericLiteral> re, std::shared_ptr<NumericLiteral> im) const {
+    return std::make_shared<ComplexLiteral>(re, im);
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeLiteral(const std::string &s) const {

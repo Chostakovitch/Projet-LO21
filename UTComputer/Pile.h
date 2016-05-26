@@ -2,6 +2,7 @@
 #define PILE_H
 
 #include <stack>
+#include <vector>
 #include "Literal.h"
 
 class Pile

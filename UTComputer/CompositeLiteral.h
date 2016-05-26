@@ -6,6 +6,7 @@
 #define COMPOSITELITERAL_H
 
 #include <memory>
+#include <vector>
 #include "Literal.h"
 #include "Operateurs.h" //Obligatoire pour que le compilateur connaisse la relation d'héritage entre Operand et Operator
 

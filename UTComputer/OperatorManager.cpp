@@ -17,9 +17,7 @@
 OperatorManager::OperatorManager() : minus_symbol("-") {
     //Création des opérateurs symboliques
     operators.push_back(std::make_shared<SymbolicOperator>("+", 2, std::make_shared<PlusOperation>(), true, 0)); //Addition
-    operators.push_back(std::make_shared<SymbolicOperator>("*", 2, std::make_shared<PlusOperation>(), true, 1)); //Exemple
-    operators.push_back(std::make_shared<SymbolicOperator>("$", 2, std::make_shared<PlusOperation>(), true, 2)); //Exemple
-    operators.push_back(std::make_shared<SymbolicOperator>(minus_symbol, 2, std::make_shared<PlusOperation>(), true, 2)); //Exemple
+    operators.push_back(std::make_shared<SymbolicOperator>("$", 2, std::make_shared<ComplexOperation>(), true, 2));
 
     //Création des opérateurs parenthésés
     operators.push_back(std::make_shared<FunctionOperator>("POW", 2, std::make_shared<Operation>(), true)); //Exemple
@@ -65,7 +63,7 @@ std::vector<std::shared_ptr<Operator>> OperatorManager::getSymbolicOperators() c
 }
 
 Arguments<std::shared_ptr<Operand>> OperatorManager::dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const {
-    if (op->getArity() != args.size()) throw TypeError(args, "Wrong number of operands.");
+    if (op->getArity() != args.size()) throw TypeError("Wrong number of operands.", args);
     //Si l'opération définit une méthode d'évaluation générique, on l'appelle ici
     try {
         return op->getOperation()->eval(args);
@@ -76,10 +74,10 @@ Arguments<std::shared_ptr<Operand>> OperatorManager::dispatchOperation(std::shar
             try {
                 return caller(op->getOperation(), args);
             }
-            catch(std::bad_cast&) {}
+            catch(TypeError& e1) { e.add(e1); }
             //Cas où les littéraux sont homogènes et l'opération existe, mais échoue.
-            catch(UTException& e1) {
-                throw OperationError(op, args, "Operation doesn't define a behaviour for this type of operands.").add(e).add(e1);
+            catch(UTException& e2) {
+                throw OperationError(op, args, "Operation doesn't define a behaviour for this type of operands.").add(e).add(e2);
             }
         }
     }

@@ -1,14 +1,14 @@
 ﻿#include <iostream>
-#include <memory>
 #include <sstream> 
 #include "Literal.h"
 #include "Utility.h"
+#include "UTException.h"
 
-Literal::operator IntegerLiteral() const { throw std::bad_cast(); }
-Literal::operator RationalLiteral() const { throw std::bad_cast(); }
-Literal::operator RealLiteral() const { throw std::bad_cast(); }
-Literal::operator ComplexLiteral() const { throw std::bad_cast(); }
-Literal::operator ExpressionLiteral() const { throw std::bad_cast(); }
+Literal::operator IntegerLiteral() const { throw TypeError("Can't cast to IntegerLiteral."); }
+Literal::operator RationalLiteral() const { throw TypeError("Can't cast to RationalLiteral."); }
+Literal::operator RealLiteral() const { throw TypeError("Can't cast to RealLiteral."); }
+Literal::operator ComplexLiteral() const { throw TypeError("Can't cast to ComplexLiteral."); }
+Literal::operator ExpressionLiteral() const { throw TypeError("Can't cast to ExpressionLiteral."); }
 
 NumericLiteral::operator ExpressionLiteral() const { return ExpressionLiteral(toString()); }
 

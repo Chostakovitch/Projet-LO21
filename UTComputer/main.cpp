@@ -1,7 +1,7 @@
 ﻿#include <QApplication>
 #include <iostream>
 
-#include "utcomputer.h"
+#include "UTComputer.h"
 #include "OperatorManager.h"
 #include "Literal.h"
 #include "Operateurs.h"
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
     for(auto res :tab2) std::cout << res.first << std::endl;*/
 
 
-    Manager::getInstance().handleOperandLine("\"SIN(8) + 4\"");
+    /*Manager::getInstance().handleOperandLine("\"SIN(8) + 4\"");
     Manager::getInstance().handleOperandLine("4");
     //Manager::getInstance().handleOperandLine("4        3 +");
     //Manager::getInstance().handleOperandLine("*");
@@ -101,19 +101,8 @@ int main(int argc, char *argv[])
     for(auto it = pile.begin(); it != pile.end(); ++it) {
         std::cout << (*it)->toString() << " " << std::endl;
     }
-    putchar('\n');
-    /*try {
-        Manager::getInstance().handleOperandLine("[1 [4 +]");
-    try {
-        Manager::getInstance().handleOperandLine("\"SIN(8) + 4\" 4");
-        Manager::getInstance().handleOperandLine("4           3   +");
-        Manager::getInstance().handleOperandLine("*");
-        for(const auto& e : Manager::getInstance().getPile()) std::cout << e->toString() << " ";
-    }
-    catch(UTException& e) {
-        std::cout << "Resume : " << e.what();
-        std::cout << "\n\nDetails :\n" <<  e.details();
-    }*/
+
+    putchar('\n');*/
 
     QApplication a(argc, argv);
     UTComputer w;
