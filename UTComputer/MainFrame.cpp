@@ -8,9 +8,10 @@ MainFrame::MainFrame(QWidget *parent) : QFrame(parent) {
 
     // Creation des boutons
     for (int i = 0; i < NumDigitButtons; ++i) {
-        digitButtons[i] = new Button(QString::number(i));
+        digitButtons[i] = createButton(QString::number(i), SLOT(addDigitToCommand()));
     }
-    Button *pointButton = createButton(tr("."), SLOT(pointClicked()));
+    //Button *pointButton = createButton(tr("."), SLOT(pointClicked()));
+    Button *pointButton = new Button(tr("."));
 
     // Ajout dans le Layout
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -28,7 +29,7 @@ MainFrame::MainFrame(QWidget *parent) : QFrame(parent) {
     std::vector<std::string> symbolicOperators = Manager::getInstance().getSymbolicOperatorToString();
     unsigned int count = 0;
     for(auto o : symbolicOperators) {
-        Button* operatorButton = new Button(QString::fromStdString(o));
+        Button* operatorButton = createButton(QString::fromStdString(o), SLOT(addOperatorToCommand()));
         int row = ((9 - count) / 3) + 2;
         int column = ((count - 1) % 3) + 1;
         opeartorLayout->addWidget(operatorButton, row, column);
@@ -43,6 +44,6 @@ MainFrame::MainFrame(QWidget *parent) : QFrame(parent) {
 Button *MainFrame::createButton(const QString &text, const char *member)
 {
     Button *button = new Button(text);
-    connect(button, SIGNAL(clicked()), this, member);
+    connect(button, SIGNAL(clicked()), parent(), member);
     return button;
 }

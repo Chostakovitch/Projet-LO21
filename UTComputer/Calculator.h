@@ -29,6 +29,8 @@ public:
 
 public slots:
     void refresh();
+    void addDigitToCommand();
+    void addOperatorToCommand();
     //void getNextCommande();
 
 };

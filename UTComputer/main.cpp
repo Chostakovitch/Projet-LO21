@@ -94,6 +94,7 @@ int main(int argc, char *argv[])
 
 
     Manager::getInstance().handleOperandLine("\"SIN(8) + 4\"");
+    Manager::getInstance().handleOperandLine("4");
     //Manager::getInstance().handleOperandLine("4        3 +");
     //Manager::getInstance().handleOperandLine("*");
     auto pile = Manager::getInstance().getPile();

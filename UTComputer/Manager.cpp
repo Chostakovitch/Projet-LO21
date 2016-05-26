@@ -63,6 +63,12 @@ std::vector<std::string> Manager::getSymbolicOperatorToString() const {
     return result;
 }
 
+std::vector<std::string> Manager::getPileToString() const {
+    std::vector<std::string> result(pile.size());
+    std::transform(pile.begin(), pile.end(), result.begin(), [](const std::shared_ptr<Literal>& l){ return l->toString(); });
+    return result;
+}
+
 void Manager::handleOperandLine(std::string command) {
     //Suppression des espaces entre les guillemets (pour les expressions)
     size_t leftPos = command.find_first_of('"');

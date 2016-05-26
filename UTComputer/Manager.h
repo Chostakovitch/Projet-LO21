@@ -67,6 +67,7 @@ public:
      */
     void handleOperandLine(std::string command);
     std::vector<std::string> getSymbolicOperatorToString() const;
+    std::vector<std::string> getPileToString() const;
 
     void undo();
     void redo();

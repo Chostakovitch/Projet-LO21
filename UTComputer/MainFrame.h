@@ -11,6 +11,8 @@ class MainFrame : public QFrame
     Q_OBJECT
 public:
     MainFrame(QWidget *parent = 0);
+public slots:
+
 private:
     Button* createButton(const QString &text, const char *member);
 

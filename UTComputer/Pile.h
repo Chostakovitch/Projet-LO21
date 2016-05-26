@@ -8,7 +8,7 @@ class Pile
 {
     std::vector<std::shared_ptr<Literal>> p;
 public:
-    unsigned int size () { return p.size(); }
+    unsigned int size () const { return p.size(); }
     bool empty() { return p.empty(); }
     std::shared_ptr<Literal> pop() {
         std::shared_ptr<Literal> temp = p.back();
