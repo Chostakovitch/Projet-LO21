@@ -26,7 +26,6 @@ private slots:
     void undo();
     void redo();
     void param();
-    void refresh();
 
 public:
     explicit UTComputer(QWidget *parent = 0);

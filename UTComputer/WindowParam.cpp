@@ -1,5 +1,6 @@
 #include "WindowParam.h"
 #include "Manager.h"
+#include "calculator.h"
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <QFormLayout>
@@ -11,11 +12,11 @@
 #include <QHeaderView>
 #include <QPushButton>
 
-WindowParam::WindowParam(QWidget* parent) : QWidget(parent){
+WindowParam::WindowParam(QWidget* parent) : QWidget(){
     QTabWidget* tab = new QTabWidget();
-    tab->addTab(new ParamTab(), "Paramètres");
-    tab->addTab(new VariableTab(), "Variable");
-    tab->addTab(new ProgramTab(), "Programmes");
+    tab->addTab(new ParamTab(parent), "Paramètres");
+    tab->addTab(new VariableTab(parent), "Variable");
+    tab->addTab(new ProgramTab(parent), "Programmes");
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel);
 
@@ -25,15 +26,18 @@ WindowParam::WindowParam(QWidget* parent) : QWidget(parent){
     setLayout(layout);
 }
 
-ParamTab::ParamTab(QWidget* parent) : QWidget(parent) {
+ParamTab::ParamTab(QWidget* calculator) : QWidget() {
     QSpinBox *nbLineInViewPile = new QSpinBox();
     nbLineInViewPile->setMinimum(0);
     nbLineInViewPile->setValue(Manager::getInstance().getSettings().getNbLinesDisplayPile());
+    connect(nbLineInViewPile, SIGNAL(valueChanged(int)), calculator, SLOT(nbLineDisplayPileChanged(int)));
 
     QCheckBox *beepMessage = new QCheckBox("");
     beepMessage->setChecked(Manager::getInstance().getSettings().getBeepMessage());
+
     QCheckBox *displayKeyboard = new QCheckBox("");
     displayKeyboard->setChecked(Manager::getInstance().getSettings().getDisplayKeyboard());
+    connect(displayKeyboard, SIGNAL(stateChanged(int)), calculator, SLOT(displayKeyboardChanged(int)));
 
     QFormLayout *formLayout = new QFormLayout;
     formLayout->addRow(tr("&Nombre de ligne affichées pour la pile :"), nbLineInViewPile);

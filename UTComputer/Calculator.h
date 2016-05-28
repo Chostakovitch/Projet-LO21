@@ -28,9 +28,14 @@ public:
     explicit Calculator(QWidget *parent = 0);
 
 public slots:
-    void refresh();
+    void refreshPile();
     void addDigitToCommand();
+    void addSpaceToCommand();
     void addOperatorToCommand();
+    void backspaceToCommand();
+    void calculate();
+    void nbLineDisplayPileChanged(int newValue);
+    void displayKeyboardChanged(int newValue);
     //void getNextCommande();
 
 };

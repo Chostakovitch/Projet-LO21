@@ -11,6 +11,9 @@ public:
     unsigned int getNbLinesDisplayPile() const { return nbLinesDisplayPile; }
     bool getDisplayKeyboard() const { return displayKeyboard;}
     bool getBeepMessage() const { return beepMessage; }
+    void setNbLinesDisplayPile(unsigned int value) { nbLinesDisplayPile = value; }
+    void setDisplayKeyboard(bool value) { displayKeyboard = value;}
+    void setBeepMessage(bool value) { beepMessage = value; }
 };
 
 #endif // SETTINGS_H

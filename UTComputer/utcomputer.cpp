@@ -24,12 +24,8 @@ void UTComputer::redo() {
     Manager::getInstance().redo();
 }
 
-void UTComputer::refresh() {
-    central->refresh();
-}
-
 void UTComputer::param() {
-    WindowParam* window = new WindowParam();
+    WindowParam* window = new WindowParam(central);
     window->show();
 }
 

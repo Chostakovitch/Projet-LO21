@@ -10,12 +10,15 @@ MainFrame::MainFrame(QWidget *parent) : QFrame(parent) {
     for (int i = 0; i < NumDigitButtons; ++i) {
         digitButtons[i] = createButton(QString::number(i), SLOT(addDigitToCommand()));
     }
-    //Button *pointButton = createButton(tr("."), SLOT(pointClicked()));
-    Button *pointButton = new Button(tr("."));
+    Button *pointButton = createButton(tr("."), SLOT(addDigitToCommand()));
+    Button *spaceButton = createButton(tr("SPACE"), SLOT(addSpaceToCommand()));
+    Button *enterButton = createButton(tr("ENTER"), SLOT(calculate()));
+    Button *backspaceButton = createButton(tr("BACKSPACE"), SLOT(backspaceToCommand()));
 
     // Ajout dans le Layout
     QVBoxLayout *mainLayout = new QVBoxLayout;
     QGridLayout *digitLayout = new QGridLayout;
+    QGridLayout *actionLayout = new QGridLayout;
     QGridLayout *opeartorLayout = new QGridLayout;
 
     for (int i = 1; i < NumDigitButtons; ++i) {
@@ -25,6 +28,10 @@ MainFrame::MainFrame(QWidget *parent) : QFrame(parent) {
     }
     digitLayout->addWidget(pointButton, 5, 1);
     digitLayout->addWidget(digitButtons[0], 5, 2);
+    digitLayout->addWidget(enterButton, 5, 3);
+
+    actionLayout->addWidget(spaceButton, 1, 1);
+    actionLayout->addWidget(backspaceButton, 1, 2);
 
     std::vector<std::string> symbolicOperators = Manager::getInstance().getSymbolicOperatorToString();
     unsigned int count = 0;
@@ -37,6 +44,7 @@ MainFrame::MainFrame(QWidget *parent) : QFrame(parent) {
     }
 
     mainLayout->addItem(digitLayout);
+    mainLayout->addItem(actionLayout);
     mainLayout->addItem(opeartorLayout);
     setLayout(mainLayout);
 }

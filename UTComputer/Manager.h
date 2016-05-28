@@ -54,7 +54,7 @@ public:
     static Manager& getInstance();
 
     const std::shared_ptr<Literal>& getIdentifier(const std::string&) const;
-    const Settings& getSettings() { return settings; }
+    Settings& getSettings() { return settings; }
     void addIdentifier(const std::string&, const std::shared_ptr<Literal>) ;
     void changeIdentifier(const std::string&, const std::string&, const std::shared_ptr<Literal>);
     const std::map<const std::string,std::shared_ptr<Literal>> getProgramsIdentifiers() const;
