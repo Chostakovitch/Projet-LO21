@@ -40,6 +40,11 @@ void Manager::changeIdentifier(const std::string& key, const std::string& newKey
     saveState();
 }
 
+void Manager::deleteIdentifier(const std::string& key) {
+    identifiers.erase(key);
+    saveState();
+}
+
 const std::map<const std::string,std::shared_ptr<Literal>> Manager::getProgramsIdentifiers() const {
     std::map<const std::string,std::shared_ptr<Literal>> result;
     for (auto& prog : identifiers) {

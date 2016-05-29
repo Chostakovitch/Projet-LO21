@@ -103,6 +103,15 @@ int main(int argc, char *argv[])
     }
 
     putchar('\n');*/
+    auto a1 = LiteralFactory::getInstance().makeLiteralFromString("[4 + 3]");
+    Manager::getInstance().addIdentifier("TEST", a1);
+    auto a2 = LiteralFactory::getInstance().makeLiteralFromString("3.14");
+    Manager::getInstance().addIdentifier("PI", a2);
+    auto a3 = LiteralFactory::getInstance().makeLiteralFromString("[4 + 3]");
+    Manager::getInstance().addIdentifier("TEST34", a3);
+    auto a4 = LiteralFactory::getInstance().makeLiteralFromString("3.14");
+    Manager::getInstance().addIdentifier("TEST567", a4);
+
 
     QApplication a(argc, argv);
     UTComputer w;

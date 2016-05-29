@@ -3,6 +3,7 @@
 
 
 #include <QToolButton>
+#include <QPushButton>
 
 class Button : public QToolButton
 {
@@ -11,6 +12,15 @@ class Button : public QToolButton
 public:
     explicit Button(const QString &text, QWidget *parent = 0);
     QSize sizeHint() const Q_DECL_OVERRIDE;
+};
+
+class ButtonIdentifier : public QPushButton
+{
+    Q_OBJECT
+    std::string keyIdentifier;
+public :
+    explicit ButtonIdentifier(const QString &text, std::string key) : QPushButton(text), keyIdentifier(key) {}
+    std::string getKeyIdentifier() const { return keyIdentifier; }
 };
 
 #endif // BUTTON_H
