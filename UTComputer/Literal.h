@@ -126,7 +126,7 @@ public:
      * @details L'objet courant est défini comme partie réelle du ComplexLiteral, sa partie imaginaire est mise à 0.
      */
     operator ComplexLiteral() const override;
-	std::string toString() const override { return std::to_string(value); }
+    std::string toString() const override { return std::to_string(value); }
 };
 
 /**
@@ -170,7 +170,7 @@ public:
      * @details L'objet courant est défini comme partie réelle du ComplexLiteral, sa partie imaginaire est mise à 0.
      */
     operator ComplexLiteral() const override;
-	std::string toString() const override { return num.toString() + '/' + den.toString(); }
+    std::string toString() const override { return num.toString() + '/' + den.toString(); }
 };
 
 /**
@@ -197,7 +197,7 @@ public:
      * @details L'objet courant est défini comme partie réelle du ComplexLiteral, sa partie imaginaire est mise à 0.
      */
     operator ComplexLiteral() const override;
-	std::string toString() const override { return std::to_string(value); }
+    std::string toString() const override { return std::to_string(value); }
 };
 
 /**
@@ -231,7 +231,7 @@ public:
      * @return Référence constante sur nombre.
      */
     const std::shared_ptr<NumericLiteral>& getIm() const { return im; }
-	std::string toString() const override { return re->toString() + "$" + im->toString(); }
+    std::string toString() const override { return re->toString() + "$" + im->toString(); }
 };
 
 /**

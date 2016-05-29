@@ -13,8 +13,7 @@ class Literal;
  * @brief Un objet UTException représente une exception générée par UTComputer à tout moment
  * du programme. Elle est affinée par des classes d'exception filles en fonction du contexte.
  */
-class UTException : public std::exception
-{
+class UTException : public std::exception {
 protected:
     /**
      * @brief Message représentant l'exception.
@@ -27,7 +26,7 @@ protected:
     /**
      * @brief Exceptions sous-jacentes pour complément d'information.
      */
-    std::vector<std::shared_ptr<UTException>> subexcs;
+    std::vector<std::shared_ptr<const UTException>> subexcs;
     /**
      * @brief Nom de classe représentant l'expression.
      * @return Chaîne de caractères format C.
@@ -58,7 +57,7 @@ public:
      * @brief Renvoie un pointeur vers un objet similaire à l'actuel.
      * @return Pointeur sur UTException.
      */
-    virtual std::shared_ptr<UTException> clone() const { return std::make_shared<UTException>(*this); }
+    virtual const std::shared_ptr<const UTException> clone() const { return std::make_shared<UTException>(*this); }
     /**
      * @brief Destructeur virtuel vide.
      */
@@ -77,7 +76,7 @@ class ParsingError : public UTException {
     const char* classname() const override { return "ParsingError";}
 public:
     ParsingError(std::string token, std::string info);
-    std::shared_ptr<UTException> clone() const override { return std::make_shared<ParsingError>(*this); }
+    const std::shared_ptr<const UTException> clone() const override { return std::make_shared<ParsingError>(*this); }
 };
 
 /**
@@ -96,7 +95,7 @@ class OperationError : public UTException {
     const char* classname() const override { return "OperationError";}
 public:
     OperationError(const std::shared_ptr<Operator>& op, const Arguments<std::shared_ptr<Literal>>& ops, std::string info);
-    std::shared_ptr<UTException> clone() const override { return std::make_shared<OperationError>(*this); }
+    const std::shared_ptr<const UTException> clone() const override { return std::make_shared<OperationError>(*this); }
 };
 
 /**
@@ -112,7 +111,7 @@ class TypeError : public UTException {
     const char* classname() const override { return "TypeError";}
 public:
     TypeError(std::string info, const Arguments<std::shared_ptr<Literal>>& ops = Arguments<std::shared_ptr<Literal>>());
-    std::shared_ptr<UTException> clone() const override { return std::make_shared<TypeError>(*this); }
+    const std::shared_ptr<const UTException> clone() const override { return std::make_shared<TypeError>(*this); }
 };
 
 #endif // UTEXCEPTION_H
