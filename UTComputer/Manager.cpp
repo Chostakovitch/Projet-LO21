@@ -159,8 +159,8 @@ void Manager::eval(std::vector<std::shared_ptr<Operand>> operands) {
             }
             //On tente d'effectuer l'opération (si elle est implémentée et si les types correspondent)
             try {
-                //On évalue le retour de l'opération, au cas où elle contiendrait de nouveaux opérateurs (e.g. EVAL pour une expression)
-                eval(OperatorManager::getInstance().dispatchOperation(op, args));
+                auto res = OperatorManager::getInstance().dispatchOperation(op, args);
+                for(auto& lit : res) pile.push(lit);
             }
             //Impossible d'effectuer l'opération : on restitue la pile avant l'opération en cours.
             catch(UTException& e) {

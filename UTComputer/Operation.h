@@ -14,15 +14,16 @@
 #include <functional>
 
 /**
- * @brief Un objet Operation définit un comportement sur des littérales spécifiques. Elle implémente soit un comportement pour un ensemble de pointeurs
+ * @brief Un objet Operation définit un comportement sur des littérales spécifiques.
+ * @details Elle implémente soit un comportement pour un ensemble de pointeurs
  * de littérale abstraites, soit un comportement pour un ensemble de littérales concrètes. Elle peut implémenter un comportement pour
- * plusieurs types de littérales concrètes. Une opération agit sur des littérales mais peut produire des littérales et des opérateurs.
- * Une classe Operation est implémentée comme "standalone". Dans un souci de modularité, elle ne doit pas faire référence à
- * d'autres objets Operation ou Operator.
+ * plusieurs types de littérales concrètes.
+ *
+ * On hérite de std::enable_shared_from_this afin de pouvoir renvoyer un shared_ptr sur this en tout sécurité, i.e. sans
+ * compromettre la gestion des propriétaires des pointeurs.
  */
-class Operation {
-public:
-    typedef Arguments<std::shared_ptr<Operand>> Result;
+class Operation : public std::enable_shared_from_this<Operation> {
+protected:
     typedef Arguments<std::shared_ptr<Literal>> Generic;
     typedef Arguments<IntegerLiteral> Integers;
     typedef Arguments<RationalLiteral> Rationals;
@@ -40,45 +41,51 @@ public:
      * @exception invalid_argument si non implémenté dans une sous-classe.
      * @return Ensemble résultat de pointeurs sur Operand.
      */
-    virtual Result eval(const Generic&);
+    virtual Generic eval(Generic) const;
     /**
      * @brief Opération sur des littérales entières.
      * @arg Ensemble de littérales entières IntegerLiteral wrappées dans un objet Arguments.
      * @exception invalid_argument si non implémenté dans une sous-classe.
      * @return Ensemble résultat de pointeurs sur Operand.
      */
-    virtual Result eval(const Integers&);
+    virtual Generic eval(Integers) const;
     /**
      * @brief Opération sur des littérales rationnelles.
      * @arg Ensemble de littérales rationnelles RationalLiteral wrappées dans un objet Arguments.
      * @exception invalid_argument si non implémenté dans une sous-classe.
      * @return Ensemble résultat de pointeurs sur Literal.
      */
-    virtual Result eval(const Rationals&);
+    virtual Generic eval(Rationals) const;
     /**
      * @brief Opération sur des littérales complexes.
      * @arg Ensemble de littérales complexes ComplexLiteral wrappées dans un objet Arguments.
      * @exception invalid_argument si non implémenté dans une sous-classe.
      * @return Ensemble résultat de pointeurs sur Operand.
      */
-    virtual Result eval(const Complexs&);
+    virtual Generic eval(Complexs) const;
     /**
      * @brief Opération sur des littérales réelles.
      * @arg Ensemble de littérales réelles RealLiteral wrappées dans un objet Arguments.
      * @exception invalid_argument si non implémenté dans une sous-classe.
      * @return Ensemble résultat de pointeurs sur Operand.
      */
-    virtual Result eval(const Reals&);
+    virtual Generic eval(Reals) const;
     /**
      * @brief Opération sur des littérales expressions.
      * @arg Ensemble de littérales réelles ExpressionLiteral wrappées dans un objet Arguments.
      * @exception invalid_argument si non implémenté dans une sous-classe.
      * @return Ensemble résultat de pointeurs sur Operand.
      */
-    virtual Result eval(const Expressions&);
+    virtual Generic eval(const Expressions) const;
     /**
      * @brief Destructeur virtuel.
      */
+public:
+    /**
+     * @brief Dispatch des opérandes vers la bonne opération via des casts.
+     * @return Résultat de l'opération.
+     */
+    static Generic applyOperation(const std::shared_ptr<const Operation> &op, Generic args);
     virtual ~Operation() {}
 };
 
@@ -88,23 +95,46 @@ public:
  */
 class PlusOperation : public Operation {
 public:
-    Result eval(const Integers& args) override;
-    Result eval(const Rationals& args) override;
-    Result eval(const Reals& args) override;
-    Result eval(const Complexs& args) override;
+    Generic eval(Integers args) const override;
+    Generic eval(Rationals args) const override;
+    Generic eval(Reals args) const override;
+    Generic eval(Complexs args) const override;
 };
 
-class MoinsOperation : public Operation {
+/**
+ * @brief Un objet MulOperation implémente l'opération de multiplication.
+ * @details Les littérales supportées sont IntegerLiteral, RationalLiteral, RealLiteral et ComplexLiteral.
+ */
+class MulOperation : public Operation {
+    Generic eval(Integers args) const override;
+    Generic eval(Rationals args) const override;
+    Generic eval(Reals args) const override;
+    Generic eval(Complexs args) const override;
+};
 
+/**
+ * @brief Un objet NegOperation implémente l'opération de négation. (en terme de multiplication par -1)
+ * @details Les littérales supportées sont IntegerLiteral, RationalLiteral, RealLiteral et ComplexLiteral.
+ */
+class NegOperation : public Operation {
+    Generic eval(Generic args) const override;
+};
+
+/**
+ * @brief Un objet MoinsOperation implémente l'opération de soustraction (en terme de négation et d'addition).
+ * @details Les littérales supportées sont IntegerLiteral, RationalLiteral, RealLiteral et ComplexLiteral.
+ */
+class MoinsOperation : public Operation {
+    Generic eval(Generic args) const override;
 };
 
 class ComplexOperation : public Operation {
-    Result eval(const Generic& args);
+    Generic eval(Generic args) const override;
 };
 
 class STOOperarion : public Operation {
 public:
-    Result eval(const Generic& args) override;
+    Generic eval(Generic args) const override;
 };
 
 #endif

@@ -17,20 +17,12 @@
 OperatorManager::OperatorManager() : minus_symbol("-") {
     //Création des opérateurs symboliques
     operators.push_back(std::make_shared<SymbolicOperator>("+", 2, std::make_shared<PlusOperation>(), true, 0)); //Addition
-    operators.push_back(std::make_shared<SymbolicOperator>("$", 2, std::make_shared<ComplexOperation>(), true, 2));
+    operators.push_back(std::make_shared<SymbolicOperator>("-", 2, std::make_shared<MoinsOperation>(), true, 0)); //Soustraction
+    operators.push_back(std::make_shared<SymbolicOperator>("*", 2, std::make_shared<MulOperation>(), true, 1)); //Multiplication
+    operators.push_back(std::make_shared<SymbolicOperator>("$", 2, std::make_shared<ComplexOperation>(), true, 2)); //Complexe
 
     //Création des opérateurs parenthésés
-    operators.push_back(std::make_shared<FunctionOperator>("POW", 2, std::make_shared<Operation>(), true)); //Exemple
-    operators.push_back(std::make_shared<FunctionOperator>("SIN", 2, std::make_shared<Operation>(), true)); //Exemple
-    operators.push_back(std::make_shared<FunctionOperator>("STO", 2, std::make_shared<Operation>(), false)); //Exemple
-    auto eval = std::make_shared<FunctionOperator>("EVAL", 1, std::make_shared<PlusOperation>(), false); //Exemple
-    operators.push_back(eval);
-
-    //Définition de la priorité des casts numériques
-    numericPriority.push_back(&applyOperation<IntegerLiteral>);
-    numericPriority.push_back(&applyOperation<RationalLiteral>);
-    numericPriority.push_back(&applyOperation<RealLiteral>);
-    numericPriority.push_back(&applyOperation<ComplexLiteral>);
+    operators.push_back(std::make_shared<FunctionOperator>("NEG", 1, std::make_shared<NegOperation>(), true)); //Négation
 }
 
 const OperatorManager& OperatorManager::getInstance() {
@@ -62,38 +54,27 @@ std::vector<std::shared_ptr<Operator>> OperatorManager::getSymbolicOperators() c
     return res;
 }
 
-Arguments<std::shared_ptr<Operand>> OperatorManager::dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const {
+Arguments<std::shared_ptr<Literal>> OperatorManager::dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const {
     if (op->getArity() != args.size()) throw TypeError("Wrong number of operands.", args);
-    //Si l'opération définit une méthode d'évaluation générique, on l'appelle ici
+    //Si l'opération définit une méthode d'évaluation qui convient, on l'applique
     try {
-        return op->getOperation()->eval(args);
+        return Operation::applyOperation(op->getOperation(), args);
     }
-    //Sinon, on tente d'appliquer l'opération sur des types homogènes numériques concrèts
+    //Aucune conversion trouvée pour les littérales, on ne peut appliquer aucune opération.
+    catch(TypeError& e) {
+        throw OperationError(op, args, "Failed to apply operation.").add(e);
+    }
+    //L'opération n'est pas implémentée ou a échoué.
     catch(UTException& e) {
-        for(auto caller : numericPriority) {
-            try {
-                return caller(op->getOperation(), args);
-            }
-            catch(TypeError& e1) { e.add(e1); }
-            //Cas où les littéraux sont homogènes et l'opération existe, mais échoue.
-            catch(UTException& e2) {
-                throw OperationError(op, args, "Operation doesn't define a behaviour for this type of operands.").add(e).add(e2);
-            }
+        try {
+            //Si l'opérateur est numérique, essayer d'appliquer l'opération membre sur des littérales expressions.
+            if(op->isNumeric()) return Arguments<std::shared_ptr<Literal>>{opExpression(op, (Arguments<ExpressionLiteral>)args)};
+            else throw OperationError(op, args, "Non-numeric operator : could not apply member operation.").add(e);
         }
-    }
-    //Aucune conversion vers des littérales numériques n'a été trouvée : on tente de caster en littérales expressions.
-    try {
-        //Si l'opérateur est numérique, il faut utiliser la méthode d'évaluation membre.
-        if(op->isNumeric()) return Arguments<std::shared_ptr<Operand>>{opExpression(op, (Arguments<ExpressionLiteral>)args)};
-        //Sinon, on tente de trouver une méthode d'évaluation sur LiteralExpression (ex : opérateur EVAL -> non numérique et s'applique sur LiteralExpression).
-        return applyOperation<ExpressionLiteral>(op->getOperation(), args);
-    }
-    //Aucun comportement valable pour cet opérateur et ces opérandes.
-    catch(UTException& e) {
-        throw OperationError(op, args, "Operation doesn't define a behaviour for ExpressionLiteral.");
-    }
-    catch(std::bad_cast& e) {
-        throw OperationError(op, args, "Operands can't be uniformized (promotion failed).");
+        //Aucune opération applicable.
+        catch(TypeError& e1) {
+            throw OperationError(op, args, "Failed to apply operation.").add(e1).add(e);
+        }
     }
 }
 

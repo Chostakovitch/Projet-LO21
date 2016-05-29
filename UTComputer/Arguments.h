@@ -23,7 +23,7 @@ public:
  * Usuellement, T = Literal. Le polymorphisme s'appliquant, les bons opérateurs de cast des classes filles sont appelés s'ils existent.
  * Le but de cette opération est d'uniformiser le vecteur qui peut contenir des pointeurs sur classes soeurs, nécessitant la création de nouveaux objets
  * et non pas un simple cast dynamique.
- * @exception bad_cast si l'opérateur de cast U(T) n'est pas implémenté.
+ * @exception TypeError si l'opérateur de cast U(T) n'est pas implémenté.
  */
 template <typename T>
 class Arguments<std::shared_ptr<T>> : public std::vector<std::shared_ptr<T>> {

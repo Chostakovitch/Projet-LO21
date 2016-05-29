@@ -3,87 +3,147 @@
 #include "Manager.h"
 #include "UTException.h"
 
-Operation::Result Operation::eval(const Operation::Generic&) {
+Operation::Generic Operation::applyOperation(const std::shared_ptr<const Operation> &op, Generic args) {
+    //Tentative d'application de l'opération générique
+    try {
+        return op->eval(args);
+    } catch(UTException& e) {
+        //Sinon, on tente de caster successivement les littérales par ordre de généralité
+        try {
+            return op->eval((Operation::Integers)args);
+        } catch(TypeError& e1) {
+            e1.add(e);
+            try {
+                return op->eval((Operation::Rationals)args);
+            } catch(TypeError& e2) {
+                e2.add(e1);
+                try {
+                    return op->eval((Operation::Complexs)args);
+                } catch(TypeError& e3) {
+                    e3.add(e2);
+                    try {
+                        return op->eval((Operation::Reals)args);
+                    } catch(TypeError& e4) {
+                        e4.add(e3);
+                        try {
+                            return op->eval((Operation::Expressions)args);
+                        } catch(TypeError& e5) {
+                            e5.add(e4);
+                            throw TypeError("Operands could not be uniformized", args).add(e5);
+                        }
+                    }
+                }
+            }
+        }
+        //Cas où le cast est effectué mais l'opération ne fonctionne pas
+        catch(UTException& e) {
+            throw UTException("Operands have been uniformized but operation was unimplemented or unsuccessful.").add(e);
+        }
+    }
+}
+
+Operation::Generic Operation::eval(Operation::Generic) const {
     throw UTException("Generic operation not implemented.");
 }
 
-Operation::Result Operation::eval(const Operation::Integers&) {
+Operation::Generic Operation::eval(Operation::Integers) const {
     throw UTException("Operation not implemented for IntegerLiteral.");
 }
-Operation::Result Operation::eval(const Operation::Rationals&) {
+Operation::Generic Operation::eval(Operation::Rationals) const {
     throw UTException("Operation not implemented for RationalLiteral.");
 }
-Operation::Result Operation::eval(const Operation::Complexs&) {
+Operation::Generic Operation::eval(Operation::Complexs) const {
     throw UTException("Operation not implemented for ComplexLiteral.");
 }
 
-Operation::Result Operation::eval(const Operation::Reals&) {
+Operation::Generic Operation::eval(Operation::Reals) const {
     throw UTException("Operation not implemented for RealLiteral.");
 }
 
-Operation::Result Operation::eval(const Operation::Expressions&) {
+Operation::Generic Operation::eval(Operation::Expressions) const {
     throw UTException("Operation not implemented for ExpressionLiteral.");
 }
 
-Operation::Result PlusOperation::eval(const Operation::Integers& args) {
-    return Operation::Result{LiteralFactory::getInstance().makeLiteral(args.at(0).getValue() + args.at(1).getValue())};
+Operation::Generic PlusOperation::eval(Operation::Integers args) const {
+    return {LiteralFactory::getInstance().makeLiteral(args.front().getValue() + args.back().getValue())};
 }
 
-Operation::Result PlusOperation::eval(const Operation::Rationals& args) {
-	IntegerLiteral a = args.at(0).getNum(), b = args.at(0).getDen(), c = args.at(1).getNum(), d = args.at(1).getDen();
+Operation::Generic PlusOperation::eval(Operation::Rationals args) const {
+    IntegerLiteral a = args.front().getNum(), b = args.front().getDen(), c = args.back().getNum(), d = args.back().getDen();
 
     //Calcul du résultat via le dénominateur commun : la simplification est déléguée à la fabrique.
-	int e = a.getValue() * d.getValue() + b.getValue() * c.getValue(), f = b.getValue() * d.getValue();
-    return Operation::Result{LiteralFactory::getInstance().makeLiteral(e, f)};
+    int num = a.getValue() * d.getValue() + b.getValue() * c.getValue();
+    int den = b.getValue() * d.getValue();
+    return {LiteralFactory::getInstance().makeLiteral(num, den)};
 }
 
-Operation::Result PlusOperation::eval(const Operation::Reals& args) {
-    return Operation::Result{LiteralFactory::getInstance().makeLiteral(args.at(0).getValue() + args.at(1).getValue())};
+Operation::Generic PlusOperation::eval(Operation::Reals args) const {
+    return {LiteralFactory::getInstance().makeLiteral(args.front().getValue() + args.back().getValue())};
 }
 
-Operation::Result PlusOperation::eval(const Operation::Complexs& args) {
-    Operation::Generic re{args.at(0).getRe(), args.at(1).getRe()};
-    Operation::Generic im{args.at(0).getIm(), args.at(1).getIm()};
-    std::shared_ptr<Operand> new_re, new_im;
+Operation::Generic PlusOperation::eval(Operation::Complexs args) const {
+    std::shared_ptr<Literal> new_re, new_im;
     std::shared_ptr<NumericLiteral> res_re, res_im;
-    try {
-        new_re = eval((Operation::Integers)re).at(0);
-    } catch(UTException& e1) {
-        try {
-            new_re = eval((Operation::Rationals)re).at(0);
-        } catch(UTException& e2) {
-            try {
-                new_re = eval((Operation::Reals)re).at(0);
-            } catch(UTException& e3) { throw UTException("Can't perform PlusOperation on the real part of complexs").add(e3).add(e2).add(e1); }
-        }
-    }
-    try {
-        new_im = eval((Operation::Integers)im).at(0);
-    } catch(UTException& e1) {
-        try {
-            new_im = eval((Operation::Rationals)im).at(0);
-        } catch(UTException& e2) {
-            try {
-                new_im = eval((Operation::Reals)im).at(0);
-            } catch(UTException& e3) { throw UTException("Can't perform PlusOperation on the imaginary part of complexs").add(e3).add(e2).add(e1); }
-        }
-    }
+    //Appel du plus sur les autres opérations
+    new_re = applyOperation(shared_from_this(), {args.front().getRe(), args.back().getRe()}).front();
+    new_im = applyOperation(shared_from_this(), {args.front().getIm(), args.back().getIm()}).front();
     res_re = std::dynamic_pointer_cast<NumericLiteral>(new_re);
     res_im = std::dynamic_pointer_cast<NumericLiteral>(new_im);
     if(!(res_re && res_im)) throw UTException("Result of operation on real or imaginary part incompatible with complexs.");
-    return Operation::Result{LiteralFactory::getInstance().makeLiteral(res_re, res_im)};
+    return {LiteralFactory::getInstance().makeLiteral(res_re, res_im)};
 }
 
-Operation::Result STOOperarion::eval(const Operation::Generic& args) {
-    // Verifier qu'on a bien une expression
-    ExpressionLiteral exp = ExpressionLiteral(*args.at(1).get());
-    Manager::getInstance().addIdentifier(exp.toString(),args.at(0));
-    return Operation::Result{};
+
+Operation::Generic MulOperation::eval(Operation::Integers args) const {
+    return {LiteralFactory::getInstance().makeLiteral(args.front().getValue() * args.back().getValue())};
 }
 
-Operation::Result ComplexOperation::eval(const Operation::Generic& args) {
-    auto re = std::dynamic_pointer_cast<NumericLiteral>(args.at(0));
-    auto im = std::dynamic_pointer_cast<NumericLiteral>(args.at(1));
-    if(re && im) return Operation::Result{LiteralFactory::getInstance().makeLiteral(re, im)};
+Operation::Generic MulOperation::eval(Operation::Rationals args) const {
+    IntegerLiteral a = args.front().getNum(), b = args.front().getDen(), c = args.back().getNum(), d = args.back().getDen();
+    int num = a.getValue() * c.getValue();
+    int den = b.getValue() * d.getValue();
+    return Operation::Generic{LiteralFactory::getInstance().makeLiteral(num, den)};
+}
+
+Operation::Generic MulOperation::eval(Operation::Reals args) const {
+    return {LiteralFactory::getInstance().makeLiteral(args.front().getValue() * args.back().getValue())};
+}
+
+Operation::Generic MulOperation::eval(Operation::Complexs args) const {
+    std::shared_ptr<Literal> new_re, new_im;
+    std::shared_ptr<NumericLiteral> res_re, res_im;
+    new_re = applyOperation(std::make_shared<MoinsOperation>(), \
+        {applyOperation(shared_from_this(), {args.front().getRe(), args.back().getRe()}).front(), \
+         applyOperation(shared_from_this(), {args.front().getIm(), args.back().getIm()}).front()}).front();
+    new_im = applyOperation(std::make_shared<PlusOperation>(), \
+        {applyOperation(shared_from_this(), {args.front().getRe(), args.back().getIm()}).front(), \
+         applyOperation(shared_from_this(), {args.front().getIm(), args.back().getRe()}).front()}).front();
+    res_re = std::dynamic_pointer_cast<NumericLiteral>(new_re);
+    res_im = std::dynamic_pointer_cast<NumericLiteral>(new_im);
+    if(!(res_re && res_im)) throw UTException("Result of operation on real or imaginary part incompatible with complexs.");
+    return {LiteralFactory::getInstance().makeLiteral(res_re, res_im)};
+}
+
+Operation::Generic ComplexOperation::eval(Operation::Generic args) const {
+    auto re = std::dynamic_pointer_cast<NumericLiteral>(args.front());
+    auto im = std::dynamic_pointer_cast<NumericLiteral>(args.back());
+    if(re && im) return Operation::Generic{LiteralFactory::getInstance().makeLiteral(re, im)};
     throw UTException("Unable to make ComplexLiteral from other operands than NumericLiteral's");
+}
+
+Operation::Generic STOOperarion::eval(Operation::Generic args) const {
+    // Verifier qu'on a bien une expression
+    ExpressionLiteral exp = ExpressionLiteral(*args.back().get());
+    Manager::getInstance().addIdentifier(exp.toString(),args.front());
+    return {};
+}
+
+Operation::Generic NegOperation::eval(Operation::Generic args) const {
+    args.push_back(LiteralFactory::getInstance().makeLiteral(-1));
+    return applyOperation(std::make_shared<MulOperation>(), args);
+}
+
+Operation::Generic MoinsOperation::eval(Operation::Generic args) const {
+    args.back() = applyOperation(std::make_shared<NegOperation>(), {args.back()}).front();
+    return applyOperation(std::make_shared<PlusOperation>(), args);
 }

@@ -28,22 +28,21 @@ const LiteralFactory& LiteralFactory::getInstance() {
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeInteger(const std::string& s) const {
-    try {
-        int n = std::stoi(s);
-        auto d = std::to_string(n);
-        if(std::to_string(n) != s || n < 0) throw ParsingError(s, "Unsigned number needed.");
-        return makeLiteral(n);
-    }
-    catch(std::exception& e) { throw ParsingError(s, e.what()); }
+    std::istringstream iss(s);
+    int n;
+    char c;
+    if(!(iss >> n) || iss >> c) throw ParsingError(s, "Not an integer.");
+    if(n < 0) throw ParsingError(s, "Unsigned integer needed.");
+    return makeLiteral(n);
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeReal(const std::string& s) const {
-    try {
-        double d = std::stod(s);
-        if(d < 0) throw ParsingError(s, "Positive flotting point number needed.");
-        return makeLiteral(d);
-    }
-    catch(std::exception& e) { throw ParsingError(s, e.what()); }
+    std::istringstream iss(s);
+    double d;
+    char c;
+    if(!(iss >> d) || iss >> c ) throw ParsingError(s, "Not a floating point number.");
+    if(d < 0) throw ParsingError(s, "Positive floating point number needed.");
+    return makeLiteral(d);
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeExpression(const std::string& s) const {
