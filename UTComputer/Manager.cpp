@@ -139,7 +139,7 @@ void Manager::handleOperandLine(std::string command) {
     //Si quelque chose s'est mal passé, on restaure la pile avant l'évaluation
     catch(UTException& e) {
         restoreState(backup[currentState]);
-        throw e; //TODO : voir quoi faire ici
+        throw e;
     }
 }
 

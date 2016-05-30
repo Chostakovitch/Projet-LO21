@@ -116,13 +116,6 @@ Operation::Generic ComplexOperation::eval(Operation::Generic args) const {
     throw UTException("Unable to make ComplexLiteral from other operands than NumericLiteral's");
 }
 
-Operation::Generic STOOperarion::eval(Operation::Generic args) const {
-    // Verifier qu'on a bien une expression
-    ExpressionLiteral exp = ExpressionLiteral(*args.back().get());
-    Manager::getInstance().addIdentifier(exp.toString(),args.front());
-    return {};
-}
-
 Operation::Generic NegOperation::eval(Operation::Generic args) const {
     args.push_back(LiteralFactory::getInstance().makeLiteral(-1));
     return applyOperation(std::make_shared<MulOperation>(), args);
@@ -131,4 +124,12 @@ Operation::Generic NegOperation::eval(Operation::Generic args) const {
 Operation::Generic MoinsOperation::eval(Operation::Generic args) const {
     args.back() = applyOperation(std::make_shared<NegOperation>(), {args.back()}).front();
     return applyOperation(std::make_shared<PlusOperation>(), args);
+}
+
+Operation::Generic STOOperation::eval(Operation::Generic args) const {
+    // Verifier qu'on a bien une expression
+    throw UTException("test");
+    /*ExpressionLiteral exp = ExpressionLiteral(*args.back().get());
+    Manager::getInstance().addIdentifier(exp.toString(),args.front());
+    return {};*/
 }

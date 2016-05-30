@@ -134,7 +134,7 @@ class ComplexOperation : public Operation {
     Generic eval(Generic args) const override;
 };
 
-class STOOperarion : public Operation {
+class STOOperation : public Operation {
 public:
     Generic eval(Generic args) const override;
 };

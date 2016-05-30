@@ -13,23 +13,9 @@
 #include "UTException.h"
 
 int main(int argc, char *argv[])
-{
-    try {
-        Manager::getInstance().handleOperandLine("3 4.5 +");
-        auto pile = Manager::getInstance().getPile();
-        for(auto it = pile.begin(); it != pile.end(); ++it) {
-            std::cout << (*it)->toString() << " " << std::endl;
-        }
-    } catch(UTException& e) {
-        std::cout << e.details() << std::endl;
-    }
-
-    putchar('\n');
-
-    /*QApplication a(argc, argv);
+{    
+    QApplication a(argc, argv);
     UTComputer w;
     w.show();
-    return a.exec();*/
-
-    return 0;
+    return a.exec();
 }

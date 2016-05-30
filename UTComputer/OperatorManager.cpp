@@ -23,6 +23,7 @@ OperatorManager::OperatorManager() : minus_symbol("-") {
 
     //Création des opérateurs parenthésés
     operators.push_back(std::make_shared<FunctionOperator>("NEG", 1, std::make_shared<NegOperation>(), true)); //Négation
+    operators.push_back(std::make_shared<FunctionOperator>("STO", 2, std::make_shared<STOOperation>(), true)); //A compléter
 }
 
 const OperatorManager& OperatorManager::getInstance() {
