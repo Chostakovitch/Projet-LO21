@@ -15,7 +15,7 @@
 int main(int argc, char *argv[])
 {
     try {
-        Manager::getInstance().handleOperandLine("3 4.5 $ NEG");
+        Manager::getInstance().handleOperandLine("3 4.5 +");
         auto pile = Manager::getInstance().getPile();
         for(auto it = pile.begin(); it != pile.end(); ++it) {
             std::cout << (*it)->toString() << " " << std::endl;

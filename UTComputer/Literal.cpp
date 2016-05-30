@@ -19,4 +19,4 @@ IntegerLiteral::operator ComplexLiteral() const { return ComplexLiteral(std::mak
 RationalLiteral::operator RealLiteral() const { return RealLiteral(num.getValue() / (double)den.getValue()); }
 RationalLiteral::operator ComplexLiteral() const { return ComplexLiteral(std::make_shared<RationalLiteral>(*this), std::make_shared<IntegerLiteral>(0)); }
 
-RealLiteral::operator ComplexLiteral() const { return ComplexLiteral(std::make_shared<IntegerLiteral>(*this), std::make_shared<IntegerLiteral>(0)); }
+RealLiteral::operator ComplexLiteral() const { return ComplexLiteral(std::make_shared<RealLiteral>(*this), std::make_shared<IntegerLiteral>(0)); }

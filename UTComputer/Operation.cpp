@@ -11,33 +11,28 @@ Operation::Generic Operation::applyOperation(const std::shared_ptr<const Operati
         //Sinon, on tente de caster successivement les littérales par ordre de généralité
         try {
             return op->eval((Operation::Integers)args);
-        } catch(TypeError& e1) {
+        } catch(UTException& e1) {
             e1.add(e);
             try {
                 return op->eval((Operation::Rationals)args);
-            } catch(TypeError& e2) {
+            } catch(UTException& e2) {
                 e2.add(e1);
                 try {
-                    return op->eval((Operation::Complexs)args);
-                } catch(TypeError& e3) {
+                    return op->eval((Operation::Reals)args);
+                } catch(UTException& e3) {
                     e3.add(e2);
                     try {
-                        return op->eval((Operation::Reals)args);
-                    } catch(TypeError& e4) {
+                        return op->eval((Operation::Complexs)args);
+                    } catch(UTException& e4) {
                         e4.add(e3);
                         try {
                             return op->eval((Operation::Expressions)args);
-                        } catch(TypeError& e5) {
-                            e5.add(e4);
-                            throw TypeError("Operands could not be uniformized", args).add(e5);
+                        } catch(UTException& e5) {
+                            throw e5.add(e4);
                         }
                     }
                 }
             }
-        }
-        //Cas où le cast est effectué mais l'opération ne fonctionne pas
-        catch(UTException& e) {
-            throw UTException("Operands have been uniformized but operation was unimplemented or unsuccessful.").add(e);
         }
     }
 }
@@ -63,11 +58,6 @@ Operation::Generic Operation::eval(Operation::Reals) const {
 Operation::Generic Operation::eval(Operation::Expressions) const {
     throw UTException("Operation not implemented for ExpressionLiteral.");
 }
-
-Operation::Generic PlusOperation::eval(Operation::Integers args) const {
-    return {LiteralFactory::getInstance().makeLiteral(args.front().getValue() + args.back().getValue())};
-}
-
 Operation::Generic PlusOperation::eval(Operation::Rationals args) const {
     IntegerLiteral a = args.front().getNum(), b = args.front().getDen(), c = args.back().getNum(), d = args.back().getDen();
 
@@ -91,11 +81,6 @@ Operation::Generic PlusOperation::eval(Operation::Complexs args) const {
     res_im = std::dynamic_pointer_cast<NumericLiteral>(new_im);
     if(!(res_re && res_im)) throw UTException("Result of operation on real or imaginary part incompatible with complexs.");
     return {LiteralFactory::getInstance().makeLiteral(res_re, res_im)};
-}
-
-
-Operation::Generic MulOperation::eval(Operation::Integers args) const {
-    return {LiteralFactory::getInstance().makeLiteral(args.front().getValue() * args.back().getValue())};
 }
 
 Operation::Generic MulOperation::eval(Operation::Rationals args) const {

@@ -55,26 +55,25 @@ std::vector<std::shared_ptr<Operator>> OperatorManager::getSymbolicOperators() c
 }
 
 Arguments<std::shared_ptr<Literal>> OperatorManager::dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const {
+    //0. Vérifications
     if (op->getArity() != args.size()) throw TypeError("Wrong number of operands.", args);
-    //Si l'opération définit une méthode d'évaluation qui convient, on l'applique
+
+    //1. Cas particuliers
+    //1.1. Un objet LiteralExpression est présent dans les opérandes et l'opérateur est numérique : méthode membre.
+    if(op->isNumeric()) {
+        for(auto& arg : args) {
+            if(std::dynamic_pointer_cast<ExpressionLiteral>(arg)) return Arguments<std::shared_ptr<Literal>>{opExpression(op, (Arguments<ExpressionLiteral>)args)};
+        }
+    }
+    //1.2. [...] (eval, memento) TODO
+
+    //2. Appel de la méthode d'évaluation générique de l'opérateur.
     try {
         return Operation::applyOperation(op->getOperation(), args);
     }
-    //Aucune conversion trouvée pour les littérales, on ne peut appliquer aucune opération.
-    catch(TypeError& e) {
-        throw OperationError(op, args, "Failed to apply operation.").add(e);
-    }
-    //L'opération n'est pas implémentée ou a échoué.
+    //3. Uniformisation impossible ou opération non-implémentée / ayant provoqué une erreur.
     catch(UTException& e) {
-        try {
-            //Si l'opérateur est numérique, essayer d'appliquer l'opération membre sur des littérales expressions.
-            if(op->isNumeric()) return Arguments<std::shared_ptr<Literal>>{opExpression(op, (Arguments<ExpressionLiteral>)args)};
-            else throw OperationError(op, args, "Non-numeric operator : could not apply member operation.").add(e);
-        }
-        //Aucune opération applicable.
-        catch(TypeError& e1) {
-            throw OperationError(op, args, "Failed to apply operation.").add(e1).add(e);
-        }
+        throw e;
     }
 }
 
