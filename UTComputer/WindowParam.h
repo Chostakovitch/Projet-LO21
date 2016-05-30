@@ -3,13 +3,9 @@
 
 #include <QWindow>
 #include <QWidget>
+#include <QTableWidget>
 
-class WindowParam : public QWidget
-{
-    Q_OBJECT
-public:
-    WindowParam(QWidget* parent = 0);
-};
+class WindowParam;
 
 class ParamTab : public QWidget
 {
@@ -21,15 +17,35 @@ public:
 class VariableTab : public QWidget
 {
     Q_OBJECT
+    QTableWidget *viewVariable;
+public slots:
+    void deleteIdentifier();
 public:
-    VariableTab(QWidget* parent = 0);
+    VariableTab(WindowParam* parent = 0);
+    void refresh();
 };
 
 class ProgramTab : public QWidget
 {
     Q_OBJECT
+    QTableWidget *viewProgram;
+public slots:
+    void deleteIdentifier();
 public:
-    ProgramTab(QWidget* parent = 0);
+    ProgramTab(WindowParam* parent = 0);
+    void refresh();
+};
+
+class WindowParam : public QWidget
+{
+    Q_OBJECT
+    ParamTab *paramTab;
+    VariableTab *variableTab;
+    ProgramTab *programTab;
+public slots:
+    void quit();
+public:
+    WindowParam(QWidget* parent = 0);
 };
 
 #endif // WINDOWPARAM_H

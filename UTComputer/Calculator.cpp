@@ -19,7 +19,7 @@ Calculator::Calculator(QWidget *parent)  {
     message = new QLineEdit();
     message->setReadOnly(true);
     message->setStyleSheet("background-color:blue;");
-    connect(message, SIGNAL(returnPressed()), this, SLOT(keyPressedCommandLine()));
+    //connect(message, SIGNAL(returnPressed()), this, SLOT(keyPressedCommandLine()));
     topLayout->addWidget(message);
 
     viewPile = new QTableWidget();
@@ -65,7 +65,6 @@ void Calculator::displayKeyboardChanged(int newValue) {
 }
 
 void Calculator::nbLineDisplayPileChanged(int newValue) {
-
     Manager::getInstance().getSettings().setNbLinesDisplayPile(newValue);
     viewPile->setRowCount(Manager::getInstance().getSettings().getNbLinesDisplayPile());
 }
