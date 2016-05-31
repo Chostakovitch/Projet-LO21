@@ -33,6 +33,9 @@ void Manager::addIdentifier(const std::string& id, std::shared_ptr<Literal> lit)
     identifiers[id] = lit;
     saveState();
 }
+void Manager::addIdentifier(const std::string& id, const std::string&  lit) {
+    addIdentifier(id, LiteralFactory::getInstance().makeLiteral(lit));
+}
 
 void Manager::changeIdentifier(const std::string& key, const std::string& newKey, const std::shared_ptr<Literal> newValue) {
     identifiers.erase(key);

@@ -24,16 +24,12 @@ WindowParam::WindowParam(QWidget* parent) : QWidget(){
     tab->addTab(programTab, "Programs");
 
     QPushButton *buttonCancel = new QPushButton("&Close", this);
-    connect(buttonCancel, SIGNAL(clicked(bool)), this, SLOT(quit()));
+    connect(buttonCancel, SIGNAL(clicked(bool)), this, SLOT(close()));
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(tab);
     layout->addWidget(buttonCancel);
     setLayout(layout);
-}
-
-void WindowParam::quit() {
-    this->close();
 }
 
 void VariableTab::deleteIdentifier() {
@@ -46,6 +42,20 @@ void ProgramTab::deleteIdentifier() {
     ButtonIdentifier *button = qobject_cast<ButtonIdentifier *>(sender());
     Manager::getInstance().deleteIdentifier(button->getKeyIdentifier());
     refresh();
+}
+
+void WindowParam::addIdentifier() {
+    ButtonIdentifier *button = qobject_cast<ButtonIdentifier *>(sender());
+    WindowAddIdentifier* window = new WindowAddIdentifier(this);
+    window->show();
+}
+
+void WindowParam::refreshVariable() {
+    variableTab->refresh();
+}
+
+void WindowParam::refreshProgram() {
+    programTab->refresh();
 }
 
 void VariableTab::refresh() {
@@ -79,7 +89,7 @@ void ProgramTab::refresh() {
         ButtonIdentifier *deleteButton = new ButtonIdentifier("X", v.first);
         connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteIdentifier()));
         ButtonIdentifier *editButton = new ButtonIdentifier("&Edit", v.first);
-        connect(editButton, SIGNAL(clicked(bool)), this, SLOT(editIdentifier()));
+        //connect(editButton, SIGNAL(clicked(bool)), parent(), SLOT(editIdentifier()));
         viewProgram->setCellWidget(count, 2, deleteButton);
         viewProgram->setCellWidget(count, 1, editButton);
         count++;
@@ -125,6 +135,7 @@ VariableTab::VariableTab(WindowParam* parent) : QWidget(parent) {
     }
 
     QPushButton *buttonAdd = new QPushButton("&Add", this);
+    connect(buttonAdd, SIGNAL(clicked(bool)), parent, SLOT(addIdentifier()));
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(buttonAdd);
@@ -146,7 +157,7 @@ ProgramTab::ProgramTab(WindowParam* parent) : QWidget(parent) {
         ButtonIdentifier *deleteButton = new ButtonIdentifier("X", v.first);
         connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteIdentifier()));
         ButtonIdentifier *editButton = new ButtonIdentifier("&Edit", v.first);
-        connect(editButton, SIGNAL(clicked(bool)), this, SLOT(editIdentifier()));
+        //connect(editButton, SIGNAL(clicked(bool)), this, SLOT(editIdentifier()));
         viewProgram->setCellWidget(count, 2, deleteButton);
         viewProgram->setCellWidget(count, 1, editButton);
 
@@ -154,9 +165,47 @@ ProgramTab::ProgramTab(WindowParam* parent) : QWidget(parent) {
     }
 
     QPushButton *buttonAdd = new QPushButton("&Add", this);
+    connect(buttonAdd, SIGNAL(clicked(bool)), parent, SLOT(addIdentifier()));
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(buttonAdd);
     layout->addWidget(viewProgram);
     setLayout(layout);
+}
+
+WindowAddIdentifier::WindowAddIdentifier(QWidget* parent) : QWidget(){
+    QVBoxLayout* mainLayout = new QVBoxLayout();
+
+    keyLineEdit = new QLineEdit();
+    valueLineEdit = new QLineEdit();
+
+    QFormLayout *formLayout = new QFormLayout;
+    formLayout->addRow(tr("&Key:"), keyLineEdit);
+    formLayout->addRow(tr("&Value:"), valueLineEdit);
+
+    QHBoxLayout* buttonLayout = new QHBoxLayout();
+    messageError = new QLabel();
+    QPushButton* saveButton = new QPushButton("&Save");
+    connect(saveButton, SIGNAL(clicked(bool)), this, SLOT(save()));
+    QPushButton* cancelButton = new QPushButton("&Cancel");
+    connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(close()));
+    connect(this, SIGNAL(destroyed(QObject*)), parent, SLOT(refreshVariable()));
+    connect(this, SIGNAL(destroyed(QObject*)), parent, SLOT(refreshProgram()));
+    buttonLayout->addWidget(messageError);
+    buttonLayout->addWidget(saveButton);
+    buttonLayout->addWidget(cancelButton);
+
+    mainLayout->addItem(formLayout);
+    mainLayout->addItem(buttonLayout);
+    setLayout(mainLayout);
+}
+
+void WindowAddIdentifier::save() {
+    if (keyLineEdit->text().isEmpty() || valueLineEdit->text().isEmpty()) messageError->setText("Please enter a key and a value");
+    //TO DO : Verifier si l'identifier n'existe pas déja.
+    else {
+        Manager::getInstance().addIdentifier(keyLineEdit->text().toStdString(), valueLineEdit->text().toStdString());
+        emit
+        close();
+    }
 }

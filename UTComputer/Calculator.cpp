@@ -67,6 +67,7 @@ void Calculator::displayKeyboardChanged(int newValue) {
 void Calculator::nbLineDisplayPileChanged(int newValue) {
     Manager::getInstance().getSettings().setNbLinesDisplayPile(newValue);
     viewPile->setRowCount(Manager::getInstance().getSettings().getNbLinesDisplayPile());
+    refreshPile();
 }
 
 void Calculator::addOperatorToCommand() {

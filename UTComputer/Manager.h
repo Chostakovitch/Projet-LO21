@@ -56,6 +56,7 @@ public:
     const std::shared_ptr<Literal>& getIdentifier(const std::string&) const;
     Settings& getSettings() { return settings; }
     void addIdentifier(const std::string&, const std::shared_ptr<Literal>) ;
+    void addIdentifier(const std::string&,const std::string&) ;
     void changeIdentifier(const std::string&, const std::string&, const std::shared_ptr<Literal>);
     void deleteIdentifier(const std::string&);
     const std::map<const std::string,std::shared_ptr<Literal>> getProgramsIdentifiers() const;

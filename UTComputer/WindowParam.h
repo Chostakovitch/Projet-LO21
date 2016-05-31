@@ -4,6 +4,7 @@
 #include <QWindow>
 #include <QWidget>
 #include <QTableWidget>
+#include <QLabel>
 
 class WindowParam;
 
@@ -11,7 +12,7 @@ class ParamTab : public QWidget
 {
     Q_OBJECT
 public:
-    ParamTab(QWidget* parent = 0);
+    explicit ParamTab(QWidget* parent = 0);
 };
 
 class VariableTab : public QWidget
@@ -21,7 +22,7 @@ class VariableTab : public QWidget
 public slots:
     void deleteIdentifier();
 public:
-    VariableTab(WindowParam* parent = 0);
+    explicit VariableTab(WindowParam* parent = 0);
     void refresh();
 };
 
@@ -32,7 +33,7 @@ class ProgramTab : public QWidget
 public slots:
     void deleteIdentifier();
 public:
-    ProgramTab(WindowParam* parent = 0);
+    explicit ProgramTab(WindowParam* parent = 0);
     void refresh();
 };
 
@@ -43,9 +44,22 @@ class WindowParam : public QWidget
     VariableTab *variableTab;
     ProgramTab *programTab;
 public slots:
-    void quit();
+    void addIdentifier();
+    void refreshVariable();
+    void refreshProgram();
 public:
-    WindowParam(QWidget* parent = 0);
+    explicit WindowParam(QWidget* parent = 0);
+};
+
+class WindowAddIdentifier : public QWidget {
+    Q_OBJECT
+    QLineEdit* keyLineEdit;
+    QLineEdit* valueLineEdit;
+    QLabel* messageError;
+public slots:
+    void save();
+public :
+    explicit WindowAddIdentifier(QWidget* parent = 0);
 };
 
 #endif // WINDOWPARAM_H
