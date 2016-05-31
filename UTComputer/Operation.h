@@ -91,11 +91,10 @@ public:
 
 /**
  * @brief Un objet PlusOperation implémente l'opération d'addition.
- * @details Les littérales supportées sont IntegerLiteral, RationalLiteral, RealLiteral et ComplexLiteral.
+ * @details Les littérales supportées sont RationalLiteral, RealLiteral et ComplexLiteral.
  */
 class PlusOperation : public Operation {
 public:
-    Generic eval(Integers args) const override;
     Generic eval(Rationals args) const override;
     Generic eval(Reals args) const override;
     Generic eval(Complexs args) const override;
@@ -103,10 +102,9 @@ public:
 
 /**
  * @brief Un objet MulOperation implémente l'opération de multiplication.
- * @details Les littérales supportées sont IntegerLiteral, RationalLiteral, RealLiteral et ComplexLiteral.
+ * @details Les littérales supportées sont RationalLiteral, RealLiteral et ComplexLiteral.
  */
 class MulOperation : public Operation {
-    Generic eval(Integers args) const override;
     Generic eval(Rationals args) const override;
     Generic eval(Reals args) const override;
     Generic eval(Complexs args) const override;
@@ -114,7 +112,7 @@ class MulOperation : public Operation {
 
 /**
  * @brief Un objet NegOperation implémente l'opération de négation. (en terme de multiplication par -1)
- * @details Les littérales supportées sont IntegerLiteral, RationalLiteral, RealLiteral et ComplexLiteral.
+ * @details Toutes les littérales sont supportées.
  */
 class NegOperation : public Operation {
     Generic eval(Generic args) const override;
@@ -122,17 +120,21 @@ class NegOperation : public Operation {
 
 /**
  * @brief Un objet MoinsOperation implémente l'opération de soustraction (en terme de négation et d'addition).
- * @details Les littérales supportées sont IntegerLiteral, RationalLiteral, RealLiteral et ComplexLiteral.
+ * @details Toutes les littérales sont supportées.
  */
 class MoinsOperation : public Operation {
     Generic eval(Generic args) const override;
 };
 
+/**
+ * @brief Un objet ComplexOperation permet de produire un nombre complexe.
+ * @details Les littérales numériques sont supportées.
+ */
 class ComplexOperation : public Operation {
     Generic eval(Generic args) const override;
 };
 
-class STOOperarion : public Operation {
+class STOOperation : public Operation {
 public:
     Generic eval(Generic args) const override;
 };
