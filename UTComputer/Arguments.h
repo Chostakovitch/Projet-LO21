@@ -45,19 +45,31 @@ public:
         return oss.str();
     }
     /**
-     * @brief Cast d'un vecteur de pointeurs vers un vecteur de types pointés.
+     * @brief Upcasting d'un vecteur
      */
-    template <typename U>
-    operator Arguments<U>() const {
-        Arguments<U> dest;
-        for (auto arg : *this) {
+    template <typename U, typename std::enable_if<std::is_base_of<U, T>::value, T>::type>
+    operator Arguments<std::shared_ptr<U>>() const {
+        Arguments<std::shared_ptr<U>> dest;
+        for (auto& arg : *this) {
+            dest.push_back(arg);
+        }
+        return dest;
+    }
+
+    /**
+     * @brief Cast d'un vecteur de pointeurs vers un vecteur de pointeurs sur un type concret
+     */
+    template <typename U, typename std::enable_if<!std::is_abstract<U>::value, T>::type>
+    operator Arguments<std::shared_ptr<U>>() const {
+        Arguments<std::shared_ptr<U>> dest;
+        for (auto& arg : *this) {
             //Si le type réel de l'objet pointé est le même que le type destination, on n'appelle pas d'opérateur de cast
             if(auto ptr = std::dynamic_pointer_cast<U>(arg)) {
-                dest.push_back(*ptr);
+                dest.push_back(ptr);
             }
             //Sinon, il faut passer par l'opérateur de cast (explicite ou implicite)
             else {
-                dest.push_back((U)*arg);
+                dest.push_back(std::make_shared<U>((U)*arg));
             }
         }
         return dest;
