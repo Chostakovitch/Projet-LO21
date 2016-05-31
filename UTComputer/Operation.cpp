@@ -127,14 +127,14 @@ Operation::Generic MoinsOperation::eval(Operation::Generic args) const {
 }
 
 Operation::Generic DivOperation::eval(Operation::Rationals args) const {
-    args.back() = LiteralFactory::getInstance().makeLiteral(args.back()->getDen().getValue(), args.back()->getNum().getValue());
-    return applyOperation(std::make_shared<MulOperation>(), args);
+    auto frac = LiteralFactory::getInstance().makeLiteral(args.back()->getDen().getValue(), args.back()->getNum().getValue());
+	return applyOperation(std::make_shared<MulOperation>(), {args.front(), frac});
 }
 
 Operation::Generic DivOperation::eval(Operation::Reals args) const {
-
+	return Operation::Generic();
 }
 
 Operation::Generic DivOperation::eval(Operation::Complexs args) const {
-
+	return Operation::Generic();
 }
