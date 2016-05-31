@@ -25,11 +25,11 @@
 class Operation : public std::enable_shared_from_this<Operation> {
 protected:
     typedef Arguments<std::shared_ptr<Literal>> Generic;
-    typedef Arguments<IntegerLiteral> Integers;
-    typedef Arguments<RationalLiteral> Rationals;
-    typedef Arguments<ComplexLiteral> Complexs;
-    typedef Arguments<RealLiteral> Reals;
-    typedef Arguments<ExpressionLiteral> Expressions;
+    typedef Arguments<std::shared_ptr<IntegerLiteral>> Integers;
+    typedef Arguments<std::shared_ptr<RationalLiteral>> Rationals;
+    typedef Arguments<std::shared_ptr<ComplexLiteral>> Complexs;
+    typedef Arguments<std::shared_ptr<RealLiteral>> Reals;
+    typedef Arguments<std::shared_ptr<ExpressionLiteral>> Expressions;
     /**
      * @brief Opération générique sur des littérales typées dynamiquement.
      * @details Les sous-classes devraient redéfinir cette méthode dans trois cas :
@@ -134,9 +134,14 @@ class ComplexOperation : public Operation {
     Generic eval(Generic args) const override;
 };
 
-class STOOperation : public Operation {
-public:
-    Generic eval(Generic args) const override;
+/**
+ * @brief Un objet DivOperation implémente l'opération de division (rationnelle)
+ * @details Les littérales supportées sont RationalLiteral, RealLiteral et ComplexLiteral.
+ */
+class DivOperation : public Operation {
+    Generic eval(Rationals args) const override;
+    Generic eval(Reals args) const override;
+    Generic eval(Complexs args) const override;
 };
 
 #endif
