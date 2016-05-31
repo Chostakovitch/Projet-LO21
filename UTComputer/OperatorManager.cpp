@@ -20,6 +20,7 @@ OperatorManager::OperatorManager() : minus_symbol("-") {
     operators.push_back(std::make_shared<SymbolicOperator>("-", 2, std::make_shared<MoinsOperation>(), true, 0)); //Soustraction
     operators.push_back(std::make_shared<SymbolicOperator>("*", 2, std::make_shared<MulOperation>(), true, 1)); //Multiplication
     operators.push_back(std::make_shared<SymbolicOperator>("$", 2, std::make_shared<ComplexOperation>(), true, 2)); //Complexe
+    operators.push_back(std::make_shared<SymbolicOperator>("/", 2, std::make_shared<DivOperation>(), true, 1)); //Division
 
     //Création des opérateurs parenthésés
     operators.push_back(std::make_shared<FunctionOperator>("NEG", 1, std::make_shared<NegOperation>(), true)); //Négation
@@ -57,7 +58,7 @@ std::vector<std::shared_ptr<Operator>> OperatorManager::getSymbolicOperators() c
 
 Arguments<std::shared_ptr<Literal>> OperatorManager::dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const {
     //0. Vérifications
-    if (op->getArity() != args.size()) throw TypeError("Wrong number of operands.", args);
+    if (op->getArity() != args.size()) throw OperationError(op, args, "Wrong number of operands.", );
 
     //1. Cas particuliers
     //1.1. Un objet LiteralExpression est présent dans les opérandes et l'opérateur est numérique : méthode membre.
