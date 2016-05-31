@@ -41,14 +41,14 @@ public:
             if(&e != &(this->back())) oss << *e << ", ";
         }
         if(!this->empty()) oss << *(this->back());
-        else oss << "Undefined";
+        else oss << "Empty";
         oss << "]";
         return oss.str();
     }
     /**
-     * @brief Upcasting d'un vecteur de pointeurs, pas de conversion nécessaires
+     * @brief Upcasting d'un vecteur de pointeurs, pas de conversion nécessaires.
      */
-    template <typename U, typename std::enable_if<std::is_base_of<U, T>::value || std::is_same<U, T>::value>::type>
+    template <typename U, typename std::enable_if<std::is_base_of<U, T>::value || std::is_same<U, T>::value>::type* = nullptr>
     operator Arguments<std::shared_ptr<U>>() const {
         Arguments<std::shared_ptr<U>> dest;
         for (auto& arg : *this) {
@@ -58,9 +58,9 @@ public:
     }
 
     /**
-     * @brief Cast réel des objets pointés d'un vecteur de pointeurs sur T vers un vecteur de pointeurs sur U
+     * @brief Downcast d'un vecteur de pointeurs, via un cast dynamique ou sur les objets concrets.
      */
-    template <typename U>
+    template <typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
     operator Arguments<std::shared_ptr<U>>() const {
         Arguments<std::shared_ptr<U>> dest;
         for (auto& arg : *this) {

@@ -70,7 +70,7 @@ Arguments<std::shared_ptr<Literal>> OperatorManager::dispatchOperation(std::shar
 
     //2. Appel de la méthode d'évaluation générique de l'opérateur.
     try {
-        return Operation::applyOperation(op->getOperation(), args);
+        return Operation::apply(op->getOperation(), args);
     }
     //3. Uniformisation impossible ou opération non-implémentée / ayant provoqué une erreur.
     catch(UTException& e) {

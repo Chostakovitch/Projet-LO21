@@ -3,7 +3,7 @@
 #include "Manager.h"
 #include "UTException.h"
 
-Operation::Generic Operation::applyOperation(const std::shared_ptr<const Operation> &op, Operation::Generic args) {
+Operation::Generic Operation::apply(const std::shared_ptr<const Operation> &op, Operation::Generic args) {
     //Tentative d'application de l'opération générique
     try {
         return op->eval(args);
@@ -75,8 +75,8 @@ Operation::Generic PlusOperation::eval(Operation::Complexs args) const {
     std::shared_ptr<Literal> new_re, new_im;
     std::shared_ptr<NumericLiteral> res_re, res_im;
     //Appel du plus sur les autres opérations
-    new_re = applyOperation(shared_from_this(), {args.front()->getRe(), args.back()->getRe()}).front();
-    new_im = applyOperation(shared_from_this(), {args.front()->getIm(), args.back()->getIm()}).front();
+    new_re = apply(shared_from_this(), {args.front()->getRe(), args.back()->getRe()}).front();
+    new_im = apply(shared_from_this(), {args.front()->getIm(), args.back()->getIm()}).front();
     res_re = std::dynamic_pointer_cast<NumericLiteral>(new_re);
     res_im = std::dynamic_pointer_cast<NumericLiteral>(new_im);
     if(!(res_re && res_im)) throw UTException("Result of operation on real or imaginary part incompatible with complexs.");
@@ -87,7 +87,7 @@ Operation::Generic MulOperation::eval(Operation::Rationals args) const {
     IntegerLiteral a = args.front()->getNum(), b = args.front()->getDen(), c = args.back()->getNum(), d = args.back()->getDen();
     int num = a.getValue() * c.getValue();
     int den = b.getValue() * d.getValue();
-    return Operation::Generic{LiteralFactory::getInstance().makeLiteral(num, den)};
+    return {LiteralFactory::getInstance().makeLiteral(num, den)};
 }
 
 Operation::Generic MulOperation::eval(Operation::Reals args) const {
@@ -96,13 +96,20 @@ Operation::Generic MulOperation::eval(Operation::Reals args) const {
 
 Operation::Generic MulOperation::eval(Operation::Complexs args) const {
     std::shared_ptr<Literal> new_re, new_im;
-    std::shared_ptr<NumericLiteral> res_re, res_im;
-    new_re = applyOperation(std::make_shared<MoinsOperation>(), \
-        {applyOperation(shared_from_this(), {args.front()->getRe(), args.back()->getRe()}).front(), \
-         applyOperation(shared_from_this(), {args.front()->getIm(), args.back()->getIm()}).front()}).front();
-    new_im = applyOperation(std::make_shared<PlusOperation>(), \
-        {applyOperation(shared_from_this(), {args.front()->getRe(), args.back()->getIm()}).front(), \
-         applyOperation(shared_from_this(), {args.front()->getIm(), args.back()->getRe()}).front()}).front();
+    std::shared_ptr<NumericLiteral> res_re, res_im, re_1 = args.front()->getRe(), re_2 = args.back()->getRe(), im_1 = args.front()->getIm(), im_2 = args.back()->getIm();
+    //(a + ib) * (c + id) = (ac - bd) + i(ad + bc)
+    new_re = apply(std::make_shared<MoinsOperation>(), \
+             {
+                apply(shared_from_this(), {re_1, re_2}).front(), \
+                apply(shared_from_this(), {im_1, im_2}).front()
+             }).front();
+
+    new_im = apply(std::make_shared<PlusOperation>(), \
+             {
+                apply(shared_from_this(), {re_1, im_2}).front(), \
+                apply(shared_from_this(), {im_1, re_2}).front()
+             }).front();
+
     res_re = std::dynamic_pointer_cast<NumericLiteral>(new_re);
     res_im = std::dynamic_pointer_cast<NumericLiteral>(new_im);
     if(!(res_re && res_im)) throw UTException("Result of operation on real or imaginary part incompatible with complexs.");
@@ -113,28 +120,58 @@ Operation::Generic ComplexOperation::eval(Operation::Generic args) const {
     auto re = std::dynamic_pointer_cast<NumericLiteral>(args.front());
     auto im = std::dynamic_pointer_cast<NumericLiteral>(args.back());
     if(re && im) return Operation::Generic{LiteralFactory::getInstance().makeLiteral(re, im)};
-    throw UTException("Unable to make ComplexLiteral from other operands than NumericLiteral's");
+    throw UTException("Unable to apply ComplexLiteral from other operands than NumericLiteral's");
 }
 
 Operation::Generic NegOperation::eval(Operation::Generic args) const {
     args.push_back(LiteralFactory::getInstance().makeLiteral(-1));
-    return applyOperation(std::make_shared<MulOperation>(), args);
+    return apply(std::make_shared<MulOperation>(), args);
 }
 
 Operation::Generic MoinsOperation::eval(Operation::Generic args) const {
-    args.back() = applyOperation(std::make_shared<NegOperation>(), {args.back()}).front();
-    return applyOperation(std::make_shared<PlusOperation>(), args);
+    args.back() = apply(std::make_shared<NegOperation>(), {args.back()}).front();
+    return apply(std::make_shared<PlusOperation>(), args);
 }
 
 Operation::Generic DivOperation::eval(Operation::Rationals args) const {
-    auto frac = LiteralFactory::getInstance().makeLiteral(args.back()->getDen().getValue(), args.back()->getNum().getValue());
-	return applyOperation(std::make_shared<MulOperation>(), {args.front(), frac});
+    auto den = LiteralFactory::getInstance().makeLiteral(args.back()->getDen().getValue(), args.back()->getNum().getValue());
+    return apply(std::make_shared<MulOperation>(), {args.front(), den});
 }
 
 Operation::Generic DivOperation::eval(Operation::Reals args) const {
-	return Operation::Generic();
+    return {LiteralFactory::getInstance().makeLiteral(args.front()->getValue() / args.back()->getValue())};
 }
 
 Operation::Generic DivOperation::eval(Operation::Complexs args) const {
-	return Operation::Generic();
+    std::shared_ptr<Literal> new_re, new_im, den;
+    std::shared_ptr<NumericLiteral> res_re, res_im, re_1 = args.front()->getRe(), re_2 = args.back()->getRe(), im_1 = args.front()->getIm(), im_2 = args.back()->getIm();
+    //(a + ib)/(c + id) = (ac + bd)/(c² + d²) + i(bc - ad)/(c² + d²)
+    den =   apply(std::make_shared<PlusOperation>(), \
+            {
+                apply(std::make_shared<MulOperation>(), {re_2, re_2}).front(), \
+                apply(std::make_shared<MulOperation>(), {im_2, im_2}).front()
+            }).front();
+
+    new_re = apply(shared_from_this(),
+             {
+                 apply(std::make_shared<PlusOperation>(),
+                 {
+                    apply(std::make_shared<MulOperation>(), {re_1, re_2}).front(),
+                    apply(std::make_shared<MulOperation>(), {im_1, im_2}).front()
+                 }).front(),
+                 den
+             }).front();
+    new_im = apply(shared_from_this(),
+             {
+                 apply(std::make_shared<MoinsOperation>(),
+                 {
+                    apply(std::make_shared<MulOperation>(), {im_1, re_2}).front(),
+                    apply(std::make_shared<MulOperation>(), {re_1, im_2}).front()
+                 }).front(),
+                 den
+             }).front();
+    res_re = std::dynamic_pointer_cast<NumericLiteral>(new_re);
+    res_im = std::dynamic_pointer_cast<NumericLiteral>(new_im);
+    if(!(res_re && res_im)) throw UTException("Result of operation on real or imaginary part incompatible with complexs.");
+    return {LiteralFactory::getInstance().makeLiteral(res_re, res_im)};
 }

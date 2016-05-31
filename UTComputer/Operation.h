@@ -85,7 +85,7 @@ public:
      * @brief Dispatch des opérandes vers la bonne opération via des casts.
      * @return Résultat de l'opération.
      */
-    static Generic applyOperation(const std::shared_ptr<const Operation> &op, Generic args);
+    static Generic apply(const std::shared_ptr<const Operation> &op, Generic args);
     virtual ~Operation() {}
 };
 
