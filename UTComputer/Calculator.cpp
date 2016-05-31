@@ -54,9 +54,11 @@ void Calculator::addSpaceToCommand() {
 }
 
 void Calculator::backspaceToCommand() {
-    std::string newCommand = command->text().toStdString();
-    newCommand.pop_back();
-    command->setText(QString::fromStdString(newCommand));
+    if(command->text().size() > 0) {
+        std::string newCommand = command->text().toStdString();
+        newCommand.pop_back();
+        command->setText(QString::fromStdString(newCommand));
+    }
 }
 
 void Calculator::displayKeyboardChanged(int newValue) {

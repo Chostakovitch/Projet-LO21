@@ -149,6 +149,7 @@ std::shared_ptr<Literal> LiteralFactory::makeLiteral(double f) const {
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeLiteral(std::shared_ptr<NumericLiteral> re, std::shared_ptr<NumericLiteral> im) const {
+    if(std::dynamic_pointer_cast<ComplexLiteral>(re) || std::dynamic_pointer_cast<ComplexLiteral>(im)) throw TypeError("Complexs can't be part of complex.", {re, im});
     return std::make_shared<ComplexLiteral>(re, im);
 }
 

@@ -13,14 +13,12 @@
 #include "UTException.h"
 
 int main(int argc, char *argv[])
-{    
-    Manager::getInstance().handleOperandLine("4 5.4 $ 6 7 4 / $ /");
-    for(auto& lit : Manager::getInstance().getPile()) std::cout << lit->toString() << std::endl;
+{
 
-    /*QApplication a(argc, argv);
+    QApplication a(argc, argv);
     UTComputer w;
     w.show();
-    return a.exec();*/
+    return a.exec();
 
     return 0;
 }
