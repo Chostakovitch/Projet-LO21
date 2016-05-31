@@ -144,4 +144,29 @@ class DivOperation : public Operation {
     Generic eval(Complexs args) const override;
 };
 
+/**
+ * @brief Un objet IntDivOperation implémente l'opération de division entière.
+ * @details Seules les IntegerLiteral sont supportés.
+ */
+class IntDivOperation : public Operation {
+    Generic eval(Integers args) const override;
+};
+
+/**
+ * @brief Un objet ModOperation implémente l'opération de modulo.
+ * @details Seules les IntegerLiteral sont supportés.
+ */
+class ModOperation : public Operation {
+    Generic eval(Integers args) const override;
+};
+
+/**
+ * @brief Un objet PowOperation implémente l'opération de puissance.
+ * @details Les littérales supportées sont RealLiteral et ComplexLiteral.
+ */
+class PowOperation : public Operation {
+    Generic eval(Reals args) const override;
+    Generic eval(Complexs args) const override;
+};
+
 #endif

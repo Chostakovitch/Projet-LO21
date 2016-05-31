@@ -24,6 +24,9 @@ OperatorManager::OperatorManager() : minus_symbol("-") {
 
     //Création des opérateurs parenthésés
     operators.push_back(std::make_shared<FunctionOperator>("NEG", 1, std::make_shared<NegOperation>(), true)); //Négation
+    operators.push_back(std::make_shared<FunctionOperator>("DIV", 2, std::make_shared<IntDivOperation>(), true)); //Division entière
+    operators.push_back(std::make_shared<FunctionOperator>("MOD", 2, std::make_shared<ModOperation>(), true)); //Modulo
+    operators.push_back(std::make_shared<FunctionOperator>("POW", 2, std::make_shared<PowOperation>(), true)); //Puissance
 }
 
 const OperatorManager& OperatorManager::getInstance() {

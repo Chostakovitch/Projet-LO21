@@ -1,4 +1,6 @@
-﻿#include "Operation.h"
+﻿#include <complex>
+
+#include "Operation.h"
 #include "OperatorManager.h"
 #include "Manager.h"
 #include "UTException.h"
@@ -174,4 +176,30 @@ Operation::Generic DivOperation::eval(Operation::Complexs args) const {
     res_im = std::dynamic_pointer_cast<NumericLiteral>(new_im);
     if(!(res_re && res_im)) throw UTException("Result of operation on real or imaginary part incompatible with complexs.");
     return {LiteralFactory::getInstance().makeLiteral(res_re, res_im)};
+}
+
+Operation::Generic IntDivOperation::eval(Operation::Integers args) const {
+    return {LiteralFactory::getInstance().makeLiteral(args.front()->getValue() / args.back()->getValue())};
+}
+
+Operation::Generic ModOperation::eval(Operation::Integers args) const {
+    return {LiteralFactory::getInstance().makeLiteral(args.front()->getValue() % args.back()->getValue())};
+}
+
+Operation::Generic PowOperation::eval(Operation::Reals args) const {
+    return {LiteralFactory::getInstance().makeLiteral(std::pow(args.front()->getValue(), args.back()->getValue()))};
+}
+
+Operation::Generic PowOperation::eval(Operation::Complexs args) const {
+    //On sait que le type le plus général contenu par un complexe est un réel, on promeut tous les membres en réels
+    auto reals = (Operation::Reals)Operation::Generic{args.front()->getRe(), args.front()->getIm(), args.back()->getRe(), args.back()->getIm()};
+    //On passe par la librairie standard pour le calcul
+    std::complex<double> n(reals.at(0)->getValue(), reals.at(1)->getValue());
+    std::complex<double> p(reals.at(2)->getValue(), reals.at(3)->getValue());
+    auto res = std::pow(n, p);
+    //Retour aux littérales métiers
+    auto re = std::dynamic_pointer_cast<NumericLiteral>(LiteralFactory::getInstance().makeLiteral(res.real()));
+    auto im = std::dynamic_pointer_cast<NumericLiteral>(LiteralFactory::getInstance().makeLiteral(res.imag()));
+    if(!(re && im)) throw UTException("Result of operation on real or imaginary part incompatible with complexs.");
+    return {LiteralFactory::getInstance().makeLiteral(re, im)};
 }
