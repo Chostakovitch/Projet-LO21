@@ -30,6 +30,7 @@ protected:
     typedef Arguments<std::shared_ptr<ComplexLiteral>> Complexs;
     typedef Arguments<std::shared_ptr<RealLiteral>> Reals;
     typedef Arguments<std::shared_ptr<ExpressionLiteral>> Expressions;
+    typedef std::complex<double> StdComplex;
     /**
      * @brief Opération générique sur des littérales typées dynamiquement.
      * @details Les sous-classes devraient redéfinir cette méthode dans trois cas :
@@ -91,22 +92,20 @@ public:
 
 /**
  * @brief Un objet PlusOperation implémente l'opération d'addition.
- * @details Les littérales supportées sont RationalLiteral, RealLiteral et ComplexLiteral.
+ * @details Les littérales supportées sont RationalLiteral et ComplexLiteral.
  */
 class PlusOperation : public Operation {
 public:
     Generic eval(Rationals args) const override;
-    Generic eval(Reals args) const override;
     Generic eval(Complexs args) const override;
 };
 
 /**
  * @brief Un objet MulOperation implémente l'opération de multiplication.
- * @details Les littérales supportées sont RationalLiteral, RealLiteral et ComplexLiteral.
+ * @details Les littérales supportées sont RationalLiteral et ComplexLiteral.
  */
 class MulOperation : public Operation {
     Generic eval(Rationals args) const override;
-    Generic eval(Reals args) const override;
     Generic eval(Complexs args) const override;
 };
 
@@ -136,17 +135,16 @@ class ComplexOperation : public Operation {
 
 /**
  * @brief Un objet DivOperation implémente l'opération de division (rationnelle)
- * @details Les littérales supportées sont RationalLiteral, RealLiteral et ComplexLiteral.
+ * @details Les littérales supportées sont RationalLiteral et ComplexLiteral.
  */
 class DivOperation : public Operation {
     Generic eval(Rationals args) const override;
-    Generic eval(Reals args) const override;
     Generic eval(Complexs args) const override;
 };
 
 /**
  * @brief Un objet IntDivOperation implémente l'opération de division entière.
- * @details Seules les IntegerLiteral sont supportés.
+ * @details Seuls les IntegerLiteral sont supportés.
  */
 class IntDivOperation : public Operation {
     Generic eval(Integers args) const override;
@@ -162,12 +160,68 @@ class ModOperation : public Operation {
 
 /**
  * @brief Un objet PowOperation implémente l'opération de puissance.
- * @details Les littérales supportées sont RealLiteral et ComplexLiteral.
+ * @details Les littérales supportées sont le couple (RationalLiteral, IntegerLiteral), et ComplexLiteral.
  */
 class PowOperation : public Operation {
-    Generic eval(Reals args) const override;
+    Generic eval(Generic args) const override;
     Generic eval(Complexs args) const override;
 };
 
+/**
+ * @brief Un objet SinOperation implémente le sinus (radians).
+ * @details Seuls les ComplexLiteral sont supportés.
+ */
+class SinOperation : public Operation {
+    Generic eval(Complexs args) const override;
+};
+
+/**
+ * @brief Un objet CosOperation implémente le cosinus (radians).
+ * @details Seuls les ComplexLiteral sont supportés.
+ */
+class CosOperation : public Operation {
+    Generic eval(Complexs args) const override;
+};
+
+/**
+ * @brief Un objet TanOperation implémente la tangeante (radians).
+ * @details Seuls les ComplexLiteral sont supportés.
+ */
+class TanOperation : public Operation {
+    Generic eval(Complexs args) const override;
+};
+
+/**
+ * @brief Un objet ArcSinOperation implémente l'inverse du sinus (radians).
+ * @details Seuls les ComplexLiteral sont supportés.
+ */
+class ArcSinOperation : public Operation {
+    Generic eval(Complexs args) const override;
+};
+
+/**
+ * @brief Un objet ArcCosOperation implémente l'inverse du cosinus (radians).
+ * @details Seuls les ComplexLiteral sont supportés.
+ */
+class ArcCosOperation : public Operation {
+    Generic eval(Complexs args) const override;
+};
+
+/**
+ * @brief Un objet ArcTanOperation implémente l'inverse de la tangeante (radians).
+ * @details Seuls les ComplexLiteral sont supportés.
+ */
+class ArcTanOperation : public Operation {
+    Generic eval(Complexs args) const override;
+};
+
+/**
+ * @brief Un objet SqrtOperation implémente la racine carrée.
+ * @details Les littérales supportées sont RationalLiteral et ComplexLiteral.
+ */
+class SqrtOperation : public Operation {
+    Generic eval(Rationals args) const override;
+    Generic eval(Complexs args) const override;
+};
 
 #endif

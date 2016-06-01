@@ -246,8 +246,10 @@ public:
     const std::shared_ptr<NumericLiteral>& getIm() const { return im; }
     /**
      * @brief Opérateur de cast vers un complexe de la librairie standard.
+     * @details On considère qu'un complexe est au plus composé de doubles, par conséquent on
+     * caste la partie réelle et la partie imaginaire en réels.
      */
-    operator std::complex<double>() const { return std::complex<double>((RealLiteral)(*re), (RealLiteral)(*im)); }
+    operator std::complex<double>() const { return std::complex<double>((RealLiteral)*re, (RealLiteral)*im); }
     std::string toString() const override { return re->toString() + "$" + im->toString(); }
 };
 

@@ -27,6 +27,14 @@ OperatorManager::OperatorManager() : minus_symbol("-") {
     operators.push_back(std::make_shared<FunctionOperator>("DIV", 2, std::make_shared<IntDivOperation>(), true)); //Division entière
     operators.push_back(std::make_shared<FunctionOperator>("MOD", 2, std::make_shared<ModOperation>(), true)); //Modulo
     operators.push_back(std::make_shared<FunctionOperator>("POW", 2, std::make_shared<PowOperation>(), true)); //Puissance
+    operators.push_back(std::make_shared<FunctionOperator>("SIN", 1, std::make_shared<SinOperation>(), true)); //Puissance
+    operators.push_back(std::make_shared<FunctionOperator>("COS", 1, std::make_shared<CosOperation>(), true)); //Puissance
+    operators.push_back(std::make_shared<FunctionOperator>("TAN", 1, std::make_shared<TanOperation>(), true)); //Puissance
+    operators.push_back(std::make_shared<FunctionOperator>("ARCSIN", 1, std::make_shared<ArcSinOperation>(), true)); //Puissance
+    operators.push_back(std::make_shared<FunctionOperator>("ARCCOS", 1, std::make_shared<ArcCosOperation>(), true)); //Puissance
+    operators.push_back(std::make_shared<FunctionOperator>("ARCTAN", 1, std::make_shared<ArcTanOperation>(), true)); //Puissance
+    operators.push_back(std::make_shared<FunctionOperator>("SQRT", 1, std::make_shared<SqrtOperation>(), true)); //Puissance
+
 }
 
 const OperatorManager& OperatorManager::getInstance() {

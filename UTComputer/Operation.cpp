@@ -69,12 +69,8 @@ Operation::Generic PlusOperation::eval(Operation::Rationals args) const {
     return {LiteralFactory::getInstance().makeLiteral(num, den)};
 }
 
-Operation::Generic PlusOperation::eval(Operation::Reals args) const {
-    return {LiteralFactory::getInstance().makeLiteral(*args.front() + *args.back())};
-}
-
 Operation::Generic PlusOperation::eval(Operation::Complexs args) const {
-    return {LiteralFactory::getInstance().makeLiteral((std::complex<double>)*args.front() + (std::complex<double>)*args.back())};
+    return {LiteralFactory::getInstance().makeLiteral((Operation::StdComplex)*args.front() + (Operation::StdComplex)*args.back())};
 }
 
 Operation::Generic MulOperation::eval(Operation::Rationals args) const {
@@ -82,12 +78,8 @@ Operation::Generic MulOperation::eval(Operation::Rationals args) const {
     return {LiteralFactory::getInstance().makeLiteral(a * c, b * d)};
 }
 
-Operation::Generic MulOperation::eval(Operation::Reals args) const {
-    return {LiteralFactory::getInstance().makeLiteral(*args.front() * *args.back())};
-}
-
 Operation::Generic MulOperation::eval(Operation::Complexs args) const {
-    return {LiteralFactory::getInstance().makeLiteral((std::complex<double>)*args.front() * (std::complex<double>)*args.back())};
+    return {LiteralFactory::getInstance().makeLiteral((Operation::StdComplex)*args.front() * (Operation::StdComplex)*args.back())};
 }
 
 Operation::Generic ComplexOperation::eval(Operation::Generic args) const {
@@ -108,70 +100,69 @@ Operation::Generic MoinsOperation::eval(Operation::Generic args) const {
 }
 
 Operation::Generic DivOperation::eval(Operation::Rationals args) const {
-    auto den = LiteralFactory::getInstance().makeLiteral(args.back()->getDen().getValue(), args.back()->getNum().getValue());
+    auto den = LiteralFactory::getInstance().makeLiteral(args.back()->getDen(), args.back()->getNum());
     return apply(std::make_shared<MulOperation>(), {args.front(), den});
 }
 
-Operation::Generic DivOperation::eval(Operation::Reals args) const {
-    return {LiteralFactory::getInstance().makeLiteral(args.front()->getValue() / args.back()->getValue())};
-}
-
 Operation::Generic DivOperation::eval(Operation::Complexs args) const {
-    std::shared_ptr<Literal> new_re, new_im, den;
-    std::shared_ptr<NumericLiteral> res_re, res_im, re_1 = args.front()->getRe(), re_2 = args.back()->getRe(), im_1 = args.front()->getIm(), im_2 = args.back()->getIm();
-    //(a + ib)/(c + id) = (ac + bd)/(c² + d²) + i(bc - ad)/(c² + d²)
-    den =   apply(std::make_shared<PlusOperation>(), \
-            {
-                apply(std::make_shared<MulOperation>(), {re_2, re_2}).front(), \
-                apply(std::make_shared<MulOperation>(), {im_2, im_2}).front()
-            }).front();
-
-    new_re = apply(shared_from_this(),
-             {
-                 apply(std::make_shared<PlusOperation>(),
-                 {
-                    apply(std::make_shared<MulOperation>(), {re_1, re_2}).front(),
-                    apply(std::make_shared<MulOperation>(), {im_1, im_2}).front()
-                 }).front(),
-                 den
-             }).front();
-    new_im = apply(shared_from_this(),
-             {
-                 apply(std::make_shared<MoinsOperation>(),
-                 {
-                    apply(std::make_shared<MulOperation>(), {im_1, re_2}).front(),
-                    apply(std::make_shared<MulOperation>(), {re_1, im_2}).front()
-                 }).front(),
-                 den
-             }).front();
-    res_re = std::dynamic_pointer_cast<NumericLiteral>(new_re);
-    res_im = std::dynamic_pointer_cast<NumericLiteral>(new_im);
-    if(!(res_re && res_im)) throw UTException("Result of operation on real or imaginary part incompatible with complexs.");
-    return {LiteralFactory::getInstance().makeLiteral(res_re, res_im)};
+    return {LiteralFactory::getInstance().makeLiteral((Operation::StdComplex)*args.front() / (Operation::StdComplex)*args.back())};
 }
 
 Operation::Generic IntDivOperation::eval(Operation::Integers args) const {
-    return {LiteralFactory::getInstance().makeLiteral(args.front()->getValue() / args.back()->getValue())};
+    return {LiteralFactory::getInstance().makeLiteral(*args.front() / *args.back())};
 }
 
 Operation::Generic ModOperation::eval(Operation::Integers args) const {
-    return {LiteralFactory::getInstance().makeLiteral(args.front()->getValue() % args.back()->getValue())};
+    return {LiteralFactory::getInstance().makeLiteral(*args.front() % *args.back())};
 }
 
-Operation::Generic PowOperation::eval(Operation::Reals args) const {
-    return {LiteralFactory::getInstance().makeLiteral(std::pow(args.front()->getValue(), args.back()->getValue()))};
+Operation::Generic PowOperation::eval(Generic args) const {
+    //Rationnel
+    auto n = (RationalLiteral)*args.front();
+    //Puissance entière
+    int p = (IntegerLiteral)*args.back();
+    return {LiteralFactory::getInstance().makeLiteral(std::pow((int)n.getNum(), p), std::pow((int)n.getDen(), p))};
+
 }
 
 Operation::Generic PowOperation::eval(Operation::Complexs args) const {
-    //On sait que le type le plus général contenu par un complexe est un réel, on promeut tous les membres en réels
-    auto reals = (Operation::Reals)Operation::Generic{args.front()->getRe(), args.front()->getIm(), args.back()->getRe(), args.back()->getIm()};
-    //On passe par la librairie standard pour le calcul qui demande des opérations complexes
-    std::complex<double> n(reals.at(0)->getValue(), reals.at(1)->getValue());
-    std::complex<double> p(reals.at(2)->getValue(), reals.at(3)->getValue());
-    auto res = std::pow(n, p);
-    //Retour aux littérales métiers
-    auto re = std::dynamic_pointer_cast<NumericLiteral>(LiteralFactory::getInstance().makeLiteral(res.real()));
-    auto im = std::dynamic_pointer_cast<NumericLiteral>(LiteralFactory::getInstance().makeLiteral(res.imag()));
-    if(!(re && im)) throw UTException("Result of operation on real or imaginary part incompatible with complexs.");
-    return {LiteralFactory::getInstance().makeLiteral(re, im)};
+    return {LiteralFactory::getInstance().makeLiteral(std::pow((Operation::StdComplex)*args.front(), (Operation::StdComplex)*args.back()))};
+}
+
+Operation::Generic SinOperation::eval(Operation::Complexs args) const {
+    return {LiteralFactory::getInstance().makeLiteral(std::sin((Operation::StdComplex)*args.front()))};
+}
+
+Operation::Generic CosOperation::eval(Operation::Complexs args) const {
+    return {LiteralFactory::getInstance().makeLiteral(std::cos((Operation::StdComplex)*args.front()))};
+}
+
+Operation::Generic TanOperation::eval(Operation::Complexs args) const {
+    return {LiteralFactory::getInstance().makeLiteral(std::tan((Operation::StdComplex)*args.front()))};
+}
+
+Operation::Generic ArcSinOperation::eval(Operation::Complexs args) const {
+    return {LiteralFactory::getInstance().makeLiteral(std::asin((Operation::StdComplex)*args.front()))};
+}
+
+Operation::Generic ArcCosOperation::eval(Operation::Complexs args) const {
+    return {LiteralFactory::getInstance().makeLiteral(std::acos((Operation::StdComplex)*args.front()))};
+}
+
+Operation::Generic ArcTanOperation::eval(Operation::Complexs args) const {
+    return {LiteralFactory::getInstance().makeLiteral(std::atan((Operation::StdComplex)*args.front()))};
+}
+
+Operation::Generic SqrtOperation::eval(Operation::Rationals args) const {
+    double intpart;
+    double num = std::sqrt((int)args.front()->getNum());
+    double den = std::sqrt((int)args.front()->getDen());
+    //Si les résultats sont entiers on peut fabriquer une littérale rationnelle
+    if(std::modf(num, &intpart) == 0.0 && std::modf(den, &intpart) == 0.0) return {LiteralFactory::getInstance().makeLiteral((int)num, (int)den)};
+    return {LiteralFactory::getInstance().makeLiteral(num/den)};
+}
+
+Operation::Generic SqrtOperation::eval(Operation::Complexs args) const
+{
+
 }
