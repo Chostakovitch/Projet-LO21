@@ -21,6 +21,7 @@ Calculator::Calculator(QWidget *parent)  {
     message = new QTextEdit();
     message->setReadOnly(true);
     message->setStyleSheet("color:red;");
+    message->setMaximumHeight(50);
     errorLayout->addWidget(message);
     QPushButton* detailErrorButton = new QPushButton("More");
     connect(detailErrorButton, SIGNAL(clicked(bool)), this, SLOT(openDetailErrorWindow()));
@@ -65,6 +66,7 @@ bool Calculator::eventFilter(QObject *obj, QEvent *event)
             calculate();
             return true;
         }
+        return false;
     } else {
         // standard event processing
         return QObject::eventFilter(obj, event);
