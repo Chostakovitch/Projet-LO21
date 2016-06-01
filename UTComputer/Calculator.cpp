@@ -1,5 +1,5 @@
 #include <QtWidgets>
-
+#include "OperatorManager.h"
 #include <cmath>
 #include "WindowException.h"
 #include <QVBoxLayout>
@@ -38,6 +38,7 @@ Calculator::Calculator(QWidget *parent)  {
 
 
     command = new QLineEdit();
+    command->installEventFilter(this);
     topLayout->addWidget(command);
 
     keyBoard = new MainFrame(this);
@@ -48,6 +49,26 @@ Calculator::Calculator(QWidget *parent)  {
 
     setLayout(mainLayout);
 
+}
+
+bool Calculator::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress) {
+        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+        if (keyEvent->key() == Qt::Key_Right || keyEvent->key() == Qt::Key_Left) return true;
+        if (OperatorManager::getInstance().isOperator(keyEvent->text().toStdString())) {
+            command->setText(command->text()+keyEvent->text());
+            calculate();
+            return true;
+        }
+        if (keyEvent->key() == Qt::Key_Return) {
+            calculate();
+            return true;
+        }
+    } else {
+        // standard event processing
+        return QObject::eventFilter(obj, event);
+    }
 }
 
 void Calculator::openDetailErrorWindow() {

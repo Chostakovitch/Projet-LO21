@@ -8,6 +8,9 @@
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QDebug>
+#include <QEvent>
+#include <QObject>
+#include <QKeyEvent>
 
 class UTException;
 class Button;
@@ -28,7 +31,8 @@ private:
 
     void setMessage(const UTException&);
     void deleteMessage();
-
+protected:
+    bool eventFilter (QObject *obj, QEvent *event);
 public:
     explicit Calculator(QWidget *parent = 0);
 
