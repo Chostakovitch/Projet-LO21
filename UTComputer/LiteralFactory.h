@@ -10,6 +10,7 @@
 #include <memory>
 #include <functional>
 #include <vector>
+#include <complex>
 
 class LiteralFactory
 {
@@ -107,6 +108,12 @@ public:
      * @return Pointeur sur Literal.
      */
     std::shared_ptr<Literal> makeLiteral(std::shared_ptr<NumericLiteral> re, std::shared_ptr<NumericLiteral> im) const;
+    /**
+     * @brief Fabrique d'un objet ComplexLiteral.
+     * @param c std::complex de la librairie standard.
+     * @return Pointeur sur Literal.
+     */
+    std::shared_ptr<Literal> makeLiteral(std::complex<double> c) const;
     /**
      * @brief Fabrique d'un objet ExpressionLiteral.
      * @param s Chaîne quelconque.

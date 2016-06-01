@@ -149,8 +149,17 @@ std::shared_ptr<Literal> LiteralFactory::makeLiteral(double f) const {
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeLiteral(std::shared_ptr<NumericLiteral> re, std::shared_ptr<NumericLiteral> im) const {
+    //Cas où la littérale n'est pas numérique.
     if(std::dynamic_pointer_cast<ComplexLiteral>(re) || std::dynamic_pointer_cast<ComplexLiteral>(im)) throw TypeError("Complexs can't be part of complex.", {re, im});
+    //Cas où la partie imaginaire est nulle, on crée une littérale d'un type moins général.
+    if((RealLiteral)(*im) == 0) return makeLiteral((RealLiteral)(*re));
     return std::make_shared<ComplexLiteral>(re, im);
+}
+
+std::shared_ptr<Literal> LiteralFactory::makeLiteral(std::complex<double> c) const {
+    auto re = std::static_pointer_cast<NumericLiteral>(makeLiteral(c.real()));
+    auto im = std::static_pointer_cast<NumericLiteral>(makeLiteral(c.imag()));
+    return makeLiteral(re, im);
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeLiteral(const std::string &s) const {

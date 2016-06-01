@@ -61,61 +61,33 @@ Operation::Generic Operation::eval(Operation::Expressions) const {
     throw UTException("Operation not implemented for ExpressionLiteral.");
 }
 Operation::Generic PlusOperation::eval(Operation::Rationals args) const {
-    IntegerLiteral a = args.front()->getNum(), b = args.front()->getDen(), c = args.back()->getNum(), d = args.back()->getDen();
+    int a = args.front()->getNum(), b = args.front()->getDen(), c = args.back()->getNum(), d = args.back()->getDen();
 
     //Calcul du résultat via le dénominateur commun : la simplification est déléguée à la fabrique.
-    int num = a.getValue() * d.getValue() + b.getValue() * c.getValue();
-    int den = b.getValue() * d.getValue();
+    int num = a * d + b * c;
+    int den = b * d;
     return {LiteralFactory::getInstance().makeLiteral(num, den)};
 }
 
 Operation::Generic PlusOperation::eval(Operation::Reals args) const {
-    return {LiteralFactory::getInstance().makeLiteral(args.front()->getValue() + args.back()->getValue())};
+    return {LiteralFactory::getInstance().makeLiteral(*args.front() + *args.back())};
 }
 
 Operation::Generic PlusOperation::eval(Operation::Complexs args) const {
-    std::shared_ptr<Literal> new_re, new_im;
-    std::shared_ptr<NumericLiteral> res_re, res_im;
-    //Appel du plus sur les autres opérations
-    new_re = apply(shared_from_this(), {args.front()->getRe(), args.back()->getRe()}).front();
-    new_im = apply(shared_from_this(), {args.front()->getIm(), args.back()->getIm()}).front();
-    res_re = std::dynamic_pointer_cast<NumericLiteral>(new_re);
-    res_im = std::dynamic_pointer_cast<NumericLiteral>(new_im);
-    if(!(res_re && res_im)) throw UTException("Result of operation on real or imaginary part incompatible with complexs.");
-    return {LiteralFactory::getInstance().makeLiteral(res_re, res_im)};
+    return {LiteralFactory::getInstance().makeLiteral((std::complex<double>)*args.front() + (std::complex<double>)*args.back())};
 }
 
 Operation::Generic MulOperation::eval(Operation::Rationals args) const {
-    IntegerLiteral a = args.front()->getNum(), b = args.front()->getDen(), c = args.back()->getNum(), d = args.back()->getDen();
-    int num = a.getValue() * c.getValue();
-    int den = b.getValue() * d.getValue();
-    return {LiteralFactory::getInstance().makeLiteral(num, den)};
+    int a = args.front()->getNum(), b = args.front()->getDen(), c = args.back()->getNum(), d = args.back()->getDen();
+    return {LiteralFactory::getInstance().makeLiteral(a * c, b * d)};
 }
 
 Operation::Generic MulOperation::eval(Operation::Reals args) const {
-    return {LiteralFactory::getInstance().makeLiteral(args.front()->getValue() * args.back()->getValue())};
+    return {LiteralFactory::getInstance().makeLiteral(*args.front() * *args.back())};
 }
 
 Operation::Generic MulOperation::eval(Operation::Complexs args) const {
-    std::shared_ptr<Literal> new_re, new_im;
-    std::shared_ptr<NumericLiteral> res_re, res_im, re_1 = args.front()->getRe(), re_2 = args.back()->getRe(), im_1 = args.front()->getIm(), im_2 = args.back()->getIm();
-    //(a + ib) * (c + id) = (ac - bd) + i(ad + bc)
-    new_re = apply(std::make_shared<MoinsOperation>(), \
-             {
-                apply(shared_from_this(), {re_1, re_2}).front(), \
-                apply(shared_from_this(), {im_1, im_2}).front()
-             }).front();
-
-    new_im = apply(std::make_shared<PlusOperation>(), \
-             {
-                apply(shared_from_this(), {re_1, im_2}).front(), \
-                apply(shared_from_this(), {im_1, re_2}).front()
-             }).front();
-
-    res_re = std::dynamic_pointer_cast<NumericLiteral>(new_re);
-    res_im = std::dynamic_pointer_cast<NumericLiteral>(new_im);
-    if(!(res_re && res_im)) throw UTException("Result of operation on real or imaginary part incompatible with complexs.");
-    return {LiteralFactory::getInstance().makeLiteral(res_re, res_im)};
+    return {LiteralFactory::getInstance().makeLiteral((std::complex<double>)*args.front() * (std::complex<double>)*args.back())};
 }
 
 Operation::Generic ComplexOperation::eval(Operation::Generic args) const {
@@ -193,7 +165,7 @@ Operation::Generic PowOperation::eval(Operation::Reals args) const {
 Operation::Generic PowOperation::eval(Operation::Complexs args) const {
     //On sait que le type le plus général contenu par un complexe est un réel, on promeut tous les membres en réels
     auto reals = (Operation::Reals)Operation::Generic{args.front()->getRe(), args.front()->getIm(), args.back()->getRe(), args.back()->getIm()};
-    //On passe par la librairie standard pour le calcul
+    //On passe par la librairie standard pour le calcul qui demande des opérations complexes
     std::complex<double> n(reals.at(0)->getValue(), reals.at(1)->getValue());
     std::complex<double> p(reals.at(2)->getValue(), reals.at(3)->getValue());
     auto res = std::pow(n, p);
