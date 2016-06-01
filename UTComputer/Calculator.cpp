@@ -1,8 +1,9 @@
 #include <QtWidgets>
 
 #include <cmath>
-
+#include "WindowException.h"
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QString>
 #include "UTException.h"
 #include "Button.h"
@@ -16,11 +17,16 @@ Calculator::Calculator(QWidget *parent)  {
     QVBoxLayout *mainLayout = new QVBoxLayout;
     QVBoxLayout *topLayout = new QVBoxLayout;
 
-    message = new QLineEdit();
+    QHBoxLayout* errorLayout = new QHBoxLayout();
+    message = new QTextEdit();
     message->setReadOnly(true);
-    message->setStyleSheet("background-color:blue;");
-    //connect(message, SIGNAL(returnPressed()), this, SLOT(keyPressedCommandLine()));
-    topLayout->addWidget(message);
+    message->setStyleSheet("color:red;");
+    errorLayout->addWidget(message);
+    QPushButton* detailErrorButton = new QPushButton("More");
+    connect(detailErrorButton, SIGNAL(clicked(bool)), this, SLOT(openDetailErrorWindow()));
+    errorLayout->addWidget(detailErrorButton);
+
+    topLayout->addLayout(errorLayout);
 
     viewPile = new QTableWidget();
     viewPile->setColumnCount(1);
@@ -42,6 +48,11 @@ Calculator::Calculator(QWidget *parent)  {
 
     setLayout(mainLayout);
 
+}
+
+void Calculator::openDetailErrorWindow() {
+    WindowException* window = new WindowException(this, messageDetail);
+    window->show();
 }
 
 void Calculator::addDigitToCommand() {
@@ -79,12 +90,22 @@ void Calculator::addOperatorToCommand() {
 void Calculator::calculate() {
     try {
         Manager::getInstance().handleOperandLine(command->text().toStdString());
-        message->setText(QString());
+        deleteMessage();
         command->setText(QString());
     } catch (UTException e) {
-        message->setText(QString::fromStdString(e.what()));
+        setMessage(e);
     }
     refreshPile();
+}
+
+void Calculator::setMessage(const UTException& e) {
+    //if (Manager::getInstance().getSettings().getBeepMessage()) QApplication::beep();
+    message->setText(QString::fromStdString(e.what()));
+    messageDetail = e.details();
+}
+
+void Calculator::deleteMessage() {
+    message->setText(QString());
 }
 
 void Calculator::refreshPile() {

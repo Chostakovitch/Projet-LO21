@@ -9,6 +9,7 @@
 #include <QHeaderView>
 #include <QDebug>
 
+class UTException;
 class Button;
 class Settings;
 class MainFrame;
@@ -18,11 +19,15 @@ class Calculator : public QWidget
 {
 private:
     Q_OBJECT
-    QLineEdit* message;
+    QTextEdit* message;
     QTableWidget* viewPile;
     QLineEdit* command;
     QVBoxLayout* layout;
     MainFrame* keyBoard;
+    std::string messageDetail;
+
+    void setMessage(const UTException&);
+    void deleteMessage();
 
 public:
     explicit Calculator(QWidget *parent = 0);
@@ -36,6 +41,7 @@ public slots:
     void calculate();
     void nbLineDisplayPileChanged(int newValue);
     void displayKeyboardChanged(int newValue);
+    void openDetailErrorWindow();
     //void getNextCommande();
 
 };

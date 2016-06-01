@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     WindowParam.cpp \
     Pile.cpp \
     UTException.cpp \
-    UTComputer.cpp
+    UTComputer.cpp \
+    WindowException.cpp
 
 HEADERS  += \
     Literal.h \
@@ -51,7 +52,8 @@ HEADERS  += \
     Pile.h \
     UTException.h \
     UTComputer.h \
-    Arguments.h
+    Arguments.h \
+    WindowException.h
 
 FORMS    += utcomputer.ui
 
