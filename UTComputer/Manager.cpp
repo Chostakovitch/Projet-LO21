@@ -3,6 +3,7 @@
 #include "CompositeLiteral.h"
 #include "OperatorManager.h"
 #include "UTException.h"
+#include "Utility.h"
 #include <memory>
 #include <iostream>
 #include <cctype>
@@ -125,7 +126,7 @@ void Manager::handleOperandLine(std::string command) {
                 //Non-identificateur, on crée une littérale expression si possible.
                 catch(UTException& e3) {
                     //Atome bien formé, on l'encapsule dans une LiteralExpression.
-                    if(!op.empty() && std::isupper(op.at(0)) && std::find_if(op.begin(), op.end(), [](char c) { return !(std::isdigit(c) || std::isupper(c)); }) == op.end()) {
+                    if(Utility::isAtom(op)) {
                         ops.push_back(LiteralFactory::getInstance().makeLiteral(op));
                     }
                     //Impossible de construire une opérande, on le signale

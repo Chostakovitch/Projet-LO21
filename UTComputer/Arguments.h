@@ -7,6 +7,7 @@
 #include <sstream>
 #include <algorithm>
 #include <iterator>
+#include <typeinfo>
 
 /**
  * @brief Wrapper vide de std::vector.
@@ -40,25 +41,33 @@ public:
             if(&e != &(this->back())) oss << *e << ", ";
         }
         if(!this->empty()) oss << *(this->back());
-        else oss << "Undefined";
+        else oss << "Empty";
         oss << "]";
         return oss.str();
     }
     /**
-     * @brief Cast d'un vecteur de pointeurs vers un vecteur de types pointés.
+     * @brief Upcasting d'un vecteur de pointeurs, pas de conversion nécessaires.
      */
-    template <typename U>
-    operator Arguments<U>() const {
-        Arguments<U> dest;
-        for (auto arg : *this) {
-            //Si le type réel de l'objet pointé est le même que le type destination, on n'appelle pas d'opérateur de cast
-            if(auto ptr = std::dynamic_pointer_cast<U>(arg)) {
-                dest.push_back(*ptr);
-            }
-            //Sinon, il faut passer par l'opérateur de cast (explicite ou implicite)
-            else {
-                dest.push_back((U)*arg);
-            }
+    template <typename U, typename std::enable_if<std::is_base_of<U, T>::value || std::is_same<U, T>::value>::type* = nullptr>
+    operator Arguments<std::shared_ptr<U>>() const {
+        Arguments<std::shared_ptr<U>> dest;
+        for (auto& arg : *this) {
+            dest.push_back(arg);
+        }
+        return dest;
+    }
+
+    /**
+     * @brief Downcast d'un vecteur de pointeurs, via un cast dynamique ou sur les objets concrets.
+     */
+    template <typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+    operator Arguments<std::shared_ptr<U>>() const {
+        Arguments<std::shared_ptr<U>> dest;
+        for (auto& arg : *this) {
+            //Si le type réel de l'objet pointé est compatible avec le type de destination, on n'appelle pas d'opérateur de cast
+            if(auto ptr = std::dynamic_pointer_cast<U>(arg)) dest.push_back(ptr);
+            //Sinon, il faut passer par l'opérateur de cast et construire un nouveau pointeur
+            else dest.push_back(std::make_shared<U>((U)*arg));
         }
         return dest;
     }

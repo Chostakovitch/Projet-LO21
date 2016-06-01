@@ -30,5 +30,11 @@ namespace Utility {
      * @return Booléen.
      */
     bool isSymbol(char c);
+    /**
+     * @brief Indique si une chaîne est une atome, i.e. un mot commençant par une majuscule et contenant des chiffres et des majuscules
+     * @param atom Chaîne à valider.
+     * @return Booléen.
+     */
+    bool isAtom(std::string atom);
 }
 #endif

@@ -7,6 +7,7 @@
 #define LITERAL_H
 #include <string>
 #include <memory>
+#include <complex>
 
 class IntegerLiteral;
 class RationalLiteral;
@@ -126,6 +127,10 @@ public:
      * @details L'objet courant est défini comme partie réelle du ComplexLiteral, sa partie imaginaire est mise à 0.
      */
     operator ComplexLiteral() const override;
+    /**
+     * @brief Cast d'un objet IntegerLiteral en int.
+     */
+    operator int() const { return value; }
     std::string toString() const override { return std::to_string(value); }
 };
 
@@ -170,6 +175,10 @@ public:
      * @details L'objet courant est défini comme partie réelle du ComplexLiteral, sa partie imaginaire est mise à 0.
      */
     operator ComplexLiteral() const override;
+    /**
+     * @brief Cast d'un objet RationalLiteral en double, par division de ses deux parties.
+     */
+    operator double() const { return (double)num / den; }
     std::string toString() const override { return num.toString() + '/' + den.toString(); }
 };
 
@@ -197,6 +206,10 @@ public:
      * @details L'objet courant est défini comme partie réelle du ComplexLiteral, sa partie imaginaire est mise à 0.
      */
     operator ComplexLiteral() const override;
+    /**
+     * @brief Cast d'un objet RealLiteral en double.
+     */
+    operator double() const { return value; }
     std::string toString() const override { return std::to_string(value); }
 };
 
@@ -231,6 +244,10 @@ public:
      * @return Référence constante sur nombre.
      */
     const std::shared_ptr<NumericLiteral>& getIm() const { return im; }
+    /**
+     * @brief Opérateur de cast vers un complexe de la librairie standard.
+     */
+    operator std::complex<double>() const { return std::complex<double>((RealLiteral)(*re), (RealLiteral)(*im)); }
     std::string toString() const override { return re->toString() + "$" + im->toString(); }
 };
 

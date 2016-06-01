@@ -155,7 +155,7 @@ std::shared_ptr<Literal> ExpressionParser::getLiteral(std::string token) {
         return id;
     }
     //Construction d'une littérale
-    catch(UTException& e) {
+    catch(UTException&) {
         try {
             return LiteralFactory::getInstance().makeLiteralFromString(token);
         }

@@ -25,11 +25,11 @@
 class Operation : public std::enable_shared_from_this<Operation> {
 protected:
     typedef Arguments<std::shared_ptr<Literal>> Generic;
-    typedef Arguments<IntegerLiteral> Integers;
-    typedef Arguments<RationalLiteral> Rationals;
-    typedef Arguments<ComplexLiteral> Complexs;
-    typedef Arguments<RealLiteral> Reals;
-    typedef Arguments<ExpressionLiteral> Expressions;
+    typedef Arguments<std::shared_ptr<IntegerLiteral>> Integers;
+    typedef Arguments<std::shared_ptr<RationalLiteral>> Rationals;
+    typedef Arguments<std::shared_ptr<ComplexLiteral>> Complexs;
+    typedef Arguments<std::shared_ptr<RealLiteral>> Reals;
+    typedef Arguments<std::shared_ptr<ExpressionLiteral>> Expressions;
     /**
      * @brief Opération générique sur des littérales typées dynamiquement.
      * @details Les sous-classes devraient redéfinir cette méthode dans trois cas :
@@ -85,7 +85,7 @@ public:
      * @brief Dispatch des opérandes vers la bonne opération via des casts.
      * @return Résultat de l'opération.
      */
-    static Generic applyOperation(const std::shared_ptr<const Operation> &op, Generic args);
+    static Generic apply(const std::shared_ptr<const Operation> &op, Generic args);
     virtual ~Operation() {}
 };
 
@@ -134,9 +134,40 @@ class ComplexOperation : public Operation {
     Generic eval(Generic args) const override;
 };
 
-class STOOperation : public Operation {
-public:
-    Generic eval(Generic args) const override;
+/**
+ * @brief Un objet DivOperation implémente l'opération de division (rationnelle)
+ * @details Les littérales supportées sont RationalLiteral, RealLiteral et ComplexLiteral.
+ */
+class DivOperation : public Operation {
+    Generic eval(Rationals args) const override;
+    Generic eval(Reals args) const override;
+    Generic eval(Complexs args) const override;
 };
+
+/**
+ * @brief Un objet IntDivOperation implémente l'opération de division entière.
+ * @details Seules les IntegerLiteral sont supportés.
+ */
+class IntDivOperation : public Operation {
+    Generic eval(Integers args) const override;
+};
+
+/**
+ * @brief Un objet ModOperation implémente l'opération de modulo.
+ * @details Seules les IntegerLiteral sont supportés.
+ */
+class ModOperation : public Operation {
+    Generic eval(Integers args) const override;
+};
+
+/**
+ * @brief Un objet PowOperation implémente l'opération de puissance.
+ * @details Les littérales supportées sont RealLiteral et ComplexLiteral.
+ */
+class PowOperation : public Operation {
+    Generic eval(Reals args) const override;
+    Generic eval(Complexs args) const override;
+};
+
 
 #endif

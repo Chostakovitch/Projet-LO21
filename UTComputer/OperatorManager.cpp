@@ -20,10 +20,13 @@ OperatorManager::OperatorManager() : minus_symbol("-") {
     operators.push_back(std::make_shared<SymbolicOperator>("-", 2, std::make_shared<MoinsOperation>(), true, 0)); //Soustraction
     operators.push_back(std::make_shared<SymbolicOperator>("*", 2, std::make_shared<MulOperation>(), true, 1)); //Multiplication
     operators.push_back(std::make_shared<SymbolicOperator>("$", 2, std::make_shared<ComplexOperation>(), true, 2)); //Complexe
+    operators.push_back(std::make_shared<SymbolicOperator>("/", 2, std::make_shared<DivOperation>(), true, 1)); //Division
 
     //Création des opérateurs parenthésés
     operators.push_back(std::make_shared<FunctionOperator>("NEG", 1, std::make_shared<NegOperation>(), true)); //Négation
-    operators.push_back(std::make_shared<FunctionOperator>("STO", 2, std::make_shared<STOOperation>(), true)); //A compléter
+    operators.push_back(std::make_shared<FunctionOperator>("DIV", 2, std::make_shared<IntDivOperation>(), true)); //Division entière
+    operators.push_back(std::make_shared<FunctionOperator>("MOD", 2, std::make_shared<ModOperation>(), true)); //Modulo
+    operators.push_back(std::make_shared<FunctionOperator>("POW", 2, std::make_shared<PowOperation>(), true)); //Puissance
 }
 
 const OperatorManager& OperatorManager::getInstance() {
@@ -57,20 +60,20 @@ std::vector<std::shared_ptr<Operator>> OperatorManager::getSymbolicOperators() c
 
 Arguments<std::shared_ptr<Literal>> OperatorManager::dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const {
     //0. Vérifications
-    if (op->getArity() != args.size()) throw TypeError("Wrong number of operands.", args);
+    if (op->getArity() != args.size()) throw OperationError(op, args, "Wrong number of operands.");
 
     //1. Cas particuliers
     //1.1. Un objet LiteralExpression est présent dans les opérandes et l'opérateur est numérique : méthode membre.
     if(op->isNumeric()) {
         for(auto& arg : args) {
-            if(std::dynamic_pointer_cast<ExpressionLiteral>(arg)) return Arguments<std::shared_ptr<Literal>>{opExpression(op, (Arguments<ExpressionLiteral>)args)};
+            if(std::dynamic_pointer_cast<ExpressionLiteral>(arg)) return Arguments<std::shared_ptr<Literal>>{opExpression(op, (Arguments<std::shared_ptr<ExpressionLiteral>>)args)};
         }
     }
     //1.2. [...] (eval, memento) TODO
 
     //2. Appel de la méthode d'évaluation générique de l'opérateur.
     try {
-        return Operation::applyOperation(op->getOperation(), args);
+        return Operation::apply(op->getOperation(), args);
     }
     //3. Uniformisation impossible ou opération non-implémentée / ayant provoqué une erreur.
     catch(UTException& e) {
@@ -78,7 +81,7 @@ Arguments<std::shared_ptr<Literal>> OperatorManager::dispatchOperation(std::shar
     }
 }
 
-std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr<Operator> op, const Arguments<ExpressionLiteral>& args) const {
+std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr<Operator> op, const Arguments<std::shared_ptr<ExpressionLiteral>>& args) const {
     std::ostringstream oss;
     auto op_symbol = std::dynamic_pointer_cast<SymbolicOperator>(op);
     //Cas d'un opérateur fonction, on l'applique simplement
@@ -86,7 +89,7 @@ std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr
         oss << op->toString() << "(";
         //Ajout des opérandes
         for(auto it = args.begin(); it != args.end(); ++it) {
-            oss << it->getExpression();
+            oss << (*it)->getExpression();
             //Excepté pour la dernière itération
             if(std::next(it) != args.end()) {
                 oss << ',';
@@ -104,8 +107,8 @@ std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr
         });
 
         //Par définition du caractère symbolique, on connaît déjà l'arité : 2. On récupère les éléments non-parenthésés des expressions
-        std::string left = Utility::getOutside(args.at(0).getExpression(), '(', ')');
-        std::string right = Utility::getOutside(args.at(1).getExpression(), '(', ')');
+        std::string left = Utility::getOutside(args.at(0)->getExpression(), '(', ')');
+        std::string right = Utility::getOutside(args.at(1)->getExpression(), '(', ')');
 
         //Indique s'il faut parenthéser les expressions opérandes
         bool parenthizeLeft = false;
@@ -121,11 +124,11 @@ std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr
 
         //Construction de l'expression
         if(parenthizeLeft) oss << '(';
-        oss << args.at(0).getExpression();
+        oss << args.at(0)->getExpression();
         if(parenthizeLeft) oss << ')';
         oss << op->toString();
         if(parenthizeRight) oss << '(';
-        oss << args.at(1).getExpression();
+        oss << args.at(1)->getExpression();
         if(parenthizeRight) oss << ')';
     }
     return std::make_shared<ExpressionLiteral>(oss.str());

@@ -29,3 +29,7 @@ std::string Utility::getOutside(std::string s, char left, char right) {
 bool Utility::isSymbol(char c) {
     return !std::isalnum(c) && std::isgraph(c);
 }
+
+bool Utility::isAtom(std::string atom) {
+    return !atom.empty() && std::isupper(atom.at(0)) && std::find_if(atom.begin(), atom.end(), [](char c) { return !(std::isdigit(c) || std::isupper(c)); }) == atom.end();
+}
