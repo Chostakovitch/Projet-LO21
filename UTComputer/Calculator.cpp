@@ -51,7 +51,7 @@ Calculator::Calculator(QWidget *parent)  {
 }
 
 void Calculator::openDetailErrorWindow() {
-    WindowException* window = new WindowException(this, messageDetail);
+    WindowException* window = new WindowException(messageDetail);
     window->show();
 }
 
@@ -108,6 +108,7 @@ void Calculator::setMessage(const UTException& e) {
 
 void Calculator::deleteMessage() {
     message->setText(QString());
+    messageDetail = "";
 }
 
 void Calculator::refreshPile() {

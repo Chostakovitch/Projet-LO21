@@ -9,7 +9,7 @@ class WindowException : public QWidget
     Q_OBJECT
     std::string details;
 public:
-    WindowException(QWidget* parent, std::string details);
+    WindowException(std::string details);
 };
 
 #endif // WINDOWEXCEPTION_H

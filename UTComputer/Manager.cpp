@@ -28,8 +28,7 @@ const std::shared_ptr<Literal>& Manager::getIdentifier(const std::string& id) co
 }
 
 void Manager::addIdentifier(const std::string& id, std::shared_ptr<Literal> lit) {
-    if (id.empty() || std::islower(id[0])) throw ParsingError(id, "An identifier must begin with a uppercase character.");
-    if (!std::all_of(id.begin(), id.end(), [](char c) { return (isupper(c) || isdigit(c));})) throw ParsingError(id, "An identifier must constain only uppercase character and digit.");
+    if (!Utility::isAtom(id)) throw ParsingError(id, "An identifier must begin with a uppercase character and only contain uppercase character and digit.");
     if (OperatorManager::getInstance().isOperator(id)) throw ParsingError(id, "This name is already assigned to a program.");
     identifiers[id] = lit;
     saveState();
