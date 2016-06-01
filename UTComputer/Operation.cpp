@@ -157,12 +157,43 @@ Operation::Generic SqrtOperation::eval(Operation::Rationals args) const {
     double intpart;
     double num = std::sqrt((int)args.front()->getNum());
     double den = std::sqrt((int)args.front()->getDen());
-    //Si les résultats sont entiers on peut fabriquer une littérale rationnelle
+    //Si les résultats sont entiers on peut fabriquer une littérale rationnelle et conserver l'écriture fractionnaire
     if(std::modf(num, &intpart) == 0.0 && std::modf(den, &intpart) == 0.0) return {LiteralFactory::getInstance().makeLiteral((int)num, (int)den)};
     return {LiteralFactory::getInstance().makeLiteral(num/den)};
 }
 
-Operation::Generic SqrtOperation::eval(Operation::Complexs args) const
-{
+Operation::Generic SqrtOperation::eval(Operation::Complexs args) const {
+    return {LiteralFactory::getInstance().makeLiteral(std::sqrt((Operation::StdComplex)*args.front()))};
+}
 
+Operation::Generic ExpOperation::eval(Operation::Complexs args) const {
+    return {LiteralFactory::getInstance().makeLiteral(std::exp((Operation::StdComplex)*args.front()))};
+}
+
+Operation::Generic LnOperation::eval(Operation::Complexs args) const {
+    return {LiteralFactory::getInstance().makeLiteral(std::log((Operation::StdComplex)*args.front()))};
+}
+
+Operation::Generic NumOperation::eval(Operation::Rationals args) const {
+    return {LiteralFactory::getInstance().makeLiteral(args.front()->getNum())};
+}
+
+Operation::Generic DenOperation::eval(Operation::Rationals args) const {
+    return {LiteralFactory::getInstance().makeLiteral(args.front()->getDen())};
+}
+
+Operation::Generic ReOperation::eval(Operation::Complexs args) const {
+    return {args.front()->getRe()};
+}
+
+Operation::Generic ImOperation::eval(Operation::Complexs args) const{
+    return {args.front()->getIm()};
+}
+
+Operation::Generic ArgOperation::eval(Operation::Complexs args) const {
+    return{LiteralFactory::getInstance().makeLiteral(std::arg((Operation::StdComplex)*args.front()))};
+}
+
+Operation::Generic ModuleOperation::eval(Operation::Complexs args) const {
+    return{LiteralFactory::getInstance().makeLiteral(std::norm((Operation::StdComplex)*args.front()))};
 }

@@ -224,4 +224,68 @@ class SqrtOperation : public Operation {
     Generic eval(Complexs args) const override;
 };
 
+/**
+ * @brief Un objet ExpOperation implémente l'exponentielle.
+ * @details Seuls les ComplexLiteral sont supportés.
+ */
+class ExpOperation : public Operation {
+    Generic eval(Complexs args) const override;
+};
+
+/**
+ * @brief Un objet ExpOperation implémente le logarithme néperien.
+ * @details Seuls les ComplexLiteral sont supportés.
+ */
+class LnOperation : public Operation {
+    Generic eval(Complexs args) const override;
+};
+
+/**
+ * @brief Un objet NumOperation renvoie le numérateur d'un rationnel (a fortiori la valeur d'un entier après cast).
+ * @details Seuls les RationalLiteral sont supportés.
+ */
+class NumOperation : public Operation {
+    Generic eval(Rationals args) const override;
+};
+
+/**
+ * @brief Un objet DenOperation renvoie le dénominateur d'un rationnel (a fortiori 1 pour un entier après cast).
+ * @details Seuls les RationalLiteral sont supportés.
+ */
+class DenOperation : public Operation {
+    Generic eval(Rationals args) const override;
+};
+
+/**
+ * @brief Un objet ReOperation renvoie la partie réelle d'un complexe (a fortiori toutes les autres littérales numériques après cast).
+ * @details Seuls les ComplexLiteral sont supportés.
+ */
+class ReOperation : public Operation {
+    Generic eval(Complexs args) const override;
+};
+
+/**
+ * @brief Un objet ImOperation renvoie la partie imaginaire d'un complexe (a fortiori 0 pour toutes les autres littérales numériques après cast).
+ * @details Seuls les ComplexLiteral sont supportés.
+ */
+class ImOperation : public Operation {
+    Generic eval(Complexs args) const override;
+};
+
+/**
+ * @brief Un objet ArgOperation renvoie l'argument d'un complexe.
+ * @details Seuls les ComplexLiteral sont supportés.
+ */
+class ArgOperation : public Operation {
+    Generic eval(Complexs args) const override;
+};
+
+/**
+ * @brief Un objet ModuleOperation renvoie module d'un complexe.
+ * @details Seuls les ComplexLiteral sont supportés.
+ */
+class ModuleOperation : public Operation {
+    Generic eval(Complexs args) const override;
+};
+
 #endif
