@@ -41,6 +41,7 @@ Calculator::Calculator(QWidget *parent)  {
 
     command = new QLineEdit();
     command->installEventFilter(this);
+    //connect(command, SIGNAL(cursorPositionChanged(int,int)), this, SLOT())
     topLayout->addWidget(command);
 
     keyBoard = new MainFrame(this);
@@ -55,6 +56,10 @@ Calculator::Calculator(QWidget *parent)  {
 
 bool Calculator::eventFilter(QObject *obj, QEvent *event)
 {
+    if (event->type() == QEvent::MouseButtonPress) {
+        command->setCursorPosition(command->text().size());
+        return true;
+    }
     if (event->type() == QEvent::KeyPress) {
         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
         if (keyEvent->key() == Qt::Key_Right || keyEvent->key() == Qt::Key_Left) return true;
