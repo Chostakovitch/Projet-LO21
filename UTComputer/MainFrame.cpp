@@ -34,10 +34,10 @@ MainFrame::MainFrame(QWidget *parent) : QFrame(parent) {
     actionLayout->addWidget(backspaceButton, 1, 2);
 
     std::vector<std::string> symbolicOperators = Manager::getInstance().getSymbolicOperatorToString();
-    unsigned int count = 0;
+    unsigned int count = 1;
     for(auto o : symbolicOperators) {
         Button* operatorButton = createButton(QString::fromStdString(o), SLOT(addOperatorToCommand()));
-        int row = ((9 - count) / 3) + 2;
+        int row = ((symbolicOperators.size() - count) / 3) + 2;
         int column = ((count - 1) % 3) + 1;
         opeartorLayout->addWidget(operatorButton, row, column);
         count++;

@@ -42,6 +42,10 @@ OperatorManager::OperatorManager() : minus_symbol("-") {
     operators.push_back(std::make_shared<FunctionOperator>("IM", 1, std::make_shared<ImOperation>(), true)); //Partie imaginaire
     operators.push_back(std::make_shared<FunctionOperator>("ARG", 1, std::make_shared<ArgOperation>(), true)); //Argument complexe
     operators.push_back(std::make_shared<FunctionOperator>("NORM", 1, std::make_shared<ModuleOperation>(), true)); //Module complexe
+
+    //Création des opérateur d'identifieurs
+    operators.push_back(std::make_shared<FunctionOperator>("STO", 2, std::make_shared<StoOperation>(), false)); //Enregistrement d'identificateur
+    operators.push_back(std::make_shared<FunctionOperator>("FORGET", 1, std::make_shared<ForgetOperation>(), false)); //Suppression d'identificateur
 }
 
 const OperatorManager& OperatorManager::getInstance() {

@@ -288,4 +288,19 @@ class ModuleOperation : public Operation {
     Generic eval(Complexs args) const override;
 };
 
+/**
+ * @brief Un objet StoOperation enregistre un identificateur référençant une litteral.
+ * @details Une litteral atome doit étre fournie pour la création de l'identificateur.
+ */
+class StoOperation : public Operation {
+    Generic eval(Generic args) const override;
+};
+
+/**
+ * @brief Un objet ForgetOperation supprime un identificateur référençant une litteral.
+ */
+class ForgetOperation : public Operation {
+    Generic eval(Generic args) const override;
+};
+
 #endif

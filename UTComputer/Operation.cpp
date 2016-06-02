@@ -197,3 +197,14 @@ Operation::Generic ArgOperation::eval(Operation::Complexs args) const {
 Operation::Generic ModuleOperation::eval(Operation::Complexs args) const {
     return{LiteralFactory::getInstance().makeLiteral(std::norm((Operation::StdComplex)*args.front()))};
 }
+
+Operation::Generic StoOperation::eval(Generic args) const {
+    if(!std::dynamic_pointer_cast<ExpressionLiteral>(args.front())) throw TypeError("An identifier must be an expression.", args);
+    Manager::getInstance().addIdentifier(args.back()->toString(), args.front());
+    return {};
+}
+
+Operation::Generic ForgetOperation::eval(Generic args) const {
+    // TEST
+    return {};
+}

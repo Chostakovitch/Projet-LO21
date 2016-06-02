@@ -30,6 +30,7 @@ Calculator::Calculator(QWidget *parent)  {
     topLayout->addLayout(errorLayout);
 
     viewPile = new QTableWidget();
+    viewPile->setEditTriggers(QAbstractItemView::NoEditTriggers);
     viewPile->setColumnCount(1);
     viewPile->horizontalHeader()->hide();
     viewPile->horizontalHeader()->setStretchLastSection(true);
@@ -87,10 +88,12 @@ void Calculator::openDetailErrorWindow() {
 void Calculator::addDigitToCommand() {
     Button *clickedButton = qobject_cast<Button *>(sender());
     command->setText(command->text() + clickedButton->text());
+    command->setFocus();
 }
 
 void Calculator::addSpaceToCommand() {
     command->setText(command->text() + " ");
+    command->setFocus();
 }
 
 void Calculator::backspaceToCommand() {
@@ -99,6 +102,7 @@ void Calculator::backspaceToCommand() {
         newCommand.pop_back();
         command->setText(QString::fromStdString(newCommand));
     }
+    command->setFocus();
 }
 
 void Calculator::displayKeyboardChanged(int newValue) {
@@ -115,6 +119,7 @@ void Calculator::nbLineDisplayPileChanged(int newValue) {
 void Calculator::addOperatorToCommand() {
     Button *clickedButton = qobject_cast<Button *>(sender());
     command->setText(command->text() +" "+ clickedButton->text());
+    command->setFocus();
     calculate();
 }
 
