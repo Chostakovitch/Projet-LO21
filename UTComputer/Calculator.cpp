@@ -21,6 +21,7 @@ Calculator::Calculator(QWidget *parent)  {
     message = new QTextEdit();
     message->setReadOnly(true);
     message->setStyleSheet("color:red;");
+    message->setMinimumHeight(60);
     errorLayout->addWidget(message);
     QPushButton* detailErrorButton = new QPushButton("More");
     connect(detailErrorButton, SIGNAL(clicked(bool)), this, SLOT(openDetailErrorWindow()));
@@ -31,6 +32,7 @@ Calculator::Calculator(QWidget *parent)  {
     viewPile = new QTableWidget();
     viewPile->setColumnCount(1);
     viewPile->horizontalHeader()->hide();
+    viewPile->horizontalHeader()->setStretchLastSection(true);
     //viewPile->setStyleSheet("background-color:black; color:white;");
     viewPile->setRowCount(Manager::getInstance().getSettings().getNbLinesDisplayPile());
     topLayout->addWidget(viewPile);
