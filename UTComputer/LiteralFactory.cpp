@@ -144,7 +144,7 @@ std::shared_ptr<Literal> LiteralFactory::makeLiteral(int num, int den) const {
 std::shared_ptr<Literal> LiteralFactory::makeLiteral(double f) const {
     double intpart;
     //modf renvoie la partie fractionnaire et stocke la partie entière dans intpart
-    if (std::modf(f, &intpart) == 0) return makeLiteral((int)intpart);
+    if (std::modf(f, &intpart) == 0.0) return makeLiteral((int)intpart);
     return std::make_shared<RealLiteral>(f);
 }
 

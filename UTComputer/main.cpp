@@ -14,6 +14,10 @@
 
 int main(int argc, char *argv[])
 {
+    /*try {
+        Manager::getInstance().handleOperandLine("4.5 4.6 +");
+        for(auto& lit : Manager::getInstance().getPile()) std::cout << lit->toString() << std::endl;
+    } catch(UTException& e) { std::cout << e.details() << std::endl; }*/
     QApplication a(argc, argv);
     UTComputer w;
     w.show();

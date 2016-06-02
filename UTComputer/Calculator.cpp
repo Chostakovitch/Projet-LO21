@@ -67,6 +67,7 @@ bool Calculator::eventFilter(QObject *obj, QEvent *event)
             calculate();
             return true;
         }
+        return false;
     } else {
         // standard event processing
         return QObject::eventFilter(obj, event);
