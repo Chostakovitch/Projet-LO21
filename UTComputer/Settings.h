@@ -14,6 +14,8 @@ public:
     void setNbLinesDisplayPile(unsigned int value) { nbLinesDisplayPile = value; }
     void setDisplayKeyboard(bool value) { displayKeyboard = value;}
     void setBeepMessage(bool value) { beepMessage = value; }
+    bool operator==(Settings s) { return s.nbLinesDisplayPile == nbLinesDisplayPile && s.displayKeyboard == displayKeyboard && beepMessage == s.beepMessage; }
+    bool operator!=(Settings s) {return !operator==(s); }
 };
 
 #endif // SETTINGS_H

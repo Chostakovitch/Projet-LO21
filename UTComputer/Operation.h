@@ -303,4 +303,60 @@ class ForgetOperation : public Operation {
     Generic eval(Generic args) const override;
 };
 
+/**
+ * @brief Un objet DupOperation empile une nouvelle littérale identique à celle du sommet de la pile.
+ */
+class DupOperation : public Operation {
+    Generic eval(Generic args) const override;
+};
+
+/**
+ * @brief Un objet DropOperation dépile la littérale au sommet de la pile.
+ */
+class DropOperation : public Operation {
+    Generic eval(Generic args) const override;
+};
+
+/**
+ * @brief Un objet SwapOperation intervertit les deux derniers éléments empilés dans la pile.
+ */
+class SwapOperation : public Operation {
+    Generic eval(Generic args) const override;
+};
+
+/**
+ * @brief Un objet UndoOperation rétablit l’état du calculateur avant la dernière opération
+ */
+class UndoOperation : public Operation {
+    Generic eval(Generic args) const override;
+};
+
+/**
+ * @brief Un objet RedoOperation rétablit l’état du calculateur avant l’application de la dernière opération UNDO.
+ */
+class RedoOperation : public Operation {
+    Generic eval(Generic args) const override;
+};
+
+/**
+ * @brief Un objet ClearOperation vide tous les éléments de la pile.
+ */
+class ClearOperation : public Operation {
+    Generic eval(Generic args) const override;
+};
+
+/**
+ * @brief Un objet LastopOperation applique le dernier opérateur utilisé.
+ */
+class LastopOperation : public Operation {
+    Generic eval(Generic args) const override;
+};
+
+/**
+ * @brief Un objet LastargsOperation empile les littérales utilisées pour la dernière opération.
+ */
+class LastargsOperation : public Operation {
+    Generic eval(Generic args) const override;
+};
+
 #endif

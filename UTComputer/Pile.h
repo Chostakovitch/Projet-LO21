@@ -18,6 +18,9 @@ public:
     }
     void push(std::shared_ptr<Literal> l) { p.push_back(l);}
 
+    bool operator==(const Pile& pile) const { return pile.p == p; }
+    bool operator!=(const Pile& pile) const { return pile.p != p; }
+
     std::vector<std::shared_ptr<Literal>>::const_iterator begin() const { return p.begin(); }
     std::vector<std::shared_ptr<Literal>>::const_iterator end() const { return p.end(); }
 };

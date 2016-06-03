@@ -199,12 +199,53 @@ Operation::Generic ModuleOperation::eval(Operation::Complexs args) const {
 }
 
 Operation::Generic StoOperation::eval(Generic args) const {
-    if(!std::dynamic_pointer_cast<ExpressionLiteral>(args.front())) throw TypeError("An identifier must be an expression.", args);
+    if(!std::dynamic_pointer_cast<ExpressionLiteral>(args.back())) throw TypeError("An identifier must be an expression.", args);
     Manager::getInstance().addIdentifier(args.back()->toString(), args.front());
     return {};
 }
 
 Operation::Generic ForgetOperation::eval(Generic args) const {
-    // TEST
+    if(!std::dynamic_pointer_cast<ExpressionLiteral>(args.front())) throw TypeError("An identifier must be an expression.", args);
+    try {
+        Manager::getInstance().getIdentifier(args.front()->toString());
+    } catch (UTException e) {
+        throw UTException("This identifier doesn't exist.");
+    }
+    Manager::getInstance().deleteIdentifier(args.front()->toString());
     return {};
+}
+
+Operation::Generic DupOperation::eval(Generic args) const {
+    return {LiteralFactory::getInstance().makeLiteralFromString(args.front()->toString()), args.front()};
+}
+
+Operation::Generic DropOperation::eval(Generic args) const {
+    return {};
+}
+
+Operation::Generic SwapOperation::eval(Generic args) const {
+    return {args.back(), args.front()};
+}
+
+Operation::Generic UndoOperation::eval(Generic args) const {
+    Manager::getInstance().undo();
+    return {};
+}
+
+Operation::Generic RedoOperation::eval(Generic args) const {
+    Manager::getInstance().redo();
+    return {};
+}
+
+Operation::Generic ClearOperation::eval(Generic args) const {
+    Manager::getInstance().clearPile();
+    return {};
+}
+
+Operation::Generic LastopOperation::eval(Generic args) const {
+    return {};
+}
+
+Operation::Generic LastargsOperation::eval(Generic args) const {
+    return Manager::getInstance().getLastargs();
 }

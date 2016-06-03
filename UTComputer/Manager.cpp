@@ -10,8 +10,14 @@
 #include <algorithm>
 #include <iterator>
 #include <sstream>
+#include <QDebug>
 
-Manager::Manager() { saveState(); currentState = 0;}
+
+Manager::Manager() {
+    std::shared_ptr<Memento> memento(new Memento(identifiers, pile, settings, lastop, lastargs));
+    backup.push_back(memento);
+    currentState = 0;
+}
 
 Manager& Manager::getInstance() {
     static Manager instance;
@@ -31,7 +37,6 @@ void Manager::addIdentifier(const std::string& id, std::shared_ptr<Literal> lit)
     if (!Utility::isAtom(id)) throw ParsingError(id, "An identifier must begin with a uppercase character and only contain uppercase character and digit.");
     if (OperatorManager::getInstance().isOperator(id)) throw ParsingError(id, "This name is already assigned to a program.");
     identifiers[id] = lit;
-    saveState();
 }
 void Manager::addIdentifier(const std::string& id, const std::string&  lit) {
     addIdentifier(id, LiteralFactory::getInstance().makeLiteralFromString(lit));
@@ -40,12 +45,10 @@ void Manager::addIdentifier(const std::string& id, const std::string&  lit) {
 void Manager::changeIdentifier(const std::string& key, const std::string& newKey, const std::shared_ptr<Literal> newValue) {
     identifiers.erase(key);
     addIdentifier(newKey, newValue);
-    saveState();
 }
 
 void Manager::deleteIdentifier(const std::string& key) {
     identifiers.erase(key);
-    saveState();
 }
 
 const std::map<const std::string,std::shared_ptr<Literal>> Manager::getProgramsIdentifiers() const {
@@ -141,7 +144,7 @@ void Manager::handleOperandLine(std::string command) {
     }
     //Si quelque chose s'est mal passé, on restaure la pile avant l'évaluation
     catch(UTException& e) {
-        restoreState(backup[currentState]);
+        if (backup.size() > 0) restoreState(backup[currentState]);
         throw e;
     }
 }
@@ -164,6 +167,8 @@ void Manager::eval(std::vector<std::shared_ptr<Operand>> operands) {
             try {
                 auto res = OperatorManager::getInstance().dispatchOperation(op, args);
                 for(auto& lit : res) pile.push(lit);
+                lastop = op;
+                lastargs = args;
             }
             //Impossible d'effectuer l'opération : on restitue la pile avant l'opération en cours.
             catch(UTException& e) {
@@ -173,18 +178,30 @@ void Manager::eval(std::vector<std::shared_ptr<Operand>> operands) {
     }
 }
 
-std::shared_ptr<Memento> Manager::saveState() {
-    for (unsigned int i = currentState + 1; i < backup.size(); i++) backup.pop_back();
-    std::shared_ptr<Memento> memento(new Memento(identifiers, pile, settings));
-    backup.push_back(memento);
-    currentState++;
-    return memento;
+void Manager::saveState() {
+     if(backup.size() > 0 && !isCurrentState(backup[currentState])){
+        for (unsigned int i = currentState + 1; i < backup.size(); i++) backup.pop_back();
+        std::shared_ptr<Memento> memento(new Memento(identifiers, pile, settings, lastop, lastargs));
+        backup.push_back(memento);
+        currentState++;
+    }
+}
+
+bool Manager::isCurrentState(std::shared_ptr<Memento> m) {
+    if (identifiers.size() != m->getIdentifiers().size()
+            || !std::equal(identifiers.begin(), identifiers.end(), m->getIdentifiers().begin())
+            || pile != m->getPile()
+            || lastargs != m->getLastargs()
+            || lastop != m->getLastop()) return false;
+    return true;
 }
 
 void Manager::restoreState(std::shared_ptr<Memento> memento){
     pile = memento->getPile();
     identifiers = memento->getIdentifiers();
     settings = memento->getSettings();
+    lastop = memento->getLastop();
+    lastargs = memento->getLastargs();
 }
 
 void Manager::undo() {
@@ -197,4 +214,8 @@ void Manager::redo() {
     if (currentState == backup.size() - 1) throw UTException("There is nothing to redo.");
     currentState++;
     restoreState(backup[currentState]);
+}
+
+void Manager::clearPile() {
+    while (!pile.empty()) pile.pop();
 }

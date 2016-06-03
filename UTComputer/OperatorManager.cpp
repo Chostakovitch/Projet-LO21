@@ -46,6 +46,17 @@ OperatorManager::OperatorManager() : minus_symbol("-") {
     //Création des opérateur d'identifieurs
     operators.push_back(std::make_shared<FunctionOperator>("STO", 2, std::make_shared<StoOperation>(), false)); //Enregistrement d'identificateur
     operators.push_back(std::make_shared<FunctionOperator>("FORGET", 1, std::make_shared<ForgetOperation>(), false)); //Suppression d'identificateur
+
+    //Création des opérateur de manipulation de la pile
+    operators.push_back(std::make_shared<FunctionOperator>("DUP", 1, std::make_shared<DupOperation>(), false)); //Empile une nouvelle littérale identique à celle du sommet de la pile.
+    operators.push_back(std::make_shared<FunctionOperator>("DROP", 1, std::make_shared<DropOperation>(), false)); //Dépile la littérale au sommet de la pile.
+    operators.push_back(std::make_shared<FunctionOperator>("SWAP", 2, std::make_shared<SwapOperation>(), false)); //Intervertit les deux derniers éléments empilés dans la pile.
+    operators.push_back(std::make_shared<FunctionOperator>("UNDO", 0, std::make_shared<UndoOperation>(), false)); //Rétablit l’état du calculateur avant la dernière opération
+    operators.push_back(std::make_shared<FunctionOperator>("REDO", 0, std::make_shared<RedoOperation>(), false)); //Rétablit l’état du calculateur avant l’application de la dernière opération UNDO.
+    operators.push_back(std::make_shared<FunctionOperator>("CLEAR", 0, std::make_shared<ClearOperation>(), false)); //Vide tous les éléments de la pile.
+    operators.push_back(std::make_shared<FunctionOperator>("LASTOP", 0, std::make_shared<LastopOperation>(), false)); //Applique le dernier opérateur utilisé..
+    operators.push_back(std::make_shared<FunctionOperator>("LASTARGS", 0, std::make_shared<LastargsOperation>(), false)); //Empile les littérales utilisées pour la dernière opération..
+
 }
 
 const OperatorManager& OperatorManager::getInstance() {
