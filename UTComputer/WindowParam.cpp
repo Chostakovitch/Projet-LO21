@@ -218,30 +218,9 @@ void WindowAddIdentifier::save() {
     }
 }
 
-WindowAddIdentifier::WindowEditProgramIdentifier(WindowParam* parent) : QWidget(){
+WindowEditProgramIdentifier::WindowEditProgramIdentifier(WindowParam* parent) : QWidget(){
     QVBoxLayout* mainLayout = new QVBoxLayout();
 
-    keyLineEdit = new QLineEdit();
-    keyLineEdit->setReadOnly(true);
-    valueTextEdit = new QTextEdit();
 
-    QFormLayout *formLayout = new QFormLayout;
-    formLayout->addRow(tr("&Key : "), keyLineEdit);
-    formLayout->addRow(tr("&Value : "), valueTextEdit);
-
-    QHBoxLayout* buttonLayout = new QHBoxLayout();
-    messageError = new QLabel();
-    QPushButton* saveButton = new QPushButton("&Save");
-    connect(saveButton, SIGNAL(clicked(bool)), this, SLOT(save()));
-    QPushButton* cancelButton = new QPushButton("&Cancel");
-    connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(close()));
-    connect(this, SIGNAL(needRefresh()), parent, SLOT(refreshVariable()));
-    connect(this, SIGNAL(needRefresh()), parent, SLOT(refreshProgram()));
-    buttonLayout->addWidget(messageError);
-    buttonLayout->addWidget(saveButton);
-    buttonLayout->addWidget(cancelButton);
-
-    mainLayout->addItem(formLayout);
-    mainLayout->addItem(buttonLayout);
     setLayout(mainLayout);
 }

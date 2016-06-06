@@ -71,7 +71,7 @@ class WindowEditProgramIdentifier : public QWidget {
     QTextEdit* valueTextEdit;
     QLabel* messageError;
 public slots:
-    void save();
+    //void save();
 public :
     explicit WindowEditProgramIdentifier(WindowParam* parent = 0);
 };
