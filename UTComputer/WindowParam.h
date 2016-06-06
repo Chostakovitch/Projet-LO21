@@ -33,6 +33,7 @@ class ProgramTab : public QWidget
     QTableWidget *viewProgram;
 public slots:
     void deleteIdentifier();
+    //void editIdentifier();
 public:
     explicit ProgramTab(WindowParam* parent = 0);
     void refresh();
@@ -46,6 +47,7 @@ class WindowParam : public QWidget
     ProgramTab *programTab;
 public slots:
     void addIdentifier();
+    void editIdentifier();
     void refreshVariable();
     void refreshProgram();
 public:
@@ -71,9 +73,11 @@ class WindowEditProgramIdentifier : public QWidget {
     QTextEdit* valueTextEdit;
     QLabel* messageError;
 public slots:
-    //void save();
+    void save();
+signals:
+    void needRefresh();
 public :
-    explicit WindowEditProgramIdentifier(WindowParam* parent = 0);
+    explicit WindowEditProgramIdentifier(std::string key ,WindowParam* parent = 0);
 };
 
 

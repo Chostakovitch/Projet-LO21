@@ -45,6 +45,7 @@ public slots:
     void calculate();
     void nbLineDisplayPileChanged(int newValue);
     void displayKeyboardChanged(int newValue);
+    void beepMessageChanged(int newValue);
     void openDetailErrorWindow();
     //void getNextCommande();
 

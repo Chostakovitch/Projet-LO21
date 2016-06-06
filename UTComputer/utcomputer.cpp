@@ -5,14 +5,19 @@
 #include "Manager.h"
 #include <QMenuBar>
 #include <QtWidgets>
+#include <QFile>
+#include <QDataStream>
 
 UTComputer::UTComputer(QWidget *parent) : QMainWindow(parent){
+    load();
     central = new Calculator(this);
 
     setCentralWidget(central);
 
     createActions();
     createMenus();
+
+    connect(this, SIGNAL(destroyed(QObject*)), this, SLOT(save()));
 
     setWindowTitle(tr("Calculator"));
 }
@@ -23,6 +28,51 @@ void UTComputer::undo() {
 void UTComputer::redo() {
     Manager::getInstance().redo();
 }
+
+void UTComputer::save() {
+    QString filename = "/Users/aureliedigeon/Documents/UTC/P16/LO21/Projet-LO21/test.txt";
+    QFile file(filename);
+    auto settings = Manager::getInstance().getSettings();
+
+    if(!file.open(QIODevice::WriteOnly))
+    {
+        qDebug() << "Could not open " << filename;
+        return;
+    }
+
+    QDataStream out(&file);
+    out.setVersion(QDataStream::Qt_5_1);
+
+    out << settings.getBeepMessage() << settings.getDisplayKeyboard() << settings.getNbLinesDisplayPile();
+
+    file.flush();
+    file.close();
+}
+
+void UTComputer::load() {
+    QString filename = "/Users/aureliedigeon/Documents/UTC/P16/LO21/Projet-LO21/test.txt";
+    QFile file(filename);
+
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "Could not open " << filename;
+        return;
+    }
+
+    QDataStream in(&file);
+    in.setVersion(QDataStream::Qt_5_1);
+    unsigned int nbLine;
+    bool display;
+    bool beep;
+
+    in >> beep >> display >> nbLine;
+    Manager::getInstance().getSettings().setBeepMessage(beep);
+    Manager::getInstance().getSettings().setDisplayKeyboard(display);
+    Manager::getInstance().getSettings().setNbLinesDisplayPile(nbLine);
+
+    file.close();
+}
+
 
 void UTComputer::param() {
     WindowParam* window = new WindowParam(central);
@@ -40,6 +90,16 @@ void UTComputer::createActions() {
     redoAct->setStatusTip(tr("Redo the last operation"));
     connect(redoAct, &QAction::triggered, this, &UTComputer::redo);
 
+    saveAct = new QAction(tr("&Save"), this);
+    saveAct->setShortcuts(QKeySequence::Save);
+    saveAct->setStatusTip(tr("Save the calculator"));
+    connect(saveAct, &QAction::triggered, this, &UTComputer::save);
+
+    loadAct = new QAction(tr("&Load"), this);
+    //loadAct->setShortcuts(QKeySequence::Load);
+    loadAct->setStatusTip(tr("Load the calculator"));
+    connect(loadAct, &QAction::triggered, this, &UTComputer::load);
+
     paramAct = new QAction(tr("&Preferences"), this);
     paramAct->setShortcut(QKeySequence(tr("Ctrl+,")));
     paramAct->setStatusTip(tr("Open the preferences"));
@@ -53,5 +113,7 @@ void UTComputer::createMenus() {
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(undoAct);
     editMenu->addAction(redoAct);
+    editMenu->addAction(saveAct);
+    editMenu->addAction(loadAct);
 }
 

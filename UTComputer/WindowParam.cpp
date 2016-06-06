@@ -47,6 +47,12 @@ void ProgramTab::deleteIdentifier() {
     refresh();
 }
 
+void WindowParam::editIdentifier() {
+    ButtonIdentifier *button = qobject_cast<ButtonIdentifier *>(sender());
+    WindowEditProgramIdentifier* window = new WindowEditProgramIdentifier(button->getKeyIdentifier(), this);
+    window->show();
+}
+
 void WindowParam::addIdentifier() {
     ButtonIdentifier *button = qobject_cast<ButtonIdentifier *>(sender());
     WindowAddIdentifier* window = new WindowAddIdentifier(this);
@@ -92,7 +98,7 @@ void ProgramTab::refresh() {
         ButtonIdentifier *deleteButton = new ButtonIdentifier("X", v.first);
         connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteIdentifier()));
         ButtonIdentifier *editButton = new ButtonIdentifier("&Edit", v.first);
-        //connect(editButton, SIGNAL(clicked(bool)), parent(), SLOT(editIdentifier()));
+        connect(editButton, SIGNAL(clicked(bool)), this, SLOT(editIdentifier()));
         viewProgram->setCellWidget(count, 2, deleteButton);
         viewProgram->setCellWidget(count, 1, editButton);
         count++;
@@ -107,6 +113,7 @@ ParamTab::ParamTab(QWidget* calculator) : QWidget() {
 
     QCheckBox *beepMessage = new QCheckBox("");
     beepMessage->setChecked(Manager::getInstance().getSettings().getBeepMessage());
+    connect(beepMessage, SIGNAL(stateChanged(int)), calculator, SLOT(beepMessageChanged(int)));
 
     QCheckBox *displayKeyboard = new QCheckBox("");
     displayKeyboard->setChecked(Manager::getInstance().getSettings().getDisplayKeyboard());
@@ -160,7 +167,7 @@ ProgramTab::ProgramTab(WindowParam* parent) : QWidget(parent) {
         ButtonIdentifier *deleteButton = new ButtonIdentifier("X", v.first);
         connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteIdentifier()));
         ButtonIdentifier *editButton = new ButtonIdentifier("&Edit", v.first);
-        //connect(editButton, SIGNAL(clicked(bool)), this, SLOT(editIdentifier()));
+        connect(editButton, SIGNAL(clicked(bool)), parent, SLOT(editIdentifier()));
         viewProgram->setCellWidget(count, 2, deleteButton);
         viewProgram->setCellWidget(count, 1, editButton);
 
@@ -204,7 +211,7 @@ WindowAddIdentifier::WindowAddIdentifier(WindowParam* parent) : QWidget(){
 }
 
 void WindowAddIdentifier::save() {
-    if (valueTextEdit->toPlainText().isEmpty() || valueTextEdit->toPlainText().isEmpty()) messageError->setText("Please enter a key and a value");
+    if (valueTextEdit->toPlainText().isEmpty() || keyLineEdit->text().isEmpty()) messageError->setText("Please enter a key and a value");
     //TO DO : Verifier si l'identifier n'existe pas déja.
     else {
         try {
@@ -218,9 +225,45 @@ void WindowAddIdentifier::save() {
     }
 }
 
-WindowEditProgramIdentifier::WindowEditProgramIdentifier(WindowParam* parent) : QWidget(){
+
+
+WindowEditProgramIdentifier::WindowEditProgramIdentifier(std::string key, WindowParam* parent) : QWidget(), key (key){
     QVBoxLayout* mainLayout = new QVBoxLayout();
 
+    valueTextEdit = new QTextEdit();
+    valueTextEdit->setText(QString::fromStdString(Manager::getInstance().getIdentifier(key)->toString()));
+    QFormLayout *formLayout = new QFormLayout;
+    formLayout->addRow(tr("&Value : "), valueTextEdit);
 
+    QHBoxLayout* buttonLayout = new QHBoxLayout();
+    messageError = new QLabel();
+    QPushButton* saveButton = new QPushButton("&Save");
+    connect(saveButton, SIGNAL(clicked(bool)), this, SLOT(save()));
+    QPushButton* cancelButton = new QPushButton("&Cancel");
+    connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(close()));
+    connect(this, SIGNAL(needRefresh()), parent, SLOT(refreshVariable()));
+    connect(this, SIGNAL(needRefresh()), parent, SLOT(refreshProgram()));
+
+    buttonLayout->addWidget(messageError);
+    buttonLayout->addWidget(saveButton);
+    buttonLayout->addWidget(cancelButton);
+
+    mainLayout->addItem(formLayout);
+    mainLayout->addItem(buttonLayout);
     setLayout(mainLayout);
+}
+
+void WindowEditProgramIdentifier::save() {
+    if (valueTextEdit->toPlainText().isEmpty()) messageError->setText("Please a value");
+    //TO DO : Verifier si l'identifier n'existe pas déja.
+    else {
+        try {
+            Manager::getInstance().addIdentifier(key, valueTextEdit->toPlainText().toStdString());
+            Manager::getInstance().saveState();
+            emit needRefresh();
+            close();
+        } catch (UTException e) {
+            messageError->setText(e.what());
+        }
+    }
 }

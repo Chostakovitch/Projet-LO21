@@ -116,6 +116,10 @@ void Calculator::nbLineDisplayPileChanged(int newValue) {
     refreshPile();
 }
 
+void Calculator::beepMessageChanged(int newValue) {
+    Manager::getInstance().getSettings().setBeepMessage(newValue);
+}
+
 void Calculator::addOperatorToCommand() {
     Button *clickedButton = qobject_cast<Button *>(sender());
     command->setText(command->text() +" "+ clickedButton->text());

@@ -15,6 +15,8 @@ class UTComputer : public QMainWindow
     QAction *undoAct;
     QAction *redoAct;
     QAction *paramAct;
+    QAction *saveAct;
+    QAction *loadAct;
 
     QMenu* paramMenu;
     QMenu* editMenu;
@@ -26,9 +28,11 @@ private slots:
     void undo();
     void redo();
     void param();
-
+    void save();
+    void load();
 public:
     explicit UTComputer(QWidget *parent = 0);
+    ~UTComputer() { save(); }
 };
 
 #endif // UTCOMPUTER_H
