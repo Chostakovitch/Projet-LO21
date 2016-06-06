@@ -3,6 +3,16 @@
 #include "CompositeLiteral.h"
 
 std::string ProgramLiteral::toString() const {
+    std::stringstream ss;
+    ss << "[ ";
+    for (auto op : operands) {
+        ss << op->toString()+ " ";
+    }
+    ss << "]";
+    return ss.str();
+}
+
+std::string ProgramLiteral::toStringExtended() const {
     static int count;
     ++count;
     std::stringstream ss;

@@ -200,7 +200,7 @@ Operation::Generic ModuleOperation::eval(Operation::Complexs args) const {
 
 Operation::Generic StoOperation::eval(Operation::Generic args) const {
     if(!std::dynamic_pointer_cast<ExpressionLiteral>(args.back())) throw TypeError("An identifier must be an expression.", args);
-    Manager::getInstance().addIdentifier(args.back()->toString(), args.front());
+    Manager::getInstance().addIdentifier((std::dynamic_pointer_cast<ExpressionLiteral>(args.back()))->getExpression(), args.front());
     return {};
 }
 

@@ -14,7 +14,9 @@
 #include "Manager.h"
 
 Calculator::Calculator(QWidget *parent)  {
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    QHBoxLayout *mainLayout = new QHBoxLayout;
+
+    QVBoxLayout *rightLayout = new QVBoxLayout;
     QVBoxLayout *topLayout = new QVBoxLayout;
 
     QHBoxLayout* errorLayout = new QHBoxLayout();
@@ -48,8 +50,11 @@ Calculator::Calculator(QWidget *parent)  {
     keyBoard = new MainFrame(this);
     keyBoard->setVisible(Manager::getInstance().getSettings().getDisplayKeyboard());
 
-    mainLayout->addLayout(topLayout);
-    mainLayout->addWidget(keyBoard);
+    rightLayout->addLayout(topLayout);
+    rightLayout->addWidget(keyBoard);
+
+    //mainLayout->addLayout(operatorsLayout,10);
+    mainLayout->addLayout(rightLayout);
 
     setLayout(mainLayout);
 

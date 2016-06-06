@@ -275,6 +275,6 @@ public:
      * @return Chaîne de caractères.
      */
     std::string getExpression() const { return expr; }
-    std::string toString() const override { return expr; }
+    std::string toString() const override { return "\""+expr+"\""; }
 };
 #endif

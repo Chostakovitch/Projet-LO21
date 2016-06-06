@@ -66,6 +66,7 @@ public:
 
     const std::shared_ptr<Literal>& getIdentifier(const std::string&) const;
     Settings& getSettings() { return settings; }
+    std::map<const std::string, std::shared_ptr<Literal>>& getIdentifiers() { return identifiers; }
     std::shared_ptr<Operator> getLastop() const { return lastop; }
     Arguments<std::shared_ptr<Literal>> getLastargs() const {return lastargs; }
     void addIdentifier(const std::string&, const std::shared_ptr<Literal>) ;

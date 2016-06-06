@@ -30,10 +30,11 @@ void UTComputer::redo() {
 }
 
 void UTComputer::save() {
-    QString filename = "/Users/aureliedigeon/Documents/UTC/P16/LO21/Projet-LO21/test.txt";
+    QString filename = "UTComputer.txt";
     QFile file(filename);
     auto settings = Manager::getInstance().getSettings();
     auto pile = Manager::getInstance().getPile();
+    auto identifiers = Manager::getInstance().getIdentifiers();
 
     if(!file.open(QIODevice::WriteOnly))
     {
@@ -50,6 +51,12 @@ void UTComputer::save() {
         out << QString::fromStdString(v->toString());
     }
 
+    out << (unsigned int)identifiers.size();
+    for (auto v : identifiers) {
+        out << QString::fromStdString(v.first);
+        out << QString::fromStdString(v.second->toString());
+    }
+
     qDebug() << "Save";
 
     file.flush();
@@ -57,7 +64,7 @@ void UTComputer::save() {
 }
 
 void UTComputer::load() {
-    QString filename = "/Users/aureliedigeon/Documents/UTC/P16/LO21/Projet-LO21/test.txt";
+    QString filename = "UTComputer.txt";
     QFile file(filename);
 
     if(!file.open(QIODevice::ReadOnly))
@@ -77,18 +84,27 @@ void UTComputer::load() {
     Manager::getInstance().getSettings().setDisplayKeyboard(display);
     Manager::getInstance().getSettings().setNbLinesDisplayPile(nbLine);
 
-    unsigned int pileSized;
+    unsigned int count;
 
-    in >> pileSized;
+    in >> count;
+    QString key;
     QString value;
     QString command;
-    for (unsigned int i = 0; i < pileSized; i++) {
+    for (unsigned int i = 0; i < count; i++) {
         in >> value;
         command += " " + value;
     }
     Manager::getInstance().handleOperandLine(command.toStdString());
+    command = "";
+    in >> count;
+    for(unsigned int i = 0; i< count; i++){
+        in >> key;
+        in >> value;
+        command += " " + value + " " + key + " STO ";
+    }
+    Manager::getInstance().handleOperandLine(command.toStdString());
 
-    qDebug() << "Load : " << pileSized;
+    qDebug() << "Load : " << count;
 
     file.close();
 }

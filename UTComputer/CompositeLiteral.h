@@ -27,6 +27,7 @@ public:
      */
     void add(std::shared_ptr<Operand> op) { operands.push_back(op); }
     std::string toString() const override;
+    std::string toStringExtended() const;
 };
 
 #endif
