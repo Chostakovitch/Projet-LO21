@@ -33,6 +33,7 @@ void UTComputer::save() {
     QString filename = "/Users/aureliedigeon/Documents/UTC/P16/LO21/Projet-LO21/test.txt";
     QFile file(filename);
     auto settings = Manager::getInstance().getSettings();
+    auto pile = Manager::getInstance().getPile();
 
     if(!file.open(QIODevice::WriteOnly))
     {
@@ -44,6 +45,12 @@ void UTComputer::save() {
     out.setVersion(QDataStream::Qt_5_1);
 
     out << settings.getBeepMessage() << settings.getDisplayKeyboard() << settings.getNbLinesDisplayPile();
+    out << pile.size();
+    for(auto v: pile) {
+        out << QString::fromStdString(v->toString());
+    }
+
+    qDebug() << "Save";
 
     file.flush();
     file.close();
@@ -69,6 +76,19 @@ void UTComputer::load() {
     Manager::getInstance().getSettings().setBeepMessage(beep);
     Manager::getInstance().getSettings().setDisplayKeyboard(display);
     Manager::getInstance().getSettings().setNbLinesDisplayPile(nbLine);
+
+    unsigned int pileSized;
+
+    in >> pileSized;
+    QString value;
+    QString command;
+    for (unsigned int i = 0; i < pileSized; i++) {
+        in >> value;
+        command += " " + value;
+    }
+    Manager::getInstance().handleOperandLine(command.toStdString());
+
+    qDebug() << "Load : " << pileSized;
 
     file.close();
 }
