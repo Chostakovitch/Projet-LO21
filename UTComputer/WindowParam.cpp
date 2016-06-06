@@ -2,6 +2,7 @@
 #include "Manager.h"
 #include "calculator.h"
 #include "Button.h"
+#include "UTException.h"
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <QFormLayout>
@@ -35,12 +36,14 @@ WindowParam::WindowParam(QWidget* parent) : QWidget(){
 void VariableTab::deleteIdentifier() {
     ButtonIdentifier *button = qobject_cast<ButtonIdentifier *>(sender());
     Manager::getInstance().deleteIdentifier(button->getKeyIdentifier());
+    Manager::getInstance().saveState();
     refresh();
 }
 
 void ProgramTab::deleteIdentifier() {
     ButtonIdentifier *button = qobject_cast<ButtonIdentifier *>(sender());
     Manager::getInstance().deleteIdentifier(button->getKeyIdentifier());
+    Manager::getInstance().saveState();
     refresh();
 }
 
@@ -173,15 +176,15 @@ ProgramTab::ProgramTab(WindowParam* parent) : QWidget(parent) {
     setLayout(layout);
 }
 
-WindowAddIdentifier::WindowAddIdentifier(QWidget* parent) : QWidget(){
+WindowAddIdentifier::WindowAddIdentifier(WindowParam* parent) : QWidget(){
     QVBoxLayout* mainLayout = new QVBoxLayout();
 
     keyLineEdit = new QLineEdit();
-    valueLineEdit = new QLineEdit();
+    valueTextEdit = new QTextEdit();
 
     QFormLayout *formLayout = new QFormLayout;
-    formLayout->addRow(tr("&Key:"), keyLineEdit);
-    formLayout->addRow(tr("&Value:"), valueLineEdit);
+    formLayout->addRow(tr("&Key : "), keyLineEdit);
+    formLayout->addRow(tr("&Value : "), valueTextEdit);
 
     QHBoxLayout* buttonLayout = new QHBoxLayout();
     messageError = new QLabel();
@@ -189,8 +192,8 @@ WindowAddIdentifier::WindowAddIdentifier(QWidget* parent) : QWidget(){
     connect(saveButton, SIGNAL(clicked(bool)), this, SLOT(save()));
     QPushButton* cancelButton = new QPushButton("&Cancel");
     connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(close()));
-    connect(this, SIGNAL(destroyed(QObject*)), parent, SLOT(refreshVariable()));
-    connect(this, SIGNAL(destroyed(QObject*)), parent, SLOT(refreshProgram()));
+    connect(this, SIGNAL(needRefresh()), parent, SLOT(refreshVariable()));
+    connect(this, SIGNAL(needRefresh()), parent, SLOT(refreshProgram()));
     buttonLayout->addWidget(messageError);
     buttonLayout->addWidget(saveButton);
     buttonLayout->addWidget(cancelButton);
@@ -201,11 +204,44 @@ WindowAddIdentifier::WindowAddIdentifier(QWidget* parent) : QWidget(){
 }
 
 void WindowAddIdentifier::save() {
-    if (keyLineEdit->text().isEmpty() || valueLineEdit->text().isEmpty()) messageError->setText("Please enter a key and a value");
+    if (valueTextEdit->toPlainText().isEmpty() || valueTextEdit->toPlainText().isEmpty()) messageError->setText("Please enter a key and a value");
     //TO DO : Verifier si l'identifier n'existe pas déja.
     else {
-        Manager::getInstance().addIdentifier(keyLineEdit->text().toStdString(), valueLineEdit->text().toStdString());
-        emit
-        close();
+        try {
+            Manager::getInstance().addIdentifier(keyLineEdit->text().toStdString(), valueTextEdit->toPlainText().toStdString());
+            Manager::getInstance().saveState();
+            emit needRefresh();
+            close();
+        } catch (UTException e) {
+            messageError->setText(e.what());
+        }
     }
+}
+
+WindowAddIdentifier::WindowEditProgramIdentifier(WindowParam* parent) : QWidget(){
+    QVBoxLayout* mainLayout = new QVBoxLayout();
+
+    keyLineEdit = new QLineEdit();
+    keyLineEdit->setReadOnly(true);
+    valueTextEdit = new QTextEdit();
+
+    QFormLayout *formLayout = new QFormLayout;
+    formLayout->addRow(tr("&Key : "), keyLineEdit);
+    formLayout->addRow(tr("&Value : "), valueTextEdit);
+
+    QHBoxLayout* buttonLayout = new QHBoxLayout();
+    messageError = new QLabel();
+    QPushButton* saveButton = new QPushButton("&Save");
+    connect(saveButton, SIGNAL(clicked(bool)), this, SLOT(save()));
+    QPushButton* cancelButton = new QPushButton("&Cancel");
+    connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(close()));
+    connect(this, SIGNAL(needRefresh()), parent, SLOT(refreshVariable()));
+    connect(this, SIGNAL(needRefresh()), parent, SLOT(refreshProgram()));
+    buttonLayout->addWidget(messageError);
+    buttonLayout->addWidget(saveButton);
+    buttonLayout->addWidget(cancelButton);
+
+    mainLayout->addItem(formLayout);
+    mainLayout->addItem(buttonLayout);
+    setLayout(mainLayout);
 }

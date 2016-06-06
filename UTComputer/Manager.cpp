@@ -38,6 +38,7 @@ void Manager::addIdentifier(const std::string& id, std::shared_ptr<Literal> lit)
     if (OperatorManager::getInstance().isOperator(id)) throw ParsingError(id, "This name is already assigned to a program.");
     identifiers[id] = lit;
 }
+
 void Manager::addIdentifier(const std::string& id, const std::string&  lit) {
     addIdentifier(id, LiteralFactory::getInstance().makeLiteralFromString(lit));
 }

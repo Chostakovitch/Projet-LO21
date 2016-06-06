@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QTableWidget>
 #include <QLabel>
+#include <QTextEdit>
 
 class WindowParam;
 
@@ -54,12 +55,26 @@ public:
 class WindowAddIdentifier : public QWidget {
     Q_OBJECT
     QLineEdit* keyLineEdit;
-    QLineEdit* valueLineEdit;
+    QTextEdit* valueTextEdit;
+    QLabel* messageError;
+public slots:
+    void save();
+signals:
+    void needRefresh();
+public :
+    explicit WindowAddIdentifier(WindowParam* parent = 0);
+};
+
+class WindowEditProgramIdentifier : public QWidget {
+    Q_OBJECT
+    std::string key;
+    QTextEdit* valueTextEdit;
     QLabel* messageError;
 public slots:
     void save();
 public :
-    explicit WindowAddIdentifier(QWidget* parent = 0);
+    explicit WindowEditProgramIdentifier(WindowParam* parent = 0);
 };
+
 
 #endif // WINDOWPARAM_H

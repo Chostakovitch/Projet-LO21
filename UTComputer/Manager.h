@@ -49,7 +49,6 @@ class Manager
     //Memento :
     std::vector<std::shared_ptr<Memento>> backup;
     unsigned int currentState;
-    void saveState();
     void restoreState(std::shared_ptr<Memento> memento);
 
     /**
@@ -87,6 +86,7 @@ public:
     void clearPile();
     bool isCurrentState(std::shared_ptr<Memento>);
 
+    void saveState();
     void undo();
     void redo();
 
