@@ -229,3 +229,5 @@ build-UTComputer-Desktop_Qt_5_6_0_clang_64bit-Debug/
 *.o
 build-UTComputer-Desktop_Qt_5_6_0_clang_64bit-Debug/Makefile
 *.o
+*.ib3036
+UTComputer/Operateurs.h.Jt3036

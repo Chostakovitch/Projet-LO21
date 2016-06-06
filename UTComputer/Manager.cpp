@@ -157,7 +157,12 @@ void Manager::eval(std::vector<std::shared_ptr<Operand>> operands) {
         if(auto lit = std::dynamic_pointer_cast<Literal>(operand)) pile.push(lit);
         //Si on trouve un opérateur, on déclenche l'évaluation
         else if(auto op = std::dynamic_pointer_cast<Operator>(operand)) {
-            if(pile.size() < op->getArity()) throw OperationError(op, Arguments<std::shared_ptr<Literal>>(), "Not enough operands for operator");
+            if(pile.size() < op->getArity()) {
+                std::ostringstream oss;
+                oss << "Not enought operands for this operator. ";
+                oss << op->getArity() << " operands needed, " << pile.size() << " given.";
+                throw OperationError(op, Arguments<std::shared_ptr<Literal>>(), oss.str());
+            }
             //Construction des arguments
             Arguments<std::shared_ptr<Literal>> args;
             args.reserve(pile.size());

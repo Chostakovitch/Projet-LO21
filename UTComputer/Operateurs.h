@@ -36,6 +36,10 @@ class Operator : public Operand {
      * numérique s'il effectue un calcul entre opérandes.
      */
     bool numeric;
+    /**
+     * @brief Vaut true si l'opérateur est numérique et effectue une opération __arithmétique__, false sinon.
+     */
+    bool arithmetic;
 public:
     /**
      * @brief Constructeur d'objet Operator.
@@ -43,8 +47,8 @@ public:
      * @param arity Entier positif représentant le nombre d'opérandes sur lequel l'opérateur s'applique.
      * @param operation Pointeur sur Operation, définissant le comportement de l'opérateur.
      */
-    Operator(std::string symbol, unsigned int arity, std::shared_ptr<Operation> operation, bool numeric = false) : \
-        symbol(symbol), arity(arity), operation(operation), numeric(numeric) { }
+    Operator(std::string symbol, unsigned int arity, std::shared_ptr<Operation> operation, bool numeric = false, bool arithmetic = false) : \
+        symbol(symbol), arity(arity), operation(operation), numeric(numeric), arithmetic(arithmetic) { }
     /**
      * @brief Accesseur pour arity.
      * @return Entier non-signé.
@@ -60,6 +64,11 @@ public:
      * @return Booléen.
      */
     bool isNumeric() { return numeric; }
+    /**
+     * @brief Accesseur pour arithmetic.
+     * @return Booléen.
+     */
+    bool isArithmetic() { return arithmetic; }
     /**
      * @brief Retourn le symbole de l'opérateur.
      * @return Objet string.
@@ -85,9 +94,9 @@ public:
  */
 class SymbolicOperator : public Operator {
     /**
-     * @brief Entier positif représentant la priorité relative de l'instance de l'opérateur.
+     * @brief Entier représentant la priorité relative de l'instance de l'opérateur.
      */
-    unsigned int priority;
+    int priority;
     /**
      * @brief Vaut true si l'opérateur est associatif à gauche, false sinon.
      */
@@ -101,13 +110,13 @@ public:
      * @param numeric Indique si l'opérateur est numérique (i.e. réalise un calcul).
      * @param priority Priorité relative de l'opérateur.
      */
-    SymbolicOperator(std::string symbol, unsigned int arity, std::shared_ptr<Operation> operation, bool numeric, unsigned int priority, bool leftAssociative = true) \
-        : Operator(symbol, arity, operation, numeric), priority(priority), leftAssociative(leftAssociative) { }
+    SymbolicOperator(std::string symbol, unsigned int arity, std::shared_ptr<Operation> operation, bool numeric, bool arithmetic, int priority, bool leftAssociative = true) \
+        : Operator(symbol, arity, operation, numeric, arithmetic), priority(priority), leftAssociative(leftAssociative) { }
     /**
      * @brief Accesseur pour priority.
      * @return Entier non-signé.
      */
-    unsigned int getPriority() { return priority; }
+    int getPriority() { return priority; }
     /**
      * @brief Accesseur pour leftAssociative.
      * @return Booléen.

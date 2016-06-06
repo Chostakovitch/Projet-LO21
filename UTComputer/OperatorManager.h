@@ -74,7 +74,18 @@ public:
      * @return Pointeur sur Operator représentant l'opérateur d'évaluation de programme.
      */
     const std::shared_ptr<Operator> getEvalOperator() const { return evalOperator; }
+    /**
+     * @brief Indique si une chaîne représente un opérateur.
+     * @param opcode Identifieur à vérifier.
+     * @return Booléen.
+     */
     bool isOperator(const std::string& opcode) const;
+    /**
+     * @brief Indique si une chaîne représente un opérateur arithmétique.
+     * @param opcode Identifieur à vérifier.
+     * @return Booléen.
+     */
+    bool isArithmeticOperator(const std::string& opcode) const;
     /**
      * @brief Effectue l'opération associée à un opérateur sur des littérales.
      * @details Cette fonction appelle la méthode d'évaluation générique de la classe Operation. S'il y a un problème, on teste des cas particuliers,

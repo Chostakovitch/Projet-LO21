@@ -289,6 +289,78 @@ class ModuleOperation : public Operation {
 };
 
 /**
+ * @brief Un objet EqualOperation implémente la relation d'équivalence d'égalité.
+ * @details Seuls les ComplexLiteral sont supportés.
+ */
+class EqualOperation : public Operation {
+    Generic eval(Complexs args) const override;
+};
+
+/**
+ * @brief Un objet NotEqualOperation implémente la relation de différence.
+ * @details Seuls les ComplexLiteral sont supportés.
+ */
+class NotEqualOperation : public Operation {
+    Generic eval(Complexs args) const override;
+};
+
+/**
+ * @brief Un objet BelowOrEqual implémente la relation d'ordre inférieur ou égal.
+ * @details Seuls les RealLiteral sont supportés.
+ */
+class BelowOrEqual : public Operation {
+    Generic eval(Reals args) const override;
+};
+
+/**
+ * @brief Un objet AboveOrEqual implémente la relation d'ordre supérieur ou égal.
+ * @details Seuls les RealLiteral sont supportés.
+ */
+class AboveOrEqual : public Operation {
+    Generic eval(Reals args) const override;
+};
+
+/**
+ * @brief Un objet Below implémente la relation d'ordre strict inférieur.
+ * @details Seuls les RealLiteral sont supportés.
+ */
+class Below : public Operation {
+    Generic eval(Reals args) const override;
+};
+
+/**
+ * @brief Un objet Above implémente la relation d'ordre strict supérieur.
+ * @details Seuls les RealLiteral sont supportés.
+ */
+class Above : public Operation {
+    Generic eval(Reals args) const override;
+};
+
+/**
+ * @brief Un objet LogicAnd implémente l'opération logique ET.
+ * @details Seuls les IntegerLiteral sont supportés.
+ */
+class LogicAnd : public Operation {
+    Generic eval(Integers args) const override;
+};
+
+/**
+ * @brief Un objet LogicOr implémente l'opération logique OU.
+ * @details Seuls les IntegerLiteral sont supportés.
+ */
+class LogicOr : public Operation {
+    Generic eval(Integers args) const override;
+};
+
+/**
+ * @brief Un objet LogicNot implémente l'opération logique NOT.
+ * @details Seuls les IntegerLiteral sont supportés.
+ */
+class LogicNot : public Operation {
+    Generic eval(Integers args) const override;
+};
+
+/**
  * @brief Un objet StoOperation enregistre un identificateur référençant une litteral.
  * @details Une litteral atome doit étre fournie pour la création de l'identificateur.
  */
@@ -314,7 +386,7 @@ class DupOperation : public Operation {
  * @brief Un objet DropOperation dépile la littérale au sommet de la pile.
  */
 class DropOperation : public Operation {
-    Generic eval(Generic args) const override;
+    Generic eval(Generic) const override;
 };
 
 /**
@@ -328,35 +400,35 @@ class SwapOperation : public Operation {
  * @brief Un objet UndoOperation rétablit l’état du calculateur avant la dernière opération
  */
 class UndoOperation : public Operation {
-    Generic eval(Generic args) const override;
+    Generic eval(Generic) const override;
 };
 
 /**
  * @brief Un objet RedoOperation rétablit l’état du calculateur avant l’application de la dernière opération UNDO.
  */
 class RedoOperation : public Operation {
-    Generic eval(Generic args) const override;
+    Generic eval(Generic) const override;
 };
 
 /**
  * @brief Un objet ClearOperation vide tous les éléments de la pile.
  */
 class ClearOperation : public Operation {
-    Generic eval(Generic args) const override;
+    Generic eval(Generic) const override;
 };
 
 /**
  * @brief Un objet LastopOperation applique le dernier opérateur utilisé.
  */
 class LastopOperation : public Operation {
-    Generic eval(Generic args) const override;
+    Generic eval(Generic) const override;
 };
 
 /**
  * @brief Un objet LastargsOperation empile les littérales utilisées pour la dernière opération.
  */
 class LastargsOperation : public Operation {
-    Generic eval(Generic args) const override;
+    Generic eval(Generic) const override;
 };
 
 #endif

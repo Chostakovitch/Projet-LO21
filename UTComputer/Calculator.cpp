@@ -21,7 +21,7 @@ Calculator::Calculator(QWidget *parent)  {
     message = new QTextEdit();
     message->setReadOnly(true);
     message->setStyleSheet("color:red;");
-    message->setMinimumHeight(60);
+    message->setMaximumHeight(60);
     errorLayout->addWidget(message);
     QPushButton* detailErrorButton = new QPushButton("More");
     connect(detailErrorButton, SIGNAL(clicked(bool)), this, SLOT(openDetailErrorWindow()));
@@ -64,12 +64,12 @@ bool Calculator::eventFilter(QObject *obj, QEvent *event)
     if (event->type() == QEvent::KeyPress) {
         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
         if (keyEvent->key() == Qt::Key_Right || keyEvent->key() == Qt::Key_Left) return true;
-        if (OperatorManager::getInstance().isOperator(keyEvent->text().toStdString())) {
+        if (OperatorManager::getInstance().isArithmeticOperator(keyEvent->text().toStdString())) {
             command->setText(command->text()+keyEvent->text());
             calculate();
             return true;
         }
-        if (keyEvent->key() == Qt::Key_Return) {
+        if (keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter) {
             calculate();
             return true;
         }

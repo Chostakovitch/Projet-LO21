@@ -16,13 +16,19 @@
  */
 OperatorManager::OperatorManager() : minus_symbol("-") {
     //Création des opérateurs symboliques
-    operators.push_back(std::make_shared<SymbolicOperator>("+", 2, std::make_shared<PlusOperation>(), true, 0)); //Addition
-    operators.push_back(std::make_shared<SymbolicOperator>("-", 2, std::make_shared<MoinsOperation>(), true, 0)); //Soustraction
-    operators.push_back(std::make_shared<SymbolicOperator>("*", 2, std::make_shared<MulOperation>(), true, 1)); //Multiplication
-    operators.push_back(std::make_shared<SymbolicOperator>("$", 2, std::make_shared<ComplexOperation>(), true, 2)); //Complexe
-    operators.push_back(std::make_shared<SymbolicOperator>("/", 2, std::make_shared<DivOperation>(), true, 1)); //Division
+    operators.push_back(std::make_shared<SymbolicOperator>("+", 2, std::make_shared<PlusOperation>(), true, true, 0)); //Addition
+    operators.push_back(std::make_shared<SymbolicOperator>("-", 2, std::make_shared<MoinsOperation>(), true, true, 0)); //Soustraction
+    operators.push_back(std::make_shared<SymbolicOperator>("*", 2, std::make_shared<MulOperation>(), true, true, 1)); //Multiplication
+    operators.push_back(std::make_shared<SymbolicOperator>("$", 2, std::make_shared<ComplexOperation>(), true, true, 2)); //Complexe
+    operators.push_back(std::make_shared<SymbolicOperator>("/", 2, std::make_shared<DivOperation>(), true, true, 1)); //Division
+    operators.push_back(std::make_shared<SymbolicOperator>("=", 2, std::make_shared<EqualOperation>(), true, false, -1)); //Egalité
+    operators.push_back(std::make_shared<SymbolicOperator>("!=", 2, std::make_shared<NotEqualOperation>(), true, false, -1)); //Non-égalité
+    operators.push_back(std::make_shared<SymbolicOperator>("=<", 2, std::make_shared<BelowOrEqual>(), true, false, -1)); //Inférieur ou égal
+    operators.push_back(std::make_shared<SymbolicOperator>(">=", 2, std::make_shared<AboveOrEqual>(), true, false, -1)); //Supérieur ou égam
+    operators.push_back(std::make_shared<SymbolicOperator>("<", 2, std::make_shared<Below>(), true, false, -1)); //Inférieur strict
+    operators.push_back(std::make_shared<SymbolicOperator>(">", 2, std::make_shared<Above>(), true, false, -1)); //Supérieur strict
 
-    //Création des opérateurs parenthésés
+    //Création des opérateurs parenthésés numériques
     operators.push_back(std::make_shared<FunctionOperator>("NEG", 1, std::make_shared<NegOperation>(), true)); //Négation
     operators.push_back(std::make_shared<FunctionOperator>("DIV", 2, std::make_shared<IntDivOperation>(), true)); //Division entière
     operators.push_back(std::make_shared<FunctionOperator>("MOD", 2, std::make_shared<ModOperation>(), true)); //Modulo
@@ -42,6 +48,11 @@ OperatorManager::OperatorManager() : minus_symbol("-") {
     operators.push_back(std::make_shared<FunctionOperator>("IM", 1, std::make_shared<ImOperation>(), true)); //Partie imaginaire
     operators.push_back(std::make_shared<FunctionOperator>("ARG", 1, std::make_shared<ArgOperation>(), true)); //Argument complexe
     operators.push_back(std::make_shared<FunctionOperator>("NORM", 1, std::make_shared<ModuleOperation>(), true)); //Module complexe
+
+    //Création des opérateurs parenthésés logiques
+    operators.push_back(std::make_shared<FunctionOperator>("AND", 2, std::make_shared<LogicAnd>(), true)); //ET Logique
+    operators.push_back(std::make_shared<FunctionOperator>("OR", 2, std::make_shared<LogicOr>(), true)); //OU Logique
+    operators.push_back(std::make_shared<FunctionOperator>("NOT", 1, std::make_shared<LogicNot>(), true)); //NON Logique
 
     //Création des opérateur d'identifieurs
     operators.push_back(std::make_shared<FunctionOperator>("STO", 2, std::make_shared<StoOperation>(), false)); //Enregistrement d'identificateur
@@ -75,6 +86,15 @@ bool OperatorManager::isOperator(const std::string& opcode) const {
     try {
         getOperator(opcode);
         return true;
+    } catch(ParsingError e) {
+        return false;
+    }
+}
+
+bool OperatorManager::isArithmeticOperator(const std::string &opcode) const {
+    try {
+        auto op = getOperator(opcode);
+        return op->isArithmetic();
     } catch(ParsingError e) {
         return false;
     }

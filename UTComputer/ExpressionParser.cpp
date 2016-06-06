@@ -59,7 +59,7 @@ std::vector<std::shared_ptr<Operand>> ExpressionParser::parse() {
         else if(auto op = getOperator(token)) {
             /* Tant qu'on trouve un opérateur symbolique sur la pile,
              * Si l'opérateur est associatif à gauche et de priorité inférieure ou égale au nouveau,
-             * ou s'il est associatif à droite et de priorité inférieure au nouveau, on le dépile et l'enfile*/
+             * ou s'il est associatif à droite et de priorité inférieure au nouveau, on le dépile et l'enfile */
             std::shared_ptr<SymbolicOperator> op2;
             while(!stack.empty() \
                   && (op2 = std::dynamic_pointer_cast<SymbolicOperator>(stack.top())) \
@@ -128,10 +128,17 @@ std::string ExpressionParser::readToken() {
     char c = expr.at(0);
     expr.erase(0, 1);
     res += c;
-    //Cas n°1 : le premier élément est un symbole.
-    if(Utility::isSymbol(c)) return res;
+    //Cas n°1 : le premier élément est un symbole, on cherche les symboles composant éventuellement la suite d'un opérateur
+    if(Utility::isSymbol(c)) {
+        //On tombe sur un symbole non connu
+        if(c != left_del && c != right_del && c != function_param_sep && c != decimal_sep)
+        while(!expr.empty() && (c = expr.at(0)) && Utility::isSymbol(c) && c != left_del && c != right_del && c != function_param_sep && c != decimal_sep) {
+            res += c;
+            expr.erase(0, 1);
+        }
+    }
     //Cas n°2 : le premier élément est une lettre capitale, on trouve l'atome correspondant.
-    if(std::isupper(c)) {
+    else if(std::isupper(c)) {
         while(!expr.empty() && (c = expr.at(0)) && (std::isupper(c) || std::isdigit(c))) {
             res += c;
             expr.erase(0, 1);

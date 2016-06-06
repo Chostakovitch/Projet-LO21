@@ -5,13 +5,6 @@
 
 WindowException::WindowException(std::string details) : QWidget()
 {
-    //Largeur maximale
-    std::istringstream iss(details);
-    std::string dest;
-    std::string max;
-    while(std::getline(iss, dest, '\n')) {
-        if(dest.size() > max.size()) max = dest;
-    }
     QVBoxLayout* layout = new QVBoxLayout();
     QPlainTextEdit* errorDetails = new QPlainTextEdit(QString::fromStdString(details));
 

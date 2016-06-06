@@ -198,13 +198,13 @@ Operation::Generic ModuleOperation::eval(Operation::Complexs args) const {
     return{LiteralFactory::getInstance().makeLiteral(std::norm((Operation::StdComplex)*args.front()))};
 }
 
-Operation::Generic StoOperation::eval(Generic args) const {
+Operation::Generic StoOperation::eval(Operation::Generic args) const {
     if(!std::dynamic_pointer_cast<ExpressionLiteral>(args.back())) throw TypeError("An identifier must be an expression.", args);
     Manager::getInstance().addIdentifier(args.back()->toString(), args.front());
     return {};
 }
 
-Operation::Generic ForgetOperation::eval(Generic args) const {
+Operation::Generic ForgetOperation::eval(Operation::Generic args) const {
     if(!std::dynamic_pointer_cast<ExpressionLiteral>(args.front())) throw TypeError("An identifier must be an expression.", args);
     try {
         Manager::getInstance().getIdentifier(args.front()->toString());
@@ -215,37 +215,73 @@ Operation::Generic ForgetOperation::eval(Generic args) const {
     return {};
 }
 
-Operation::Generic DupOperation::eval(Generic args) const {
+Operation::Generic DupOperation::eval(Operation::Generic args) const {
     return {LiteralFactory::getInstance().makeLiteralFromString(args.front()->toString()), args.front()};
 }
 
-Operation::Generic DropOperation::eval(Generic args) const {
+Operation::Generic DropOperation::eval(Operation::Generic) const {
     return {};
 }
 
-Operation::Generic SwapOperation::eval(Generic args) const {
+Operation::Generic SwapOperation::eval(Operation::Generic args) const {
     return {args.back(), args.front()};
 }
 
-Operation::Generic UndoOperation::eval(Generic args) const {
+Operation::Generic UndoOperation::eval(Operation::Generic) const {
     Manager::getInstance().undo();
     return {};
 }
 
-Operation::Generic RedoOperation::eval(Generic args) const {
+Operation::Generic RedoOperation::eval(Operation::Generic) const {
     Manager::getInstance().redo();
     return {};
 }
 
-Operation::Generic ClearOperation::eval(Generic args) const {
+Operation::Generic ClearOperation::eval(Operation::Generic) const {
     Manager::getInstance().clearPile();
     return {};
 }
 
-Operation::Generic LastopOperation::eval(Generic args) const {
+Operation::Generic LastopOperation::eval(Operation::Generic) const {
     return {};
 }
 
-Operation::Generic LastargsOperation::eval(Generic args) const {
+Operation::Generic LastargsOperation::eval(Operation::Generic) const {
     return Manager::getInstance().getLastargs();
+}
+
+Operation::Generic EqualOperation::eval(Operation::Complexs args) const {
+    return {LiteralFactory::getInstance().makeLiteral((Operation::StdComplex)*args.front() == (Operation::StdComplex)*args.back())};
+}
+
+Operation::Generic NotEqualOperation::eval(Operation::Complexs args) const {
+    return {LiteralFactory::getInstance().makeLiteral((Operation::StdComplex)*args.front() != (Operation::StdComplex)*args.back())};
+}
+
+Operation::Generic BelowOrEqual::eval(Operation::Reals args) const {
+    return {LiteralFactory::getInstance().makeLiteral(*args.front() <= *args.back())};
+}
+
+Operation::Generic AboveOrEqual::eval(Operation::Reals args) const {
+    return {LiteralFactory::getInstance().makeLiteral(*args.front() >= *args.back())};
+}
+
+Operation::Generic Below::eval(Operation::Reals args) const {
+    return {LiteralFactory::getInstance().makeLiteral(*args.front() < *args.back())};
+}
+
+Operation::Generic Above::eval(Operation::Reals args) const {
+    return {LiteralFactory::getInstance().makeLiteral(*args.front() > *args.back())};
+}
+
+Operation::Generic LogicAnd::eval(Operation::Integers args) const {
+    return {LiteralFactory::getInstance().makeLiteral(*args.front() && *args.back())};
+}
+
+Operation::Generic LogicOr::eval(Operation::Integers args) const {
+    return {LiteralFactory::getInstance().makeLiteral(*args.front() || *args.back())};
+}
+
+Operation::Generic LogicNot::eval(Operation::Integers args) const {
+    return {LiteralFactory::getInstance().makeLiteral(!*args.front())};
 }
