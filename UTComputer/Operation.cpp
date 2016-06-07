@@ -4,6 +4,7 @@
 #include "OperatorManager.h"
 #include "Manager.h"
 #include "UTException.h"
+#include "ExpressionParser.h"
 
 Operation::Generic Operation::apply(const std::shared_ptr<const Operation> &op, Operation::Generic args) {
     //Tentative d'application de l'opération générique
@@ -30,7 +31,12 @@ Operation::Generic Operation::apply(const std::shared_ptr<const Operation> &op, 
                         try {
                             return op->eval((Operation::Expressions)args);
                         } catch(UTException& e5) {
-                            throw e5.add(e4);
+                            e5.add(e4);
+                            try {
+                                return op->eval((Operation::Programs)args);
+                            } catch(UTException& e6) {
+                                throw e6.add(e5);
+                            }
                         }
                     }
                 }
@@ -56,10 +62,14 @@ Operation::Generic Operation::eval(Operation::Complexs) const {
 Operation::Generic Operation::eval(Operation::Reals) const {
     throw UTException("Operation not implemented for RealLiteral.");
 }
-
 Operation::Generic Operation::eval(Operation::Expressions) const {
     throw UTException("Operation not implemented for ExpressionLiteral.");
 }
+
+Operation::Generic Operation::eval(Operation::Programs args) const {
+     throw UTException("Operation not implemented for ProgramLiteral.");
+}
+
 Operation::Generic PlusOperation::eval(Operation::Rationals args) const {
     int a = args.front()->getNum(), b = args.front()->getDen(), c = args.back()->getNum(), d = args.back()->getDen();
 
@@ -100,15 +110,18 @@ Operation::Generic MoinsOperation::eval(Operation::Generic args) const {
 }
 
 Operation::Generic DivOperation::eval(Operation::Rationals args) const {
+    if(args.back()->getNum() == 0) throw UTException("Division by 0");
     auto den = LiteralFactory::getInstance().makeLiteral(args.back()->getDen(), args.back()->getNum());
     return apply(std::make_shared<MulOperation>(), {args.front(), den});
 }
 
 Operation::Generic DivOperation::eval(Operation::Complexs args) const {
+    if((RealLiteral)*(args.back()->getRe()) == 0 && (RealLiteral)*(args.back()->getIm()) == 0) throw UTException("Complex infinity");
     return {LiteralFactory::getInstance().makeLiteral((Operation::StdComplex)*args.front() / (Operation::StdComplex)*args.back())};
 }
 
 Operation::Generic IntDivOperation::eval(Operation::Integers args) const {
+    if(*args.back() == 0) throw UTException("Division by 0");
     return {LiteralFactory::getInstance().makeLiteral(*args.front() / *args.back())};
 }
 
@@ -285,4 +298,19 @@ Operation::Generic LogicOr::eval(Operation::Integers args) const {
 
 Operation::Generic LogicNot::eval(Operation::Integers args) const {
     return {LiteralFactory::getInstance().makeLiteral(!*args.front())};
+}
+
+Operation::Generic Eval::eval(Operation::Complexs args) const {
+    return {LiteralFactory::getInstance().makeLiteral(args.front()->getRe(), args.front()->getIm())};
+}
+
+Operation::Generic Eval::eval(Operation::Expressions args) const {
+    auto res = ExpressionParser(args.front()->getExpression()).parse(); //Parsing de l'expression
+    Manager::getInstance().eval(res); //Evaluation du résultat
+    return {};
+}
+
+Operation::Generic Eval::eval(Operation::Programs args) const {
+    Manager::getInstance().eval(args.front()->getOperands()); //Evaluation des opérandes de la littérale programme
+    return {};
 }

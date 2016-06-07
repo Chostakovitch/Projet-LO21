@@ -54,6 +54,10 @@ OperatorManager::OperatorManager() : minus_symbol("-") {
     operators.push_back(std::make_shared<FunctionOperator>("OR", 2, std::make_shared<LogicOr>(), true)); //OU Logique
     operators.push_back(std::make_shared<FunctionOperator>("NOT", 1, std::make_shared<LogicNot>(), true)); //NON Logique
 
+    //Création des opérateurs ayant trait à l'évaluation
+    evalOperator = std::make_shared<FunctionOperator>("EVAL", 1, std::make_shared<Eval>(), false);
+    operators.push_back(evalOperator);
+
     //Création des opérateur d'identifieurs
     operators.push_back(std::make_shared<FunctionOperator>("STO", 2, std::make_shared<StoOperation>(), false)); //Enregistrement d'identificateur
     operators.push_back(std::make_shared<FunctionOperator>("FORGET", 1, std::make_shared<ForgetOperation>(), false)); //Suppression d'identificateur
@@ -137,6 +141,9 @@ Arguments<std::shared_ptr<Literal>> OperatorManager::dispatchOperation(std::shar
     catch(UTException& e) {
         throw e;
     }
+    catch(std::exception& e) {
+        throw OperationError(op, args, std::string("Unknown error ") + e.what());
+    }
 }
 
 std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr<Operator> op, const Arguments<std::shared_ptr<ExpressionLiteral>>& args) const {
@@ -161,7 +168,7 @@ std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr
         std::vector<std::shared_ptr<Operator>> res;
         std::copy_if(operators.begin(), operators.end(), std::back_inserter(res), [&op_symbol](const std::shared_ptr<Operator> op) {
             auto s_op = std::dynamic_pointer_cast<SymbolicOperator>(op);
-            return s_op && s_op->getPriority() <= op_symbol->getPriority();
+            return s_op && s_op->getPriority() < op_symbol->getPriority();
         });
 
         //Par définition du caractère symbolique, on connaît déjà l'arité : 2. On récupère les éléments non-parenthésés des expressions

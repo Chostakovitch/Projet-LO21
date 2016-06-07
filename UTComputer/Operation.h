@@ -30,6 +30,7 @@ protected:
     typedef Arguments<std::shared_ptr<ComplexLiteral>> Complexs;
     typedef Arguments<std::shared_ptr<RealLiteral>> Reals;
     typedef Arguments<std::shared_ptr<ExpressionLiteral>> Expressions;
+    typedef Arguments<std::shared_ptr<ProgramLiteral>> Programs;
     typedef std::complex<double> StdComplex;
     /**
      * @brief Opération générique sur des littérales typées dynamiquement.
@@ -40,14 +41,14 @@ protected:
      * Autrement, il est conseillé de redéfinir les autres méthodes prenant des types homogènes numériques concrets.
      * @arg Ensemble de pointeurs sur Literal wrappées dans un objet Arguments.
      * @exception invalid_argument si non implémenté dans une sous-classe.
-     * @return Ensemble résultat de pointeurs sur Operand.
+     * @return Ensemble résultat de pointeurs sur Literal.
      */
     virtual Generic eval(Generic) const;
     /**
      * @brief Opération sur des littérales entières.
      * @arg Ensemble de littérales entières IntegerLiteral wrappées dans un objet Arguments.
      * @exception invalid_argument si non implémenté dans une sous-classe.
-     * @return Ensemble résultat de pointeurs sur Operand.
+     * @return Ensemble résultat de pointeurs sur Literal.
      */
     virtual Generic eval(Integers) const;
     /**
@@ -61,23 +62,30 @@ protected:
      * @brief Opération sur des littérales complexes.
      * @arg Ensemble de littérales complexes ComplexLiteral wrappées dans un objet Arguments.
      * @exception invalid_argument si non implémenté dans une sous-classe.
-     * @return Ensemble résultat de pointeurs sur Operand.
+     * @return Ensemble résultat de pointeurs sur Literal.
      */
     virtual Generic eval(Complexs) const;
     /**
      * @brief Opération sur des littérales réelles.
      * @arg Ensemble de littérales réelles RealLiteral wrappées dans un objet Arguments.
      * @exception invalid_argument si non implémenté dans une sous-classe.
-     * @return Ensemble résultat de pointeurs sur Operand.
+     * @return Ensemble résultat de pointeurs sur Literal.
      */
     virtual Generic eval(Reals) const;
     /**
      * @brief Opération sur des littérales expressions.
      * @arg Ensemble de littérales réelles ExpressionLiteral wrappées dans un objet Arguments.
      * @exception invalid_argument si non implémenté dans une sous-classe.
-     * @return Ensemble résultat de pointeurs sur Operand.
+     * @return Ensemble résultat de pointeurs sur Literal.
      */
     virtual Generic eval(const Expressions) const;
+    /**
+     * @brief Opération sur des littérales programmes.
+     * @arg Ensemble de littérales réelles ProgramLiteral wrappées dans un objet Arguments.
+     * @exception invalid_argument si non implémenté dans une sous-classe.
+     * @return Ensemble résultat de pointeurs sur Literal.
+     */
+    virtual Generic eval(Programs args) const;
     /**
      * @brief Destructeur virtuel.
      */
@@ -428,7 +436,31 @@ class LastopOperation : public Operation {
  * @brief Un objet LastargsOperation empile les littérales utilisées pour la dernière opération.
  */
 class LastargsOperation : public Operation {
-    Generic eval(Generic) const override;
+    Generic eval(Generic args) const override;
+};
+
+/**
+ * @brief Un objet Eval évalue des littérales.
+ * @details - Les littérales complexes (et par extensions toutes les littérales de moindre généralité) sont évaluées en elles-mêmes.
+ * - Les littérales expressions sont parsées puis leur contenu est évalue effectivement.
+ * - Les littérales programmes sont exécutées.
+ */
+class Eval : public Operation {
+    Generic eval(Complexs args) const override;
+    Generic eval(Expressions args) const override;
+    Generic eval(Programs args) const override;
+};
+
+class IFT : public Operation {
+    Generic eval(Generic args) const override;
+};
+
+class IFTE : public Operation {
+    Generic eval(Generic args) const override;
+};
+
+class WHILE : public Operation {
+    Generic eval(Generic args) const override;
 };
 
 #endif

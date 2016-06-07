@@ -52,6 +52,11 @@ class ExpressionParser
      * @brief File de sortie postfixe.
      */
     std::vector<std::shared_ptr<Operand>> queue;
+    /**
+     * @brief Si l'operande est de type ExpressionLiteral, renvoie la chaîne sans guillemets, sinon méthode standard.
+     * @return std::string
+     */
+    std::string operandToString(std::shared_ptr<Operand> op) const;
 public:
     /**
      * @brief Constructeur standard.

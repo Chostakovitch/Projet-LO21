@@ -42,7 +42,7 @@ class OperatorManager
     /**
      * @brief Pointeur sur l'opérateur utilisé pour l'évalution des programmes (que l'on doit rajouter manuellement pour un atome sur un programme).
      */
-    const std::shared_ptr<FunctionOperator> evalOperator;
+    std::shared_ptr<FunctionOperator> evalOperator;
 public:
     /**
      * @brief Suppression du constructeur de recopie.

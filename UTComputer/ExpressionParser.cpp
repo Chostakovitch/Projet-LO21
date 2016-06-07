@@ -48,7 +48,7 @@ std::vector<std::shared_ptr<Operand>> ExpressionParser::parse() {
         //Cas où le jeton est un séparateur d'arguments de fonction
         else if(token.at(0) == function_param_sep) {
             //Jusqu'à ce qu'on trouve un délimiteur gauche, on dépile et enfile chaque opérateur
-            while(!stack.empty() && stack.top()->toString().at(0) != left_del) {
+            while(!stack.empty() && operandToString(stack.top()).at(0) != left_del) {
                 queue.push_back(stack.top());
                 stack.pop();
             }
@@ -82,7 +82,7 @@ std::vector<std::shared_ptr<Operand>> ExpressionParser::parse() {
         //Délimiteur droit
         else if(token.at(0) == right_del) {
             //Tant qu'on ne trouve pas de délimiteur gauche
-            while(!stack.empty() && stack.top()->toString().at(0) != left_del) {
+            while(!stack.empty() && operandToString(stack.top()).at(0) != left_del) {
                 queue.push_back(stack.top());
                 stack.pop();
             }
@@ -106,7 +106,7 @@ std::vector<std::shared_ptr<Operand>> ExpressionParser::parse() {
     //Tant qu'il reste des opérateurs sur la pile
     while(!stack.empty()) {
         //S'il reste un délimiteur gauche, expression malformée
-        if(stack.top()->toString().at(0) == left_del) throw ParsingError(expr, "Parentheses mismatch.");
+        if(operandToString(stack.top()).at(0) == left_del) throw ParsingError(expr, "Parentheses mismatch.");
         queue.push_back(stack.top());
         stack.pop();
     }
@@ -180,4 +180,9 @@ std::shared_ptr<SymbolicOperator> ExpressionParser::getOperator(std::string toke
     try {
         return std::dynamic_pointer_cast<SymbolicOperator>(OperatorManager::getInstance().getOperator(token));
     } catch(UTException&) { return nullptr; }
+}
+
+std::string ExpressionParser::operandToString(std::shared_ptr<Operand> op) const {
+    if(auto expr = std::dynamic_pointer_cast<ExpressionLiteral>(op)) return expr->getExpression();
+    return op->toString();
 }

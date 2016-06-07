@@ -26,6 +26,11 @@ public:
      * @param op Pointeur sur objet Operand
      */
     void add(std::shared_ptr<Operand> op) { operands.push_back(op); }
+    /**
+     * @brief Accesseur pour operands.
+     * @return Vecteur de pointeurs sur Operand.
+     */
+    std::vector<std::shared_ptr<Operand>> getOperands() { return operands; }
     std::string toString() const override;
     std::string toStringExtended() const;
 };

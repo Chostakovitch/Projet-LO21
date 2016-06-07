@@ -130,6 +130,9 @@ std::shared_ptr<Literal> LiteralFactory::makeLiteral(int n) const {
 std::shared_ptr<Literal> LiteralFactory::makeLiteral(int num, int den) const {
     unsigned int gcd = Utility::computeGcd(num, den);
     //Passage du signe au numérateur
+    if(den == 0) {
+        throw UTException("Impossible to divide by 0");
+    }
     if (den < 0) {
         num = -num;
         den = -den;
@@ -152,7 +155,7 @@ std::shared_ptr<Literal> LiteralFactory::makeLiteral(std::shared_ptr<NumericLite
     //Cas où la littérale n'est pas numérique.
     if(std::dynamic_pointer_cast<ComplexLiteral>(re) || std::dynamic_pointer_cast<ComplexLiteral>(im)) throw TypeError("Complexs can't be part of complex.", {re, im});
     //Cas où la partie imaginaire est nulle, on crée une littérale d'un type moins général.
-    if((RealLiteral)(*im) == 0) return makeLiteral((RealLiteral)(*re));
+    if((RealLiteral)*im == 0) return makeLiteral((RealLiteral)*re);
     return std::make_shared<ComplexLiteral>(re, im);
 }
 
