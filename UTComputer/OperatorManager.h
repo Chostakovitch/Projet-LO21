@@ -105,5 +105,6 @@ public:
      */
     std::shared_ptr<ExpressionLiteral> opExpression(std::shared_ptr<Operator> op, const Arguments<std::shared_ptr<ExpressionLiteral>>& args) const;
     std::vector<std::shared_ptr<Operator>> getSymbolicOperators() const;
+    std::vector<std::shared_ptr<Operator>> getFunctionOperators() const;
 };
 #endif

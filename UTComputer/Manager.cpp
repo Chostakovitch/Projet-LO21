@@ -75,6 +75,13 @@ std::vector<std::string> Manager::getSymbolicOperatorToString() const {
     return result;
 }
 
+std::vector<std::string> Manager::getFunctionOperatorToString() const {
+    auto operators = OperatorManager::getInstance().getFunctionOperators();
+    std::vector<std::string> result(operators.size());
+    std::transform(operators.begin(), operators.end(), result.begin(), [](const std::shared_ptr<Operator>& o){ return o->toString(); });
+    return result;
+}
+
 std::vector<std::string> Manager::getPileToString() const {
     std::vector<std::string> result(pile.size());
     std::transform(pile.begin(), pile.end(), result.begin(), [](const std::shared_ptr<Literal>& l){ return l->toString(); });

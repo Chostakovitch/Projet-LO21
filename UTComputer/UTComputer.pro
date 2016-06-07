@@ -6,6 +6,7 @@
 
 QT       += core gui
 CONFIG   -= x86_64
+QT += multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

@@ -83,6 +83,7 @@ public:
      */
     void handleOperandLine(std::string command);
     std::vector<std::string> getSymbolicOperatorToString() const;
+    std::vector<std::string> getFunctionOperatorToString() const;
     std::vector<std::string> getPileToString() const;
     void clearPile();
     bool isCurrentState(std::shared_ptr<Memento>);

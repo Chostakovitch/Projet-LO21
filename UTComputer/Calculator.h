@@ -47,6 +47,7 @@ public slots:
     void displayKeyboardChanged(int newValue);
     void beepMessageChanged(int newValue);
     void openDetailErrorWindow();
+    void openMoreOperatorsWindow();
     //void getNextCommande();
 
 };

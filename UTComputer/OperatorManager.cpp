@@ -108,6 +108,14 @@ std::vector<std::shared_ptr<Operator>> OperatorManager::getSymbolicOperators() c
     return res;
 }
 
+std::vector<std::shared_ptr<Operator>> OperatorManager::getFunctionOperators() const {
+    std::vector<std::shared_ptr<Operator>> res;
+    std::copy_if(operators.begin(), operators.end(), std::back_inserter(res), [](const std::shared_ptr<Operator> op) {
+        return std::dynamic_pointer_cast<FunctionOperator>(op);
+    });
+    return res;
+}
+
 Arguments<std::shared_ptr<Literal>> OperatorManager::dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const {
     //0. Vérifications
     if (op->getArity() != args.size()) throw OperationError(op, args, "Wrong number of operands.");

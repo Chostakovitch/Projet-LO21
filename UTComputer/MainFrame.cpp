@@ -42,10 +42,12 @@ MainFrame::MainFrame(QWidget *parent) : QFrame(parent) {
         opeartorLayout->addWidget(operatorButton, row, column);
         count++;
     }
+    Button* operatorButton = createButton("More operators", SLOT(openMoreOperatorsWindow()));
 
     mainLayout->addItem(digitLayout);
     mainLayout->addItem(actionLayout);
     mainLayout->addItem(opeartorLayout);
+    mainLayout->addWidget(operatorButton);
     setLayout(mainLayout);
 }
 
@@ -55,3 +57,20 @@ Button *MainFrame::createButton(const QString &text, const char *member)
     connect(button, SIGNAL(clicked()), parent(), member);
     return button;
 }
+
+WindowMoreOperators::WindowMoreOperators(QObject* parent) {
+    QGridLayout *opeartorLayout = new QGridLayout;
+
+    std::vector<std::string> functionOperators = Manager::getInstance().getFunctionOperatorToString();
+    unsigned int count = 1;
+    for(auto o : functionOperators) {
+        Button* operatorButton = new Button(QString::fromStdString(o));
+        connect(operatorButton, SIGNAL(clicked()), parent, SLOT(addOperatorToCommand()));
+        int row = ((functionOperators.size() - count) / 3) + 2;
+        int column = ((count - 1) % 3) + 1;
+        opeartorLayout->addWidget(operatorButton, row, column);
+        count++;
+    }
+    setLayout(opeartorLayout);
+}
+

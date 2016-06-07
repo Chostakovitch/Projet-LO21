@@ -243,6 +243,7 @@ Operation::Generic ClearOperation::eval(Operation::Generic) const {
 }
 
 Operation::Generic LastopOperation::eval(Operation::Generic) const {
+    Manager::getInstance().handleOperandLine(Manager::getInstance().getLastop()->toString());
     return {};
 }
 

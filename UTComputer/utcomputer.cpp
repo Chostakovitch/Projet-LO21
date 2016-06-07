@@ -57,8 +57,6 @@ void UTComputer::save() {
         out << QString::fromStdString(v.second->toString());
     }
 
-    qDebug() << "Save";
-
     file.flush();
     file.close();
 }
@@ -103,8 +101,6 @@ void UTComputer::load() {
         command += " " + value + " " + key + " STO ";
     }
     Manager::getInstance().handleOperandLine(command.toStdString());
-
-    qDebug() << "Load : " << count;
 
     file.close();
 }

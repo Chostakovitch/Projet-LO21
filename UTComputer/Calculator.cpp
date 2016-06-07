@@ -4,6 +4,7 @@
 #include "WindowException.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QSound>
 #include <QString>
 #include "UTException.h"
 #include "Button.h"
@@ -90,6 +91,11 @@ void Calculator::openDetailErrorWindow() {
     window->show();
 }
 
+void Calculator::openMoreOperatorsWindow() {
+    WindowMoreOperators* window = new WindowMoreOperators(this);
+    window->show();
+}
+
 void Calculator::addDigitToCommand() {
     Button *clickedButton = qobject_cast<Button *>(sender());
     command->setText(command->text() + clickedButton->text());
@@ -144,7 +150,7 @@ void Calculator::calculate() {
 }
 
 void Calculator::setMessage(const UTException& e) {
-    //if (Manager::getInstance().getSettings().getBeepMessage()) QApplication::beep();
+    if (Manager::getInstance().getSettings().getBeepMessage()) QSound::play("/Users/aureliedigeon/Documents/UTC/P16/LO21/Projet-LO21/sound.wav");
     message->setText(QString::fromStdString(e.what()));
     messageDetail = e.details();
 }
