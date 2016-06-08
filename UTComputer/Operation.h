@@ -79,7 +79,7 @@ protected:
      * @exception invalid_argument si non implémenté dans une sous-classe.
      * @return Ensemble résultat de pointeurs sur Literal.
      */
-    virtual Result eval(const Expressions) const;
+    virtual Result eval(Expressions) const;
     /**
      * @brief Opération sur des littérales programmes.
      * @arg Ensemble de littérales réelles ProgramLiteral wrappées dans un objet Arguments.

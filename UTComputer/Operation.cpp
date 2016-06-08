@@ -256,8 +256,7 @@ Operation::Result ClearOperation::eval(Operation::Generic) const {
 }
 
 Operation::Result LastopOperation::eval(Operation::Generic) const {
-    Manager::getInstance().handleOperandLine(Manager::getInstance().getLastop()->toString());
-    return {};
+    return {Manager::getInstance().getLastop()};
 }
 
 Operation::Result LastargsOperation::eval(Operation::Generic) const {
@@ -305,9 +304,8 @@ Operation::Result Eval::eval(Operation::Complexs args) const {
 }
 
 Operation::Result Eval::eval(Operation::Expressions args) const {
-    auto res = ExpressionParser(args.front()->getExpression()).parse(); //Parsing de l'expression
-    Manager::getInstance().eval(res); //Evaluation du résultat
-    return {};
+    auto res = ExpressionParser(args.front()->getExpression()).parse();
+    return Operation::Result(res.begin(), res.end()); //Parsing de l'expression
 }
 
 Operation::Result Eval::eval(Operation::Programs args) const {
@@ -317,7 +315,7 @@ Operation::Result Eval::eval(Operation::Programs args) const {
 
 Operation::Result IFT::eval(Operation::Generic args) const {
     if(auto value = std::dynamic_pointer_cast<IntegerLiteral>(args.front())) {
-        if(*value) return apply(OperatorManager::getInstance().getEvalOperator()->getOperation(), {args.back()}); //Premier argument = true, on renvoie l'évaluation du deuxième
+        if(*value) return {OperatorManager::getInstance().getEvalOperator(), args.back()}; //Premier argument = true, on provoque l'évaluation du deuxième
         return {};
     }
     throw UTException("First argument can't be interpreted as a integer boolean");
@@ -325,8 +323,8 @@ Operation::Result IFT::eval(Operation::Generic args) const {
 
 Operation::Result IFTE::eval(Operation::Generic args) const {
     if(auto value = std::dynamic_pointer_cast<IntegerLiteral>(args.front())) {
-        if(*value) return apply(OperatorManager::getInstance().getEvalOperator()->getOperation(), {args.at(1)}); //Premier argument = true, on renvoie l'évaluation du deuxième
-        return apply(OperatorManager::getInstance().getEvalOperator()->getOperation(), {args.back()}); //Sinon on renvoie l'évaluation du troisième
+        if(*value) return {OperatorManager::getInstance().getEvalOperator(), args.at(1)}; //Premier argument = true, on provoque l'évaluation du deuxième
+        return {OperatorManager::getInstance().getEvalOperator(), args.back()}; //Sinon on provoque l'évaluation du troisième
     }
     throw UTException("First argument can't be interpreted as a integer boolean");
 }

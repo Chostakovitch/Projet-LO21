@@ -109,13 +109,40 @@ void Manager::handleOperandLine(std::string command) {
     leftPos = command.find_first_of('[');
     rightPos = command.find_last_of(']');
     std::vector<std::string> tokens;
-    //On a trouvé un programme, on effectue la séparation
+    //On a trouvé la preuve d'un programme, on effectue la séparation
     if(leftPos != std::string::npos && rightPos != std::string::npos) {
-        std::istringstream leftiss(command.substr(0, leftPos));
-        std::istringstream rightiss(command.substr(rightPos + 1, command.size() - rightPos));
-        tokens.insert(tokens.end(), std::istream_iterator<std::string>{leftiss}, std::istream_iterator<std::string>{});
-        tokens.push_back(command.substr(leftPos, rightPos - leftPos + 1));
-        tokens.insert(tokens.end(), std::istream_iterator<std::string>{rightiss}, std::istream_iterator<std::string>{});
+        int leftBracketPos = -1; //Position courante crochet gauche
+        int rightBracketPos = -1; //Position courante du crochet droit
+        //Tant qu'on trouve un début de programme
+        while((leftBracketPos = command.find('[', rightBracketPos + 1)) != std::string::npos) { //Tant qu'on trouve un début de programme ultérieur
+            //On traite l'expression à gauche du programme
+            std::istringstream leftiss(command.substr(rightBracketPos + 1, leftBracketPos - rightBracketPos - 1));
+            tokens.insert(tokens.end(), std::istream_iterator<std::string>{leftiss}, std::istream_iterator<std::string>{});
+            int leftBracketCount = 1, rightBracketCount = 0;
+            for(unsigned int i = leftBracketPos + 1; i < command.size(); ++i) {
+                if(leftBracketCount == rightBracketCount) break; //On a trouvé un programme complet
+                if(command.at(i) == '[') ++leftBracketCount;
+                else if(command.at(i) == ']') {
+                    ++rightBracketCount;
+                    rightBracketPos = i; //Mise à jour de la position de la fin effective du programme
+                }
+            }
+
+            //Traitement du programme
+            if(leftBracketPos != std::string::npos && rightBracketPos != std::string::npos) {
+                tokens.push_back(command.substr(leftBracketPos, rightBracketPos - leftBracketPos + 1));
+            }
+
+            //Programme malformé
+            else {
+                throw ParsingError(command, "Square bracket unclosed in program.");
+            }
+        }
+        //On traite l'expression à la fin du dernier programme
+        if(rightPos != std::string::npos) {
+            std::istringstream rightiss(command.substr(rightPos + 1));
+            tokens.insert(tokens.end(), std::istream_iterator<std::string>{rightiss}, std::istream_iterator<std::string>{});
+        }
     }
     //Sinon, on splitte tous les espaces
     else {
