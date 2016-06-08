@@ -6,7 +6,7 @@
 #include "UTException.h"
 #include "ExpressionParser.h"
 
-Operation::Generic Operation::apply(const std::shared_ptr<const Operation> &op, Operation::Generic args) {
+Operation::Result Operation::apply(const std::shared_ptr<const Operation> &op, Operation::Generic args) {
     //Tentative d'application de l'opération générique
     try {
         return op->eval(args);
@@ -45,32 +45,32 @@ Operation::Generic Operation::apply(const std::shared_ptr<const Operation> &op, 
     }
 }
 
-Operation::Generic Operation::eval(Operation::Generic) const {
+Operation::Result Operation::eval(Operation::Generic) const {
     throw UTException("Generic operation not implemented.");
 }
 
-Operation::Generic Operation::eval(Operation::Integers) const {
+Operation::Result Operation::eval(Operation::Integers) const {
     throw UTException("Operation not implemented for IntegerLiteral.");
 }
-Operation::Generic Operation::eval(Operation::Rationals) const {
+Operation::Result Operation::eval(Operation::Rationals) const {
     throw UTException("Operation not implemented for RationalLiteral.");
 }
-Operation::Generic Operation::eval(Operation::Complexs) const {
+Operation::Result Operation::eval(Operation::Complexs) const {
     throw UTException("Operation not implemented for ComplexLiteral.");
 }
 
-Operation::Generic Operation::eval(Operation::Reals) const {
+Operation::Result Operation::eval(Operation::Reals) const {
     throw UTException("Operation not implemented for RealLiteral.");
 }
-Operation::Generic Operation::eval(Operation::Expressions) const {
+Operation::Result Operation::eval(Operation::Expressions) const {
     throw UTException("Operation not implemented for ExpressionLiteral.");
 }
 
-Operation::Generic Operation::eval(Operation::Programs args) const {
+Operation::Result Operation::eval(Operation::Programs args) const {
      throw UTException("Operation not implemented for ProgramLiteral.");
 }
 
-Operation::Generic PlusOperation::eval(Operation::Rationals args) const {
+Operation::Result PlusOperation::eval(Operation::Rationals args) const {
     int a = args.front()->getNum(), b = args.front()->getDen(), c = args.back()->getNum(), d = args.back()->getDen();
 
     //Calcul du résultat via le dénominateur commun : la simplification est déléguée à la fabrique.
@@ -79,57 +79,57 @@ Operation::Generic PlusOperation::eval(Operation::Rationals args) const {
     return {LiteralFactory::getInstance().makeLiteral(num, den)};
 }
 
-Operation::Generic PlusOperation::eval(Operation::Complexs args) const {
+Operation::Result PlusOperation::eval(Operation::Complexs args) const {
     return {LiteralFactory::getInstance().makeLiteral((Operation::StdComplex)*args.front() + (Operation::StdComplex)*args.back())};
 }
 
-Operation::Generic MulOperation::eval(Operation::Rationals args) const {
+Operation::Result MulOperation::eval(Operation::Rationals args) const {
     int a = args.front()->getNum(), b = args.front()->getDen(), c = args.back()->getNum(), d = args.back()->getDen();
     return {LiteralFactory::getInstance().makeLiteral(a * c, b * d)};
 }
 
-Operation::Generic MulOperation::eval(Operation::Complexs args) const {
+Operation::Result MulOperation::eval(Operation::Complexs args) const {
     return {LiteralFactory::getInstance().makeLiteral((Operation::StdComplex)*args.front() * (Operation::StdComplex)*args.back())};
 }
 
-Operation::Generic ComplexOperation::eval(Operation::Generic args) const {
+Operation::Result ComplexOperation::eval(Operation::Generic args) const {
     auto re = std::dynamic_pointer_cast<NumericLiteral>(args.front());
     auto im = std::dynamic_pointer_cast<NumericLiteral>(args.back());
     if(re && im) return Operation::Generic{LiteralFactory::getInstance().makeLiteral(re, im)};
     throw UTException("Unable to apply ComplexLiteral from other operands than NumericLiteral's");
 }
 
-Operation::Generic NegOperation::eval(Operation::Generic args) const {
+Operation::Result NegOperation::eval(Operation::Generic args) const {
     args.push_back(LiteralFactory::getInstance().makeLiteral(-1));
     return apply(std::make_shared<MulOperation>(), args);
 }
 
-Operation::Generic MoinsOperation::eval(Operation::Generic args) const {
-    args.back() = apply(std::make_shared<NegOperation>(), {args.back()}).front();
+Operation::Result MoinsOperation::eval(Operation::Generic args) const {
+    args.back() = std::dynamic_pointer_cast<Literal>(apply(std::make_shared<NegOperation>(), {args.back()}).front());
     return apply(std::make_shared<PlusOperation>(), args);
 }
 
-Operation::Generic DivOperation::eval(Operation::Rationals args) const {
+Operation::Result DivOperation::eval(Operation::Rationals args) const {
     if(args.back()->getNum() == 0) throw UTException("Division by 0");
     auto den = LiteralFactory::getInstance().makeLiteral(args.back()->getDen(), args.back()->getNum());
     return apply(std::make_shared<MulOperation>(), {args.front(), den});
 }
 
-Operation::Generic DivOperation::eval(Operation::Complexs args) const {
+Operation::Result DivOperation::eval(Operation::Complexs args) const {
     if((RealLiteral)*(args.back()->getRe()) == 0 && (RealLiteral)*(args.back()->getIm()) == 0) throw UTException("Complex infinity");
     return {LiteralFactory::getInstance().makeLiteral((Operation::StdComplex)*args.front() / (Operation::StdComplex)*args.back())};
 }
 
-Operation::Generic IntDivOperation::eval(Operation::Integers args) const {
+Operation::Result IntDivOperation::eval(Operation::Integers args) const {
     if(*args.back() == 0) throw UTException("Division by 0");
     return {LiteralFactory::getInstance().makeLiteral(*args.front() / *args.back())};
 }
 
-Operation::Generic ModOperation::eval(Operation::Integers args) const {
+Operation::Result ModOperation::eval(Operation::Integers args) const {
     return {LiteralFactory::getInstance().makeLiteral(*args.front() % *args.back())};
 }
 
-Operation::Generic PowOperation::eval(Generic args) const {
+Operation::Result PowOperation::eval(Generic args) const {
     //Rationnel
     auto n = (RationalLiteral)*args.front();
     //Puissance entière
@@ -138,35 +138,35 @@ Operation::Generic PowOperation::eval(Generic args) const {
 
 }
 
-Operation::Generic PowOperation::eval(Operation::Complexs args) const {
+Operation::Result PowOperation::eval(Operation::Complexs args) const {
     return {LiteralFactory::getInstance().makeLiteral(std::pow((Operation::StdComplex)*args.front(), (Operation::StdComplex)*args.back()))};
 }
 
-Operation::Generic SinOperation::eval(Operation::Complexs args) const {
+Operation::Result SinOperation::eval(Operation::Complexs args) const {
     return {LiteralFactory::getInstance().makeLiteral(std::sin((Operation::StdComplex)*args.front()))};
 }
 
-Operation::Generic CosOperation::eval(Operation::Complexs args) const {
+Operation::Result CosOperation::eval(Operation::Complexs args) const {
     return {LiteralFactory::getInstance().makeLiteral(std::cos((Operation::StdComplex)*args.front()))};
 }
 
-Operation::Generic TanOperation::eval(Operation::Complexs args) const {
+Operation::Result TanOperation::eval(Operation::Complexs args) const {
     return {LiteralFactory::getInstance().makeLiteral(std::tan((Operation::StdComplex)*args.front()))};
 }
 
-Operation::Generic ArcSinOperation::eval(Operation::Complexs args) const {
+Operation::Result ArcSinOperation::eval(Operation::Complexs args) const {
     return {LiteralFactory::getInstance().makeLiteral(std::asin((Operation::StdComplex)*args.front()))};
 }
 
-Operation::Generic ArcCosOperation::eval(Operation::Complexs args) const {
+Operation::Result ArcCosOperation::eval(Operation::Complexs args) const {
     return {LiteralFactory::getInstance().makeLiteral(std::acos((Operation::StdComplex)*args.front()))};
 }
 
-Operation::Generic ArcTanOperation::eval(Operation::Complexs args) const {
+Operation::Result ArcTanOperation::eval(Operation::Complexs args) const {
     return {LiteralFactory::getInstance().makeLiteral(std::atan((Operation::StdComplex)*args.front()))};
 }
 
-Operation::Generic SqrtOperation::eval(Operation::Rationals args) const {
+Operation::Result SqrtOperation::eval(Operation::Rationals args) const {
     double intpart;
     double num = std::sqrt((int)args.front()->getNum());
     double den = std::sqrt((int)args.front()->getDen());
@@ -175,49 +175,49 @@ Operation::Generic SqrtOperation::eval(Operation::Rationals args) const {
     return {LiteralFactory::getInstance().makeLiteral(num/den)};
 }
 
-Operation::Generic SqrtOperation::eval(Operation::Complexs args) const {
+Operation::Result SqrtOperation::eval(Operation::Complexs args) const {
     return {LiteralFactory::getInstance().makeLiteral(std::sqrt((Operation::StdComplex)*args.front()))};
 }
 
-Operation::Generic ExpOperation::eval(Operation::Complexs args) const {
+Operation::Result ExpOperation::eval(Operation::Complexs args) const {
     return {LiteralFactory::getInstance().makeLiteral(std::exp((Operation::StdComplex)*args.front()))};
 }
 
-Operation::Generic LnOperation::eval(Operation::Complexs args) const {
+Operation::Result LnOperation::eval(Operation::Complexs args) const {
     return {LiteralFactory::getInstance().makeLiteral(std::log((Operation::StdComplex)*args.front()))};
 }
 
-Operation::Generic NumOperation::eval(Operation::Rationals args) const {
+Operation::Result NumOperation::eval(Operation::Rationals args) const {
     return {LiteralFactory::getInstance().makeLiteral(args.front()->getNum())};
 }
 
-Operation::Generic DenOperation::eval(Operation::Rationals args) const {
+Operation::Result DenOperation::eval(Operation::Rationals args) const {
     return {LiteralFactory::getInstance().makeLiteral(args.front()->getDen())};
 }
 
-Operation::Generic ReOperation::eval(Operation::Complexs args) const {
+Operation::Result ReOperation::eval(Operation::Complexs args) const {
     return {args.front()->getRe()};
 }
 
-Operation::Generic ImOperation::eval(Operation::Complexs args) const{
+Operation::Result ImOperation::eval(Operation::Complexs args) const{
     return {args.front()->getIm()};
 }
 
-Operation::Generic ArgOperation::eval(Operation::Complexs args) const {
+Operation::Result ArgOperation::eval(Operation::Complexs args) const {
     return{LiteralFactory::getInstance().makeLiteral(std::arg((Operation::StdComplex)*args.front()))};
 }
 
-Operation::Generic ModuleOperation::eval(Operation::Complexs args) const {
+Operation::Result ModuleOperation::eval(Operation::Complexs args) const {
     return{LiteralFactory::getInstance().makeLiteral(std::norm((Operation::StdComplex)*args.front()))};
 }
 
-Operation::Generic StoOperation::eval(Operation::Generic args) const {
+Operation::Result StoOperation::eval(Operation::Generic args) const {
     if(!std::dynamic_pointer_cast<ExpressionLiteral>(args.back())) throw TypeError("An identifier must be an expression.", args);
     Manager::getInstance().addIdentifier((std::dynamic_pointer_cast<ExpressionLiteral>(args.back()))->getExpression(), args.front());
     return {};
 }
 
-Operation::Generic ForgetOperation::eval(Operation::Generic args) const {
+Operation::Result ForgetOperation::eval(Operation::Generic args) const {
     if(!std::dynamic_pointer_cast<ExpressionLiteral>(args.front())) throw TypeError("An identifier must be an expression.", args);
     try {
         Manager::getInstance().getIdentifier(args.front()->toString());
@@ -228,89 +228,116 @@ Operation::Generic ForgetOperation::eval(Operation::Generic args) const {
     return {};
 }
 
-Operation::Generic DupOperation::eval(Operation::Generic args) const {
+Operation::Result DupOperation::eval(Operation::Generic args) const {
     return {LiteralFactory::getInstance().makeLiteralFromString(args.front()->toString()), args.front()};
 }
 
-Operation::Generic DropOperation::eval(Operation::Generic) const {
+Operation::Result DropOperation::eval(Operation::Generic) const {
     return {};
 }
 
-Operation::Generic SwapOperation::eval(Operation::Generic args) const {
+Operation::Result SwapOperation::eval(Operation::Generic args) const {
     return {args.back(), args.front()};
 }
 
-Operation::Generic UndoOperation::eval(Operation::Generic) const {
+Operation::Result UndoOperation::eval(Operation::Generic) const {
     Manager::getInstance().undo();
     return {};
 }
 
-Operation::Generic RedoOperation::eval(Operation::Generic) const {
+Operation::Result RedoOperation::eval(Operation::Generic) const {
     Manager::getInstance().redo();
     return {};
 }
 
-Operation::Generic ClearOperation::eval(Operation::Generic) const {
+Operation::Result ClearOperation::eval(Operation::Generic) const {
     Manager::getInstance().clearPile();
     return {};
 }
 
-Operation::Generic LastopOperation::eval(Operation::Generic) const {
+Operation::Result LastopOperation::eval(Operation::Generic) const {
     Manager::getInstance().handleOperandLine(Manager::getInstance().getLastop()->toString());
     return {};
 }
 
-Operation::Generic LastargsOperation::eval(Operation::Generic) const {
+Operation::Result LastargsOperation::eval(Operation::Generic) const {
     return Manager::getInstance().getLastargs();
 }
 
-Operation::Generic EqualOperation::eval(Operation::Complexs args) const {
+Operation::Result EqualOperation::eval(Operation::Complexs args) const {
     return {LiteralFactory::getInstance().makeLiteral((Operation::StdComplex)*args.front() == (Operation::StdComplex)*args.back())};
 }
 
-Operation::Generic NotEqualOperation::eval(Operation::Complexs args) const {
+Operation::Result NotEqualOperation::eval(Operation::Complexs args) const {
     return {LiteralFactory::getInstance().makeLiteral((Operation::StdComplex)*args.front() != (Operation::StdComplex)*args.back())};
 }
 
-Operation::Generic BelowOrEqual::eval(Operation::Reals args) const {
+Operation::Result BelowOrEqual::eval(Operation::Reals args) const {
     return {LiteralFactory::getInstance().makeLiteral(*args.front() <= *args.back())};
 }
 
-Operation::Generic AboveOrEqual::eval(Operation::Reals args) const {
+Operation::Result AboveOrEqual::eval(Operation::Reals args) const {
     return {LiteralFactory::getInstance().makeLiteral(*args.front() >= *args.back())};
 }
 
-Operation::Generic Below::eval(Operation::Reals args) const {
+Operation::Result Below::eval(Operation::Reals args) const {
     return {LiteralFactory::getInstance().makeLiteral(*args.front() < *args.back())};
 }
 
-Operation::Generic Above::eval(Operation::Reals args) const {
+Operation::Result Above::eval(Operation::Reals args) const {
     return {LiteralFactory::getInstance().makeLiteral(*args.front() > *args.back())};
 }
 
-Operation::Generic LogicAnd::eval(Operation::Integers args) const {
+Operation::Result LogicAnd::eval(Operation::Integers args) const {
     return {LiteralFactory::getInstance().makeLiteral(*args.front() && *args.back())};
 }
 
-Operation::Generic LogicOr::eval(Operation::Integers args) const {
+Operation::Result LogicOr::eval(Operation::Integers args) const {
     return {LiteralFactory::getInstance().makeLiteral(*args.front() || *args.back())};
 }
 
-Operation::Generic LogicNot::eval(Operation::Integers args) const {
+Operation::Result LogicNot::eval(Operation::Integers args) const {
     return {LiteralFactory::getInstance().makeLiteral(!*args.front())};
 }
 
-Operation::Generic Eval::eval(Operation::Complexs args) const {
+Operation::Result Eval::eval(Operation::Complexs args) const {
     return {LiteralFactory::getInstance().makeLiteral(args.front()->getRe(), args.front()->getIm())};
 }
 
-Operation::Generic Eval::eval(Operation::Expressions args) const {
+Operation::Result Eval::eval(Operation::Expressions args) const {
     auto res = ExpressionParser(args.front()->getExpression()).parse(); //Parsing de l'expression
     Manager::getInstance().eval(res); //Evaluation du résultat
     return {};
 }
 
-Operation::Generic Eval::eval(Operation::Programs args) const {
+Operation::Result Eval::eval(Operation::Programs args) const {
     Manager::getInstance().eval(args.front()->getOperands()); //Evaluation des opérandes de la littérale programme
+    return {};
+}
+
+Operation::Result IFT::eval(Operation::Generic args) const {
+    if(auto value = std::dynamic_pointer_cast<IntegerLiteral>(args.front())) {
+        if(*value) return apply(OperatorManager::getInstance().getEvalOperator()->getOperation(), {args.back()}); //Premier argument = true, on renvoie l'évaluation du deuxième
+        return {};
+    }
+    throw UTException("First argument can't be interpreted as a integer boolean");
+}
+
+Operation::Result IFTE::eval(Operation::Generic args) const {
+    if(auto value = std::dynamic_pointer_cast<IntegerLiteral>(args.front())) {
+        if(*value) return apply(OperatorManager::getInstance().getEvalOperator()->getOperation(), {args.at(1)}); //Premier argument = true, on renvoie l'évaluation du deuxième
+        return apply(OperatorManager::getInstance().getEvalOperator()->getOperation(), {args.back()}); //Sinon on renvoie l'évaluation du troisième
+    }
+    throw UTException("First argument can't be interpreted as a integer boolean");
+}
+
+Operation::Result WHILE::eval(Operation::Generic args) const {
+    std::shared_ptr<Operand> res;
+    std::shared_ptr<IntegerLiteral> value;
+    //Tant que le premier argument s'évalue en un entier représentant true, on évalue le dernier argument
+    auto v = apply(OperatorManager::getInstance().getEvalOperator()->getOperation(), {args.front()});
+    while(res = apply(OperatorManager::getInstance().getEvalOperator()->getOperation(), {args.front()}).front(), (value = std::dynamic_pointer_cast<IntegerLiteral>(res)) && *value) {
+        Manager::getInstance().eval({OperatorManager::getInstance().getEvalOperator(), args.back()});
+    }
     return {};
 }

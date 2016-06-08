@@ -95,7 +95,7 @@ public:
      * @exception invalid_argument Si aucun type englobant n'a été trouvé ou si aucune opération n'est définie pour le type des littérales.
      * @return Objet Arguments de pointeurs sur Operand représentant le(s) résultat(s) de l'opération.
      */
-    Arguments<std::shared_ptr<Literal> > dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const;
+    Arguments<std::shared_ptr<Operand>> dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const;
     /**
      * @brief Effectue une opération entre un ensemble d'objet ExpressionLiteral. L'algorithme ne dépend pas de l'opérateur mais uniquement de
      * son symbole et des autres opérateurs définis, c'est pourquoi elle est définie à part des autres opérations.

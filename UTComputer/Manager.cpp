@@ -179,9 +179,10 @@ void Manager::eval(std::vector<std::shared_ptr<Operand>> operands) {
             //On tente d'effectuer l'opération (si elle est implémentée et si les types correspondent)
             try {
                 auto res = OperatorManager::getInstance().dispatchOperation(op, args);
-                for(auto& lit : res) pile.push(lit);
                 lastop = op;
                 lastargs = args;
+                //On évalue le résultat (il pourrait contenir des opérateurs).
+                eval(res);
             }
             //Impossible d'effectuer l'opération : on restitue la pile avant l'opération en cours.
             catch(UTException& e) {

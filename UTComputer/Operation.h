@@ -24,6 +24,7 @@
  */
 class Operation : public std::enable_shared_from_this<Operation> {
 protected:
+    typedef Arguments<std::shared_ptr<Operand>> Result;
     typedef Arguments<std::shared_ptr<Literal>> Generic;
     typedef Arguments<std::shared_ptr<IntegerLiteral>> Integers;
     typedef Arguments<std::shared_ptr<RationalLiteral>> Rationals;
@@ -43,49 +44,49 @@ protected:
      * @exception invalid_argument si non implémenté dans une sous-classe.
      * @return Ensemble résultat de pointeurs sur Literal.
      */
-    virtual Generic eval(Generic) const;
+    virtual Result eval(Generic) const;
     /**
      * @brief Opération sur des littérales entières.
      * @arg Ensemble de littérales entières IntegerLiteral wrappées dans un objet Arguments.
      * @exception invalid_argument si non implémenté dans une sous-classe.
      * @return Ensemble résultat de pointeurs sur Literal.
      */
-    virtual Generic eval(Integers) const;
+    virtual Result eval(Integers) const;
     /**
      * @brief Opération sur des littérales rationnelles.
      * @arg Ensemble de littérales rationnelles RationalLiteral wrappées dans un objet Arguments.
      * @exception invalid_argument si non implémenté dans une sous-classe.
      * @return Ensemble résultat de pointeurs sur Literal.
      */
-    virtual Generic eval(Rationals) const;
+    virtual Result eval(Rationals) const;
     /**
      * @brief Opération sur des littérales complexes.
      * @arg Ensemble de littérales complexes ComplexLiteral wrappées dans un objet Arguments.
      * @exception invalid_argument si non implémenté dans une sous-classe.
      * @return Ensemble résultat de pointeurs sur Literal.
      */
-    virtual Generic eval(Complexs) const;
+    virtual Result eval(Complexs) const;
     /**
      * @brief Opération sur des littérales réelles.
      * @arg Ensemble de littérales réelles RealLiteral wrappées dans un objet Arguments.
      * @exception invalid_argument si non implémenté dans une sous-classe.
      * @return Ensemble résultat de pointeurs sur Literal.
      */
-    virtual Generic eval(Reals) const;
+    virtual Result eval(Reals) const;
     /**
      * @brief Opération sur des littérales expressions.
      * @arg Ensemble de littérales réelles ExpressionLiteral wrappées dans un objet Arguments.
      * @exception invalid_argument si non implémenté dans une sous-classe.
      * @return Ensemble résultat de pointeurs sur Literal.
      */
-    virtual Generic eval(const Expressions) const;
+    virtual Result eval(const Expressions) const;
     /**
      * @brief Opération sur des littérales programmes.
      * @arg Ensemble de littérales réelles ProgramLiteral wrappées dans un objet Arguments.
      * @exception invalid_argument si non implémenté dans une sous-classe.
      * @return Ensemble résultat de pointeurs sur Literal.
      */
-    virtual Generic eval(Programs args) const;
+    virtual Result eval(Programs args) const;
     /**
      * @brief Destructeur virtuel.
      */
@@ -94,7 +95,7 @@ public:
      * @brief Dispatch des opérandes vers la bonne opération via des casts.
      * @return Résultat de l'opération.
      */
-    static Generic apply(const std::shared_ptr<const Operation> &op, Generic args);
+    static Result apply(const std::shared_ptr<const Operation> &op, Generic args);
     virtual ~Operation() {}
 };
 
@@ -104,8 +105,8 @@ public:
  */
 class PlusOperation : public Operation {
 public:
-    Generic eval(Rationals args) const override;
-    Generic eval(Complexs args) const override;
+    Result eval(Rationals args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -113,8 +114,8 @@ public:
  * @details Les littérales supportées sont RationalLiteral et ComplexLiteral.
  */
 class MulOperation : public Operation {
-    Generic eval(Rationals args) const override;
-    Generic eval(Complexs args) const override;
+    Result eval(Rationals args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -122,7 +123,7 @@ class MulOperation : public Operation {
  * @details Toutes les littérales sont supportées.
  */
 class NegOperation : public Operation {
-    Generic eval(Generic args) const override;
+    Result eval(Generic args) const override;
 };
 
 /**
@@ -130,7 +131,7 @@ class NegOperation : public Operation {
  * @details Toutes les littérales sont supportées.
  */
 class MoinsOperation : public Operation {
-    Generic eval(Generic args) const override;
+    Result eval(Generic args) const override;
 };
 
 /**
@@ -138,7 +139,7 @@ class MoinsOperation : public Operation {
  * @details Les littérales numériques sont supportées.
  */
 class ComplexOperation : public Operation {
-    Generic eval(Generic args) const override;
+    Result eval(Generic args) const override;
 };
 
 /**
@@ -146,8 +147,8 @@ class ComplexOperation : public Operation {
  * @details Les littérales supportées sont RationalLiteral et ComplexLiteral.
  */
 class DivOperation : public Operation {
-    Generic eval(Rationals args) const override;
-    Generic eval(Complexs args) const override;
+    Result eval(Rationals args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -155,7 +156,7 @@ class DivOperation : public Operation {
  * @details Seuls les IntegerLiteral sont supportés.
  */
 class IntDivOperation : public Operation {
-    Generic eval(Integers args) const override;
+    Result eval(Integers args) const override;
 };
 
 /**
@@ -163,7 +164,7 @@ class IntDivOperation : public Operation {
  * @details Seules les IntegerLiteral sont supportés.
  */
 class ModOperation : public Operation {
-    Generic eval(Integers args) const override;
+    Result eval(Integers args) const override;
 };
 
 /**
@@ -171,8 +172,8 @@ class ModOperation : public Operation {
  * @details Les littérales supportées sont le couple (RationalLiteral, IntegerLiteral), et ComplexLiteral.
  */
 class PowOperation : public Operation {
-    Generic eval(Generic args) const override;
-    Generic eval(Complexs args) const override;
+    Result eval(Generic args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -180,7 +181,7 @@ class PowOperation : public Operation {
  * @details Seuls les ComplexLiteral sont supportés.
  */
 class SinOperation : public Operation {
-    Generic eval(Complexs args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -188,7 +189,7 @@ class SinOperation : public Operation {
  * @details Seuls les ComplexLiteral sont supportés.
  */
 class CosOperation : public Operation {
-    Generic eval(Complexs args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -196,7 +197,7 @@ class CosOperation : public Operation {
  * @details Seuls les ComplexLiteral sont supportés.
  */
 class TanOperation : public Operation {
-    Generic eval(Complexs args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -204,7 +205,7 @@ class TanOperation : public Operation {
  * @details Seuls les ComplexLiteral sont supportés.
  */
 class ArcSinOperation : public Operation {
-    Generic eval(Complexs args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -212,7 +213,7 @@ class ArcSinOperation : public Operation {
  * @details Seuls les ComplexLiteral sont supportés.
  */
 class ArcCosOperation : public Operation {
-    Generic eval(Complexs args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -220,7 +221,7 @@ class ArcCosOperation : public Operation {
  * @details Seuls les ComplexLiteral sont supportés.
  */
 class ArcTanOperation : public Operation {
-    Generic eval(Complexs args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -228,8 +229,8 @@ class ArcTanOperation : public Operation {
  * @details Les littérales supportées sont RationalLiteral et ComplexLiteral.
  */
 class SqrtOperation : public Operation {
-    Generic eval(Rationals args) const override;
-    Generic eval(Complexs args) const override;
+    Result eval(Rationals args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -237,7 +238,7 @@ class SqrtOperation : public Operation {
  * @details Seuls les ComplexLiteral sont supportés.
  */
 class ExpOperation : public Operation {
-    Generic eval(Complexs args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -245,7 +246,7 @@ class ExpOperation : public Operation {
  * @details Seuls les ComplexLiteral sont supportés.
  */
 class LnOperation : public Operation {
-    Generic eval(Complexs args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -253,7 +254,7 @@ class LnOperation : public Operation {
  * @details Seuls les RationalLiteral sont supportés.
  */
 class NumOperation : public Operation {
-    Generic eval(Rationals args) const override;
+    Result eval(Rationals args) const override;
 };
 
 /**
@@ -261,7 +262,7 @@ class NumOperation : public Operation {
  * @details Seuls les RationalLiteral sont supportés.
  */
 class DenOperation : public Operation {
-    Generic eval(Rationals args) const override;
+    Result eval(Rationals args) const override;
 };
 
 /**
@@ -269,7 +270,7 @@ class DenOperation : public Operation {
  * @details Seuls les ComplexLiteral sont supportés.
  */
 class ReOperation : public Operation {
-    Generic eval(Complexs args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -277,7 +278,7 @@ class ReOperation : public Operation {
  * @details Seuls les ComplexLiteral sont supportés.
  */
 class ImOperation : public Operation {
-    Generic eval(Complexs args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -285,7 +286,7 @@ class ImOperation : public Operation {
  * @details Seuls les ComplexLiteral sont supportés.
  */
 class ArgOperation : public Operation {
-    Generic eval(Complexs args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -293,7 +294,7 @@ class ArgOperation : public Operation {
  * @details Seuls les ComplexLiteral sont supportés.
  */
 class ModuleOperation : public Operation {
-    Generic eval(Complexs args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -301,7 +302,7 @@ class ModuleOperation : public Operation {
  * @details Seuls les ComplexLiteral sont supportés.
  */
 class EqualOperation : public Operation {
-    Generic eval(Complexs args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -309,7 +310,7 @@ class EqualOperation : public Operation {
  * @details Seuls les ComplexLiteral sont supportés.
  */
 class NotEqualOperation : public Operation {
-    Generic eval(Complexs args) const override;
+    Result eval(Complexs args) const override;
 };
 
 /**
@@ -317,7 +318,7 @@ class NotEqualOperation : public Operation {
  * @details Seuls les RealLiteral sont supportés.
  */
 class BelowOrEqual : public Operation {
-    Generic eval(Reals args) const override;
+    Result eval(Reals args) const override;
 };
 
 /**
@@ -325,7 +326,7 @@ class BelowOrEqual : public Operation {
  * @details Seuls les RealLiteral sont supportés.
  */
 class AboveOrEqual : public Operation {
-    Generic eval(Reals args) const override;
+    Result eval(Reals args) const override;
 };
 
 /**
@@ -333,7 +334,7 @@ class AboveOrEqual : public Operation {
  * @details Seuls les RealLiteral sont supportés.
  */
 class Below : public Operation {
-    Generic eval(Reals args) const override;
+    Result eval(Reals args) const override;
 };
 
 /**
@@ -341,7 +342,7 @@ class Below : public Operation {
  * @details Seuls les RealLiteral sont supportés.
  */
 class Above : public Operation {
-    Generic eval(Reals args) const override;
+    Result eval(Reals args) const override;
 };
 
 /**
@@ -349,7 +350,7 @@ class Above : public Operation {
  * @details Seuls les IntegerLiteral sont supportés.
  */
 class LogicAnd : public Operation {
-    Generic eval(Integers args) const override;
+    Result eval(Integers args) const override;
 };
 
 /**
@@ -357,7 +358,7 @@ class LogicAnd : public Operation {
  * @details Seuls les IntegerLiteral sont supportés.
  */
 class LogicOr : public Operation {
-    Generic eval(Integers args) const override;
+    Result eval(Integers args) const override;
 };
 
 /**
@@ -365,7 +366,7 @@ class LogicOr : public Operation {
  * @details Seuls les IntegerLiteral sont supportés.
  */
 class LogicNot : public Operation {
-    Generic eval(Integers args) const override;
+    Result eval(Integers args) const override;
 };
 
 /**
@@ -373,70 +374,70 @@ class LogicNot : public Operation {
  * @details Une litteral atome doit étre fournie pour la création de l'identificateur.
  */
 class StoOperation : public Operation {
-    Generic eval(Generic args) const override;
+    Result eval(Generic args) const override;
 };
 
 /**
  * @brief Un objet ForgetOperation supprime un identificateur référençant une litteral.
  */
 class ForgetOperation : public Operation {
-    Generic eval(Generic args) const override;
+    Result eval(Generic args) const override;
 };
 
 /**
  * @brief Un objet DupOperation empile une nouvelle littérale identique à celle du sommet de la pile.
  */
 class DupOperation : public Operation {
-    Generic eval(Generic args) const override;
+    Result eval(Generic args) const override;
 };
 
 /**
  * @brief Un objet DropOperation dépile la littérale au sommet de la pile.
  */
 class DropOperation : public Operation {
-    Generic eval(Generic) const override;
+    Result eval(Generic) const override;
 };
 
 /**
  * @brief Un objet SwapOperation intervertit les deux derniers éléments empilés dans la pile.
  */
 class SwapOperation : public Operation {
-    Generic eval(Generic args) const override;
+    Result eval(Generic args) const override;
 };
 
 /**
  * @brief Un objet UndoOperation rétablit l’état du calculateur avant la dernière opération
  */
 class UndoOperation : public Operation {
-    Generic eval(Generic) const override;
+    Result eval(Generic) const override;
 };
 
 /**
  * @brief Un objet RedoOperation rétablit l’état du calculateur avant l’application de la dernière opération UNDO.
  */
 class RedoOperation : public Operation {
-    Generic eval(Generic) const override;
+    Result eval(Generic) const override;
 };
 
 /**
  * @brief Un objet ClearOperation vide tous les éléments de la pile.
  */
 class ClearOperation : public Operation {
-    Generic eval(Generic) const override;
+    Result eval(Generic) const override;
 };
 
 /**
  * @brief Un objet LastopOperation applique le dernier opérateur utilisé.
  */
 class LastopOperation : public Operation {
-    Generic eval(Generic) const override;
+    Result eval(Generic) const override;
 };
 
 /**
  * @brief Un objet LastargsOperation empile les littérales utilisées pour la dernière opération.
  */
 class LastargsOperation : public Operation {
-    Generic eval(Generic args) const override;
+    Result eval(Generic args) const override;
 };
 
 /**
@@ -446,21 +447,33 @@ class LastargsOperation : public Operation {
  * - Les littérales programmes sont exécutées.
  */
 class Eval : public Operation {
-    Generic eval(Complexs args) const override;
-    Generic eval(Expressions args) const override;
-    Generic eval(Programs args) const override;
+    Result eval(Complexs args) const override;
+    Result eval(Expressions args) const override;
+    Result eval(Programs args) const override;
 };
 
+/**
+ * @brief Un objet IFT implémente un test logique binaire. Si la première littérale est vraie, la seconde est évaluée.
+ * @details Le premier argument devrait être une littérale entière à interprétation booléenne.
+ */
 class IFT : public Operation {
-    Generic eval(Generic args) const override;
+    Result eval(Generic args) const override;
 };
 
+/**
+ * @brief Un objet IFTE implémente un test logique ternaire. Si la première littérale est vraie, la seconde est évaluée, sinon, la troisième est évaluée.
+ * @details Le premier argument devrait être une littérale entière à interprétation booléenne.
+ */
 class IFTE : public Operation {
-    Generic eval(Generic args) const override;
+    Result eval(Generic args) const override;
 };
 
+/**
+ * @brief Un objet WHILE implémente une boucle conditionnelle. Tant que la première littérale est vraie, la seconde est évaluée.
+ * @details Le premier argument devrait être une littérale dont l'évaluation produit une valeur à interprétation booléenne.
+ */
 class WHILE : public Operation {
-    Generic eval(Generic args) const override;
+    Result eval(Generic args) const override;
 };
 
 #endif
