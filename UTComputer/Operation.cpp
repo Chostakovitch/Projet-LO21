@@ -218,14 +218,16 @@ Operation::Result StoOperation::eval(Operation::Generic args) const {
 }
 
 Operation::Result ForgetOperation::eval(Operation::Generic args) const {
-    if(!std::dynamic_pointer_cast<ExpressionLiteral>(args.front())) throw TypeError("An identifier must be an expression.", args);
-    try {
-        Manager::getInstance().getIdentifier(args.front()->toString());
-    } catch (UTException e) {
-        throw UTException("This identifier doesn't exist.");
-    }
-    Manager::getInstance().deleteIdentifier(args.front()->toString());
-    return {};
+    if(auto exp = std::dynamic_pointer_cast<ExpressionLiteral>(args.front())) {
+        try {
+            Manager::getInstance().getIdentifier(exp->getExpression());
+        } catch (UTException e) {
+            throw UTException("This identifier doesn't exist.");
+        }
+        Manager::getInstance().deleteIdentifier(exp->getExpression());
+        return {};
+        }
+    else throw TypeError("An identifier must be an expression.", args);
 }
 
 Operation::Result DupOperation::eval(Operation::Generic args) const {
@@ -304,18 +306,27 @@ Operation::Result Eval::eval(Operation::Complexs args) const {
 }
 
 Operation::Result Eval::eval(Operation::Expressions args) const {
-    auto res = ExpressionParser(args.front()->getExpression()).parse();
-    return Operation::Result(res.begin(), res.end()); //Parsing de l'expression
+    //Si l'expression dénote uniquement un programme, on l'évalue.
+    try {
+        if(auto prog = std::dynamic_pointer_cast<ProgramLiteral>(Manager::getInstance().getIdentifier(args.front()->getExpression()))) {
+            return apply(std::make_shared<Eval>(), {prog});
+        }
+        else throw UTException("");
+    }
+        catch(UTException&) {
+        auto res = ExpressionParser(args.front()->getExpression()).parse();
+        return Operation::Result(res.begin(), res.end()); //Parsing de l'expression
+    }
 }
 
 Operation::Result Eval::eval(Operation::Programs args) const {
-    Manager::getInstance().eval(args.front()->getOperands()); //Evaluation des opérandes de la littérale programme
-    return {};
+    auto ops = args.front()->getOperands();
+    return Operation::Result(ops.begin(), ops.end()); //Retour des opérandes de la littérale programme
 }
 
 Operation::Result IFT::eval(Operation::Generic args) const {
     if(auto value = std::dynamic_pointer_cast<IntegerLiteral>(args.front())) {
-        if(*value) return {OperatorManager::getInstance().getEvalOperator(), args.back()}; //Premier argument = true, on provoque l'évaluation du deuxième
+        if(*value) return {args.back(), OperatorManager::getInstance().getEvalOperator()}; //Premier argument = true, on provoque l'évaluation du deuxième
         return {};
     }
     throw UTException("First argument can't be interpreted as a integer boolean");
@@ -323,19 +334,27 @@ Operation::Result IFT::eval(Operation::Generic args) const {
 
 Operation::Result IFTE::eval(Operation::Generic args) const {
     if(auto value = std::dynamic_pointer_cast<IntegerLiteral>(args.front())) {
-        if(*value) return {OperatorManager::getInstance().getEvalOperator(), args.at(1)}; //Premier argument = true, on provoque l'évaluation du deuxième
-        return {OperatorManager::getInstance().getEvalOperator(), args.back()}; //Sinon on provoque l'évaluation du troisième
+        if(*value) return {args.at(1), OperatorManager::getInstance().getEvalOperator()}; //Premier argument = true, on provoque l'évaluation du deuxième
+        return {args.back(), OperatorManager::getInstance().getEvalOperator()}; //Sinon on provoque l'évaluation du troisième
     }
     throw UTException("First argument can't be interpreted as a integer boolean");
 }
 
 Operation::Result WHILE::eval(Operation::Generic args) const {
-    std::shared_ptr<Operand> res;
+    if(!std::dynamic_pointer_cast<ProgramLiteral>(args.front())) throw UTException("Condition must be variable, i.e. a program");
     std::shared_ptr<IntegerLiteral> value;
+    //Elements du programme d'évaluation
+    auto program = apply(OperatorManager::getInstance().getEvalOperator()->getOperation(), {args.front()});
+    //Evaluation du programme d'évaluation
+    Manager::getInstance().eval(program);
+    //Récupération de la valeur supposée représenter un booléen
+    value = std::dynamic_pointer_cast<IntegerLiteral>(Manager::getInstance().getPile().pop());
     //Tant que le premier argument s'évalue en un entier représentant true, on évalue le dernier argument
-    auto v = apply(OperatorManager::getInstance().getEvalOperator()->getOperation(), {args.front()});
-    while(res = apply(OperatorManager::getInstance().getEvalOperator()->getOperation(), {args.front()}).front(), (value = std::dynamic_pointer_cast<IntegerLiteral>(res)) && *value) {
-        Manager::getInstance().eval({OperatorManager::getInstance().getEvalOperator(), args.back()});
+    while(value && *value) {
+        //Déclenchement de l'évaluation de l'expression demandée si la condition est remplie
+        Manager::getInstance().eval({args.back(), OperatorManager::getInstance().getEvalOperator()});
+        Manager::getInstance().eval(program);
+        value = std::dynamic_pointer_cast<IntegerLiteral>(Manager::getInstance().getPile().pop());
     }
     return {};
 }

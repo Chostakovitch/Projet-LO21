@@ -104,8 +104,7 @@ public:
         }
     }
 
-    // Pour les tests
-    const Pile& getPile() {
+    Pile& getPile() {
         return pile;
     }
 };

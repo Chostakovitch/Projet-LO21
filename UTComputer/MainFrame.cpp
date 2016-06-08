@@ -2,7 +2,12 @@
 #include "Button.h"
 #include "OperatorManager.h"
 #include "Manager.h"
+#include "UTComputer.h"
+#include "Calculator.h"
 #include <QGridLayout>
+#include <QTextEdit>
+#include <QVBoxLayout>
+#include <QPlainTextEdit>
 
 MainFrame::MainFrame(QWidget *parent) : QFrame(parent) {
 
@@ -75,3 +80,33 @@ WindowMoreOperators::WindowMoreOperators(QWidget* parent) {
     setLayout(operatorLayout);
 }
 
+
+HistoryWindow::HistoryWindow(QWidget *parent) {
+    UTComputer* computer = qobject_cast<UTComputer *>(parent);
+    QVBoxLayout* layout = new QVBoxLayout();
+
+    std::vector<QString> commands = computer->getCalculator()->getCommands();
+    QString final;
+    for(const auto& command : commands) {
+        final += command + '\n';
+    }
+    QPlainTextEdit* history = new QPlainTextEdit(final);
+
+    //Police système à largeur fixe
+    QFont fixedFont = QFontDatabase::systemFont((QFontDatabase::FixedFont));
+    history->setFont(fixedFont);
+
+    //Ajustement de la taille des tabulations
+    QFontMetrics metrics(fixedFont);
+    auto tabSize = 2 * metrics.width(' ');
+    history->setTabStopWidth(tabSize);
+
+    //Ajustement de la taille de la fenêtre au contenu en tenant compte des nouvelles tabulations
+    auto textSize = metrics.size(Qt::TextExpandTabs, history->toPlainText(), tabSize);
+    int textWidth = textSize.width() + 30;
+    int textHeight = textSize.height();
+    history->setMinimumSize(textWidth, textHeight);
+
+    layout->addWidget(history);
+    setLayout(layout);
+}

@@ -134,7 +134,6 @@ Arguments<std::shared_ptr<Operand>> OperatorManager::dispatchOperation(std::shar
             if(std::dynamic_pointer_cast<ExpressionLiteral>(arg)) return Arguments<std::shared_ptr<Literal>>{opExpression(op, (Arguments<std::shared_ptr<ExpressionLiteral>>)args)};
         }
     }
-    //1.2. [...] (eval, memento) TODO
 
     //2. Appel de la méthode d'évaluation générique de l'opérateur.
     try {

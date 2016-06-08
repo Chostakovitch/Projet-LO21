@@ -3,6 +3,7 @@
 #include "calculator.h"
 #include "WindowParam.h"
 #include "Manager.h"
+#include "MainFrame.h"
 #include <QMenuBar>
 #include <QtWidgets>
 #include <QFile>
@@ -106,6 +107,11 @@ void UTComputer::load() {
     file.close();
 }
 
+void UTComputer::history() {
+    HistoryWindow* window = new HistoryWindow(this);
+    window->show();
+}
+
 
 void UTComputer::param() {
     WindowParam* window = new WindowParam(central);
@@ -137,11 +143,17 @@ void UTComputer::createActions() {
     paramAct->setShortcut(QKeySequence(tr("Ctrl+,")));
     paramAct->setStatusTip(tr("Open the preferences"));
     connect(paramAct, &QAction::triggered, this, &UTComputer::param);
+
+    historyAct = new QAction(tr("&History"), this);
+    historyAct->setShortcut(QKeySequence(tr("Ctrl+H")));
+    historyAct->setStatusTip(tr("View commands history"));
+    connect(historyAct, &QAction::triggered, this, &UTComputer::history);
 }
 
 void UTComputer::createMenus() {
-    paramMenu = menuBar()->addMenu(tr("&Parameters"));
+    paramMenu = menuBar()->addMenu(tr("&Tools"));
     paramMenu->addAction(paramAct);
+    paramMenu->addAction(historyAct);
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(undoAct);

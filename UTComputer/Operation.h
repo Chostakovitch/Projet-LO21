@@ -470,7 +470,7 @@ class IFTE : public Operation {
 
 /**
  * @brief Un objet WHILE implémente une boucle conditionnelle. Tant que la première littérale est vraie, la seconde est évaluée.
- * @details Le premier argument devrait être une littérale dont l'évaluation produit une valeur à interprétation booléenne.
+ * @details Le premier argument devrait être une littérale programme l'évaluation produit une valeur à interprétation booléenne.
  */
 class WHILE : public Operation {
     Result eval(Generic args) const override;

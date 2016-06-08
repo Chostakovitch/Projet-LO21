@@ -2,6 +2,7 @@
 #include "OperatorManager.h"
 #include "Utility.h"
 #include "UTException.h"
+#include "Manager.h"
 #include <algorithm>
 #include <sstream>
 #include <vector>
@@ -65,7 +66,7 @@ std::shared_ptr<Literal> LiteralFactory::makeComplex(const std::string &s) const
         if(num && den) return makeLiteral(num, den);
         throw UTException("Well formed complex but real or imaginary part is not numeric");
     }
-    throw UTException("Not a complex (format : numeric$numeric");
+    throw UTException("Not a complex (format : numeric$numeric)");
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeExpression(const std::string& s) const {
@@ -94,9 +95,14 @@ void LiteralFactory::makeLeafProgram(const std::string &s, std::shared_ptr<Progr
             try {
                  prog->add(OperatorManager::getInstance().getOperator(str));
             }
-            //L'opérande n'est pas reconnue, on encapsule dans une expression
+            //L'opérande n'est pas reconnue, on regarde si elle identifie quelque chose
             catch (UTException& e2) {
-                prog->add(makeLiteral(str));
+                try {
+                    prog->add(Manager::getInstance().getIdentifier(str));
+                }
+                catch(UTException& e3) {
+                    throw ParsingError(str, "Unrecognized symbol.").add(e3).add(e2).add(e1);
+                }
             }
         }
     }
