@@ -58,7 +58,6 @@ Calculator::Calculator(QWidget *parent)  {
     mainLayout->addLayout(rightLayout);
 
     setLayout(mainLayout);
-
 }
 
 bool Calculator::eventFilter(QObject *obj, QEvent *event)
@@ -70,8 +69,12 @@ bool Calculator::eventFilter(QObject *obj, QEvent *event)
     if (event->type() == QEvent::KeyPress) {
         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
         if (keyEvent->key() == Qt::Key_Right || keyEvent->key() == Qt::Key_Left) return true;
-        if (OperatorManager::getInstance().isArithmeticOperator(keyEvent->text().toStdString())) {
-            command->setText(command->text()+keyEvent->text());
+        std::string commandStr = command->text().toStdString();
+        //Opérateur arithmétique (un caractère) et guillemets fermés s'ils existent
+        if (OperatorManager::getInstance().isArithmeticOperator(keyEvent->text().toStdString())
+                && std::count(commandStr.begin(), commandStr.end(), '"') % 2 == 0
+                && (std::count(commandStr.begin(), commandStr.end(), '[') + std::count(commandStr.begin(), commandStr.end(), ']')) % 2 == 0) {
+            command->setText(command->text()+ QString(" ") + keyEvent->text());
             calculate();
             return true;
         }

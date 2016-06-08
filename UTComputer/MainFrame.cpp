@@ -59,19 +59,19 @@ Button *MainFrame::createButton(const QString &text, const char *member)
 }
 
 WindowMoreOperators::WindowMoreOperators(QWidget* parent) {
-    QGridLayout *opeartorLayout = new QGridLayout;
+    QGridLayout *operatorLayout = new QGridLayout;
 
     std::vector<std::string> functionOperators = Manager::getInstance().getFunctionOperatorToString();
     unsigned int count = 1;
-    for(auto o : functionOperators) {
+    for(const auto& o : functionOperators) {
         Button* operatorButton = new Button(QString::fromStdString(o));
         connect(operatorButton, SIGNAL(clicked()), parent, SLOT(addOperatorToCommand()));
         int row = ((functionOperators.size() - count) / 3) + 2;
         int column = ((count - 1) % 3) + 1;
-        opeartorLayout->addWidget(operatorButton, row, column);
+        operatorLayout->addWidget(operatorButton, row, column);
         count++;
     }
     move(parent->pos());
-    setLayout(opeartorLayout);
+    setLayout(operatorLayout);
 }
 

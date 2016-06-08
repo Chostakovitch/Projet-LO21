@@ -17,7 +17,9 @@
 LiteralFactory::LiteralFactory() {
     //Push dans l'ordre de priorité descendante
     allocatorsPriority.push_back(std::bind(&LiteralFactory::makeInteger, this, std::placeholders::_1));
+    allocatorsPriority.push_back(std::bind(&LiteralFactory::makeRational, this, std::placeholders::_1));
     allocatorsPriority.push_back(std::bind(&LiteralFactory::makeReal, this, std::placeholders::_1));
+    allocatorsPriority.push_back(std::bind(&LiteralFactory::makeComplex, this, std::placeholders::_1));
     allocatorsPriority.push_back(std::bind(&LiteralFactory::makeExpression, this, std::placeholders::_1));
     allocatorsPriority.push_back(std::bind(&LiteralFactory::makeCompositeProgram, this, std::placeholders::_1));
 }
@@ -28,21 +30,42 @@ const LiteralFactory& LiteralFactory::getInstance() {
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeInteger(const std::string& s) const {
-    std::istringstream iss(s);
-    int n;
-    char c;
-    if(!(iss >> n) || iss >> c) throw ParsingError(s, "Not an integer.");
-    if(n < 0) throw ParsingError(s, "Unsigned integer needed.");
-    return makeLiteral(n);
+    try {
+        return makeLiteral(Utility::stringToOther<int>(s));
+    }
+    catch(UTException& e) {
+        throw ParsingError(s, "Not an integer").add(e);
+    }
+}
+
+std::shared_ptr<Literal> LiteralFactory::makeRational(const std::string &s) const {
+    std::string::size_type sepIdx = s.find_first_of('/');
+    if(sepIdx != std::string::npos) {
+        int num = Utility::stringToOther<int>(s.substr(0, sepIdx));
+        auto den = Utility::stringToOther<int>(s.substr(sepIdx + 1));
+        return makeLiteral(num, den);
+    }
+    throw UTException("Not a rational (format : integer/integer");
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeReal(const std::string& s) const {
-    std::istringstream iss(s);
-    double d;
-    char c;
-    if(!(iss >> d) || iss >> c ) throw ParsingError(s, "Not a floating point number.");
-    if(d < 0) throw ParsingError(s, "Positive floating point number needed.");
-    return makeLiteral(d);
+    try {
+        return makeLiteral(Utility::stringToOther<double>(s));
+    }
+    catch(UTException& e) {
+        throw ParsingError(s, "Not an integer").add(e);
+    }
+}
+
+std::shared_ptr<Literal> LiteralFactory::makeComplex(const std::string &s) const {
+    std::string::size_type sepIdx = s.find_first_of('$');
+    if(sepIdx != std::string::npos) {
+        auto num = std::dynamic_pointer_cast<NumericLiteral>(makeLiteralFromString(s.substr(0, sepIdx)));
+        auto den = std::dynamic_pointer_cast<NumericLiteral>(makeLiteralFromString(s.substr(sepIdx + 1)));
+        if(num && den) return makeLiteral(num, den);
+        throw UTException("Well formed complex but real or imaginary part is not numeric");
+    }
+    throw UTException("Not a complex (format : numeric$numeric");
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeExpression(const std::string& s) const {
@@ -71,9 +94,9 @@ void LiteralFactory::makeLeafProgram(const std::string &s, std::shared_ptr<Progr
             try {
                  prog->add(OperatorManager::getInstance().getOperator(str));
             }
-            //L'opérande n'est pas reconnue
+            //L'opérande n'est pas reconnue, on encapsule dans une expression
             catch (UTException& e2) {
-                throw ParsingError(str, "Unrecognized symbol.").add(e2).add(e1);
+                prog->add(makeLiteral(str));
             }
         }
     }
@@ -130,6 +153,9 @@ std::shared_ptr<Literal> LiteralFactory::makeLiteral(int n) const {
 std::shared_ptr<Literal> LiteralFactory::makeLiteral(int num, int den) const {
     unsigned int gcd = Utility::computeGcd(num, den);
     //Passage du signe au numérateur
+    if(den == 0) {
+        throw UTException("Impossible to divide by 0");
+    }
     if (den < 0) {
         num = -num;
         den = -den;
@@ -152,7 +178,7 @@ std::shared_ptr<Literal> LiteralFactory::makeLiteral(std::shared_ptr<NumericLite
     //Cas où la littérale n'est pas numérique.
     if(std::dynamic_pointer_cast<ComplexLiteral>(re) || std::dynamic_pointer_cast<ComplexLiteral>(im)) throw TypeError("Complexs can't be part of complex.", {re, im});
     //Cas où la partie imaginaire est nulle, on crée une littérale d'un type moins général.
-    if((RealLiteral)(*im) == 0) return makeLiteral((RealLiteral)(*re));
+    if((RealLiteral)*im == 0) return makeLiteral((RealLiteral)*re);
     return std::make_shared<ComplexLiteral>(re, im);
 }
 

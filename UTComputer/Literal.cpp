@@ -4,6 +4,7 @@
 #include "Literal.h"
 #include "Utility.h"
 #include "UTException.h"
+#include "CompositeLiteral.h"
 
 Literal::operator IntegerLiteral() const {
     //Si la littérale pointe déjà vers le type de destination, on a pas besoin de caster l'objet concret.
@@ -25,6 +26,10 @@ Literal::operator ComplexLiteral() const {
 Literal::operator ExpressionLiteral() const {
     if(auto lit = dynamic_cast<const ExpressionLiteral*>(this)) return *lit;
     throw TypeError(std::string("Can't cast to ExpressionLiteral : ") + toString());
+}
+Literal::operator ProgramLiteral() const {
+    if(auto lit = dynamic_cast<const ProgramLiteral*>(this)) return *lit;
+    throw TypeError(std::string("Can't cast to ProgramLiteral : ") + toString());
 }
 
 NumericLiteral::operator ExpressionLiteral() const { return ExpressionLiteral(toString()); }

@@ -26,12 +26,26 @@ class LiteralFactory
      */
     std::shared_ptr<Literal> makeInteger(const std::string& s) const;
     /**
+     * @brief Création d'une littérale rationelle à partir d'une chaîne.
+     * @param s Chaîne de caractères représentant un rationnel (int/int)
+     * @exception invalid_argument si le format de la chaîne est incorrect.
+     * @return Pointeur sur Literal.
+     */
+    std::shared_ptr<Literal> makeRational(const std::string& s) const;
+    /**
      * @brief Création d'une littérale réelle à partir d'une chaîne.
      * @param s Chaîne de caractères sous la forme _entier.entier_.
      * @exception invalid_argument si le format de la chaîne est incorrect.
      * @return Pointeur sur Literal.
      */
 	std::shared_ptr<Literal> makeReal(const std::string& s) const;
+    /**
+     * @brief Création d'une littérale complexe à partir d'une chaîne.
+     * @param s Chaîne de caractères représentant un complexe (num$num).
+     * @exception invalid_argument si le format de la chaîne est incorrect.
+     * @return Pointeur sur Literal.
+     */
+    std::shared_ptr<Literal> makeComplex(const std::string& s) const;
     /**
      * @brief Création d'une littérale expression à partir d'une chaîne.
      * @param s Chaîne de caractères sous la forme __"sample"__, guillemets inclus.

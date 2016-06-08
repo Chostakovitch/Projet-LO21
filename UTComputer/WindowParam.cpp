@@ -50,7 +50,7 @@ void ProgramTab::deleteIdentifier() {
 
 void WindowParam::editIdentifier() {
     ButtonIdentifier *button = qobject_cast<ButtonIdentifier *>(sender());
-    WindowEditProgramIdentifier* window = new WindowEditProgramIdentifier(button->getKeyIdentifier(), this);
+    WindowEditIdentifier* window = new WindowEditIdentifier(button->getKeyIdentifier(), this);
     window->show();
 }
 
@@ -81,7 +81,10 @@ void VariableTab::refresh() {
         viewVariable->setItem(count, 1, new QTableWidgetItem(QString::fromStdString(v.second->toString())));
         ButtonIdentifier *deleteButton = new ButtonIdentifier("X", v.first);
         connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteIdentifier()));
-        viewVariable->setCellWidget(count, 2, deleteButton);
+        viewVariable->setCellWidget(count, 3, deleteButton);
+        ButtonIdentifier *editButton = new ButtonIdentifier("&Edit", v.first);
+        connect(editButton, SIGNAL(clicked(bool)), parent, SLOT(editIdentifier()));
+        viewVariable->setCellWidget(count, 2, editButton);
         count++;
     }
 }
@@ -99,7 +102,7 @@ void ProgramTab::refresh() {
         ButtonIdentifier *deleteButton = new ButtonIdentifier("X", v.first);
         connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteIdentifier()));
         ButtonIdentifier *editButton = new ButtonIdentifier("&Edit", v.first);
-        connect(editButton, SIGNAL(clicked(bool)), this, SLOT(editIdentifier()));
+        connect(editButton, SIGNAL(clicked(bool)), parent, SLOT(editIdentifier()));
         viewProgram->setCellWidget(count, 2, deleteButton);
         viewProgram->setCellWidget(count, 1, editButton);
         count++;
@@ -127,24 +130,27 @@ ParamTab::ParamTab(QWidget* calculator) : QWidget() {
     setLayout(formLayout);
 }
 
-VariableTab::VariableTab(WindowParam* parent) : QWidget(parent) {
+VariableTab::VariableTab(WindowParam* parent) : QWidget(parent), parent(parent) {
     auto variables = Manager::getInstance().getVariablesIdentifiers();
     viewVariable = new QTableWidget();
-    viewVariable->setColumnCount(3);
+    viewVariable->setColumnCount(4);
     viewVariable->setRowCount(variables.size());
     viewVariable->horizontalHeader()->hide();
     viewVariable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    viewVariable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     unsigned int count = 0;
-    for(auto v : variables) {
+    for(auto v : variables) {    
         QTableWidgetItem* key = new QTableWidgetItem(QString::fromStdString(v.first));
-        key->setFlags(key->flags() ^ Qt::ItemIsEditable);
         viewVariable->setItem(count, 0, key);
         QTableWidgetItem* value = new QTableWidgetItem(QString::fromStdString(v.second->toString()));
         viewVariable->setItem(count, 1, value);
+        ButtonIdentifier *editButton = new ButtonIdentifier("&Edit", v.first);
+        connect(editButton, SIGNAL(clicked(bool)), parent, SLOT(editIdentifier()));
+        viewVariable->setCellWidget(count, 2, editButton);
         ButtonIdentifier *deleteButton = new ButtonIdentifier("X", v.first);
         connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteIdentifier()));
-        viewVariable->setCellWidget(count, 2, deleteButton);
+        viewVariable->setCellWidget(count, 3, deleteButton);
         count++;
     }
     QPushButton *buttonAdd = new QPushButton("&Add", this);
@@ -156,7 +162,7 @@ VariableTab::VariableTab(WindowParam* parent) : QWidget(parent) {
     setLayout(layout);
 }
 
-ProgramTab::ProgramTab(WindowParam* parent) : QWidget(parent) {
+ProgramTab::ProgramTab(WindowParam* parent) : QWidget(parent), parent(parent) {
     auto variables = Manager::getInstance().getProgramsIdentifiers();
     viewProgram = new QTableWidget();
     viewProgram->setColumnCount(3);
@@ -228,14 +234,14 @@ void WindowAddIdentifier::save() {
     }
 }
 
-
-
-WindowEditProgramIdentifier::WindowEditProgramIdentifier(std::string key, WindowParam* parent) : QWidget(), key (key){
+WindowEditIdentifier::WindowEditIdentifier(std::string key, WindowParam* parent) : QWidget(), key (key){
     QVBoxLayout* mainLayout = new QVBoxLayout();
 
     QLabel* keyLabel = new QLabel(QString::fromStdString(key));
     valueTextEdit = new QTextEdit();
-    valueTextEdit->setText(QString::fromStdString(Manager::getInstance().getIdentifier(key)->toString()));
+    auto value = Manager::getInstance().getIdentifier(key);
+    if (std::dynamic_pointer_cast<ProgramLiteral>(Manager::getInstance().getIdentifier(key))) valueTextEdit->setText(QString::fromStdString(std::dynamic_pointer_cast<ProgramLiteral>(value)->toStringExtended()));
+    else valueTextEdit->setText(QString::fromStdString(value->toString()));
     QFormLayout *formLayout = new QFormLayout;
     formLayout->addRow(tr("&Value : "), valueTextEdit);
 
@@ -256,19 +262,41 @@ WindowEditProgramIdentifier::WindowEditProgramIdentifier(std::string key, Window
     mainLayout->addItem(formLayout);
     mainLayout->addItem(buttonLayout);
     setLayout(mainLayout);
+
+    //Police système à largeur fixe
+    QFont fixedFont = QFontDatabase::systemFont((QFontDatabase::FixedFont));
+    valueTextEdit->setFont(fixedFont);
+
+    //Ajustement de la taille des tabulations
+    QFontMetrics metrics(fixedFont);
+    auto tabSize = 2 * metrics.width(' ');
+    valueTextEdit->setTabStopWidth(tabSize);
+
+    //Ajustement de la taille de la fenêtre au contenu en tenant compte des nouvelles tabulations
+    auto textSize = metrics.size(Qt::TextExpandTabs, valueTextEdit->toPlainText(), tabSize);
+    int textWidth = textSize.width() + 30;
+    int textHeight = textSize.height();
+    valueTextEdit->setMinimumSize(textWidth, textHeight);
 }
 
-void WindowEditProgramIdentifier::save() {
-    if (valueTextEdit->toPlainText().isEmpty()) messageError->setText("Please a value");
-    //TO DO : Verifier si l'identifier n'existe pas déja.
+void WindowEditIdentifier::save() {
+    if (valueTextEdit->toPlainText().isEmpty()) messageError->setText("Please enter a value");
     else {
         try {
-            Manager::getInstance().addIdentifier(key, valueTextEdit->toPlainText().toStdString());
+            std::string value = valueTextEdit->toPlainText().toStdString();
+            std::replace(value.begin(), value.end(), '\n', ' ');
+            std::replace(value.begin(), value.end(), '\t', ' ');
+
+            // Erase white leading and trailing white spaces
+            value.erase(value.begin(), std::find_if(value.begin(), value.end(), std::bind1st(std::not_equal_to<char>(), ' ')));
+            value.erase(std::find_if(value.rbegin(), value.rend(), std::bind1st(std::not_equal_to<char>(), ' ')).base(), value.end());
+
+            Manager::getInstance().changeIdentifier(key, value);
             Manager::getInstance().saveState();
             emit needRefresh();
             close();
         } catch (UTException e) {
-            messageError->setText(e.what());
+            messageError->setText(QString::fromStdString(e.details()));
         }
     }
 }

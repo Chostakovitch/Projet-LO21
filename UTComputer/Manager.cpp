@@ -12,7 +12,6 @@
 #include <sstream>
 #include <QDebug>
 
-
 Manager::Manager() {
     std::shared_ptr<Memento> memento(new Memento(identifiers, pile, settings, lastop, lastargs));
     backup.push_back(memento);
@@ -51,6 +50,11 @@ void Manager::changeIdentifier(const std::string& key, const std::string& newKey
 void Manager::changeIdentifier(const std::string& key, const std::string& newKey, const std::string newValue) {
     identifiers.erase(key);
     addIdentifier(newKey, newValue);
+}
+
+void Manager::changeIdentifier(const std::string& key, const std::string newValue) {
+    handleOperandLine(newValue);
+    identifiers[key] = LiteralFactory::getInstance().makeLiteralFromString(newValue);
 }
 
 void Manager::deleteIdentifier(const std::string& key) {
@@ -94,10 +98,11 @@ std::vector<std::string> Manager::getPileToString() const {
 }
 
 void Manager::handleOperandLine(std::string command) {
-    //Suppression des espaces entre les guillemets (pour les expressions)
-    size_t leftPos = command.find_first_of('"');
-    size_t rightPos = command.find_last_of('"');
-    if(leftPos != std::string::npos && rightPos != std::string::npos) {
+    if(command.size() == 0) return;
+
+    std::string::size_type leftPos = command.find_first_of('"');
+    std::string::size_type rightPos = command.find_last_of('"');
+    if(leftPos != std::string::npos && rightPos != std::string::npos && leftPos != rightPos) {
         command.erase(std::remove(command.begin() + leftPos, command.begin() + rightPos, ' '), command.begin() + rightPos);
     }
     //Séparation des programmes qui doivent rester entiers (pas de split sur les espaces)
@@ -184,9 +189,10 @@ void Manager::eval(std::vector<std::shared_ptr<Operand>> operands) {
             //On tente d'effectuer l'opération (si elle est implémentée et si les types correspondent)
             try {
                 auto res = OperatorManager::getInstance().dispatchOperation(op, args);
-                for(auto& lit : res) pile.push(lit);
                 lastop = op;
                 lastargs = args;
+                //On évalue le résultat (il pourrait contenir des opérateurs).
+                eval(res);
             }
             //Impossible d'effectuer l'opération : on restitue la pile avant l'opération en cours.
             catch(UTException& e) {

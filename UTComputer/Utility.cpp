@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstdlib> //avec <cmath>, problème d'ambiguité sur certains compilateurs
 #include <cctype>
+#include <sstream>
 
 unsigned int Utility::computeGcd(int num, int den) {
 	unsigned int r;

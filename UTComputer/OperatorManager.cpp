@@ -54,6 +54,13 @@ OperatorManager::OperatorManager() : minus_symbol("-") {
     operators.push_back(std::make_shared<FunctionOperator>("OR", 2, std::make_shared<LogicOr>(), true)); //OU Logique
     operators.push_back(std::make_shared<FunctionOperator>("NOT", 1, std::make_shared<LogicNot>(), true)); //NON Logique
 
+    //Création des opérateurs ayant trait à l'évaluation
+    evalOperator = std::make_shared<FunctionOperator>("EVAL", 1, std::make_shared<Eval>(), false); //Evaluation de littérale
+    operators.push_back(evalOperator);
+    operators.push_back(std::make_shared<FunctionOperator>("IFT", 2, std::make_shared<IFT>(), false)); //Condition binaire
+    operators.push_back(std::make_shared<FunctionOperator>("IFTE", 3, std::make_shared<IFTE>(), false)); //Condition ternaire
+    operators.push_back(std::make_shared<FunctionOperator>("WHILE", 2, std::make_shared<WHILE>(), false)); //Boucle conditionnelle
+
     //Création des opérateur d'identifieurs
     operators.push_back(std::make_shared<FunctionOperator>("STO", 2, std::make_shared<StoOperation>(), false)); //Enregistrement d'identificateur
     operators.push_back(std::make_shared<FunctionOperator>("FORGET", 1, std::make_shared<ForgetOperation>(), false)); //Suppression d'identificateur
@@ -116,7 +123,7 @@ std::vector<std::shared_ptr<Operator>> OperatorManager::getFunctionOperators() c
     return res;
 }
 
-Arguments<std::shared_ptr<Literal>> OperatorManager::dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const {
+Arguments<std::shared_ptr<Operand>> OperatorManager::dispatchOperation(std::shared_ptr<Operator> op, Arguments<std::shared_ptr<Literal>> args) const {
     //0. Vérifications
     if (op->getArity() != args.size()) throw OperationError(op, args, "Wrong number of operands.");
 
@@ -136,6 +143,9 @@ Arguments<std::shared_ptr<Literal>> OperatorManager::dispatchOperation(std::shar
     //3. Uniformisation impossible ou opération non-implémentée / ayant provoqué une erreur.
     catch(UTException& e) {
         throw e;
+    }
+    catch(std::exception& e) {
+        throw OperationError(op, args, std::string("Unknown error ") + e.what());
     }
 }
 
@@ -161,7 +171,7 @@ std::shared_ptr<ExpressionLiteral> OperatorManager::opExpression(std::shared_ptr
         std::vector<std::shared_ptr<Operator>> res;
         std::copy_if(operators.begin(), operators.end(), std::back_inserter(res), [&op_symbol](const std::shared_ptr<Operator> op) {
             auto s_op = std::dynamic_pointer_cast<SymbolicOperator>(op);
-            return s_op && s_op->getPriority() <= op_symbol->getPriority();
+            return s_op && s_op->getPriority() < op_symbol->getPriority();
         });
 
         //Par définition du caractère symbolique, on connaît déjà l'arité : 2. On récupère les éléments non-parenthésés des expressions

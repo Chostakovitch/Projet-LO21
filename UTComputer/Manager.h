@@ -51,13 +51,6 @@ class Manager
     unsigned int currentState;
     void restoreState(std::shared_ptr<Memento> memento);
 
-    /**
-     * @brief Procède à l'évalution d'un ensemble d'opérandes.
-     * @details Le résultat de l'opération, s'il a lieu, est empilé sur la pile.
-     * @param operands
-     */
-    void eval(std::vector<std::shared_ptr<Operand>> operands);
-
     Manager();
 public:
     Manager(const Manager&) = delete;
@@ -73,6 +66,7 @@ public:
     void addIdentifier(const std::string&,const std::string&) ;
     void changeIdentifier(const std::string&, const std::string&, const std::shared_ptr<Literal>);
     void changeIdentifier(const std::string& key, const std::string& newKey, const std::string newValue);
+    void changeIdentifier(const std::string& key, const std::string newValue) ;
     void deleteIdentifier(const std::string&);
     const std::map<const std::string,std::shared_ptr<Literal>> getProgramsIdentifiers() const;
     const std::map<const std::string,std::shared_ptr<Literal>> getVariablesIdentifiers() const;
@@ -83,6 +77,12 @@ public:
      * @param command Ligne de commande à évaluer.
      */
     void handleOperandLine(std::string command);
+    /**
+     * @brief Procède à l'évalution d'un ensemble d'opérandes.
+     * @details Le résultat de l'opération, s'il a lieu, est empilé sur la pile.
+     * @param operands Vecteur d'opérandes à évaluer
+     */
+    void eval(std::vector<std::shared_ptr<Operand>> operands);
     std::vector<std::string> getSymbolicOperatorToString() const;
     std::vector<std::string> getFunctionOperatorToString() const;
     std::vector<std::string> getPileToString() const;

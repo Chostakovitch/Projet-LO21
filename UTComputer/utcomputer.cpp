@@ -90,9 +90,10 @@ void UTComputer::load() {
     QString command;
     for (unsigned int i = 0; i < count; i++) {
         in >> value;
-        command += " " + value;
+        //command += " " + value;
+        Manager::getInstance().handleOperandLine(value.toStdString());
     }
-    Manager::getInstance().handleOperandLine(command.toStdString());
+    //Manager::getInstance().handleOperandLine(command.toStdString());
     command = "";
     in >> count;
     for(unsigned int i = 0; i< count; i++){

@@ -20,6 +20,7 @@ class VariableTab : public QWidget
 {
     Q_OBJECT
     QTableWidget *viewVariable;
+    WindowParam* parent;
 public slots:
     void deleteIdentifier();
 
@@ -32,6 +33,7 @@ class ProgramTab : public QWidget
 {
     Q_OBJECT
     QTableWidget *viewProgram;
+    WindowParam* parent;
 public slots:
     void deleteIdentifier();
     //void editIdentifier();
@@ -68,7 +70,7 @@ public :
     explicit WindowAddIdentifier(WindowParam* parent = 0);
 };
 
-class WindowEditProgramIdentifier : public QWidget {
+class WindowEditIdentifier : public QWidget {
     Q_OBJECT
     std::string key;
     QTextEdit* valueTextEdit;
@@ -78,7 +80,7 @@ public slots:
 signals:
     void needRefresh();
 public :
-    explicit WindowEditProgramIdentifier(std::string key ,WindowParam* parent = 0);
+    explicit WindowEditIdentifier(std::string key ,WindowParam* parent = 0);
 };
 
 

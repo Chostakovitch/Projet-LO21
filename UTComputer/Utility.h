@@ -2,6 +2,7 @@
 #define UTILITY_H
 
 #include <string>
+#include "UTException.h"
 
 /**
  * @brief Namespace contenant des fonctions utilitaires.
@@ -36,5 +37,18 @@ namespace Utility {
      * @return Booléen.
      */
     bool isAtom(std::string atom);
+    /**
+     * @brief Parsing d'une chaîne en autre type T
+     * @param s Instance du type T
+     * @return T
+     */
+    template <typename T>
+    T stringToOther(const std::string& s) {
+        std::istringstream iss(s);
+        T d;
+        char c;
+        if(!(iss >> d) || iss >> c ) throw UTException("Impossible to cast (bad format or trailing char)");
+        return d;
+    }
 }
 #endif

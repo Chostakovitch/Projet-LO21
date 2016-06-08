@@ -14,6 +14,7 @@ class RationalLiteral;
 class RealLiteral;
 class ExpressionLiteral;
 class ComplexLiteral;
+class ProgramLiteral;
 
 /**
  * @brief Un objet Operand représente une littérale quelconque ou bien un opérateur.
@@ -49,33 +50,39 @@ public:
     /**
      * @brief Opérateur de cast d'un objet Literal en objet IntegerLiteral.
      * @details Echoue si non re-défini dans une classe fille.
-     * @exception bad_cast si non-implémenté.
+     * @exception TypeError si non-implémenté.
      */
     virtual operator IntegerLiteral() const;
     /**
      * @brief Opérateur de cast d'un objet Literal en objet RationalLiteral.
      * @details Echoue si non re-défini dans une classe fille.
-     * @exception bad_cast si non-implémenté.
+     * @exception TypeError si non-implémenté.
      */
     virtual operator RationalLiteral() const;
     /**
      * @brief Opérateur de cast d'un objet Literal en objet RealLiteral.
      * @details Echoue si non re-défini dans une classe fille.
-     * @exception bad_cast si non-implémenté.
+     * @exception TypeError si non-implémenté.
      */
     virtual operator RealLiteral() const;
     /**
      * @brief Opérateur de cast d'un objet Literal en objet ComplexLiteral.
      * @details Echoue si non re-défini dans une classe fille.
-     * @exception bad_cast si non-implémenté.
+     * @exception TypeError si non-implémenté.
      */
     virtual operator ComplexLiteral() const;
     /**
      * @brief Opérateur de cast d'un objet Literal en objet ExpressionLiteral.
      * @details Echoue si non re-défini dans une classe fille.
-     * @exception bad_cast si non-implémenté.
+     * @exception TypeError si non-implémenté.
      */
     virtual operator ExpressionLiteral() const;
+    /**
+     * @brief Opérateur de cast d'un objet Literal en objet ProgramLiteral.
+     * @details Echoue si non re-défini dans une classe fille.
+     * @exception TypeError si non-implémenté.
+     */
+    virtual operator ProgramLiteral() const;
 };
 
 /**
@@ -178,7 +185,7 @@ public:
     /**
      * @brief Cast d'un objet RationalLiteral en double, par division de ses deux parties.
      */
-    operator double() const { return (double)num / den; }
+    operator double() const { return (double)num / (double)den; }
     std::string toString() const override { return num.toString() + '/' + den.toString(); }
 };
 
@@ -275,6 +282,6 @@ public:
      * @return Chaîne de caractères.
      */
     std::string getExpression() const { return expr; }
-    std::string toString() const override { return "\""+expr+"\""; }
+    std::string toString() const override { return "\"" + expr + "\""; }
 };
 #endif
