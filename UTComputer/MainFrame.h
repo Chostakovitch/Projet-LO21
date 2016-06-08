@@ -23,7 +23,7 @@ private:
 class WindowMoreOperators : public QWidget {
     Q_OBJECT
 public :
-    WindowMoreOperators(QObject* parent = 0);
+    WindowMoreOperators(QWidget* parent = 0);
 };
 
 #endif // MAINFRAME_H

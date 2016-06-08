@@ -22,6 +22,7 @@ class VariableTab : public QWidget
     QTableWidget *viewVariable;
 public slots:
     void deleteIdentifier();
+
 public:
     explicit VariableTab(WindowParam* parent = 0);
     void refresh();

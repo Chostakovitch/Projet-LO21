@@ -25,7 +25,6 @@ int main(int argc, char *argv[])
     //std::cout << std::endl;
     QApplication a(argc, argv);
     UTComputer w;
-    //qDebug() << QUrl::fromLocalFile(QFileInfo("sound.wav").absoluteFilePath());
     w.show();
     return a.exec();
 }

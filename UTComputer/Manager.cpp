@@ -48,6 +48,11 @@ void Manager::changeIdentifier(const std::string& key, const std::string& newKey
     addIdentifier(newKey, newValue);
 }
 
+void Manager::changeIdentifier(const std::string& key, const std::string& newKey, const std::string newValue) {
+    identifiers.erase(key);
+    addIdentifier(newKey, newValue);
+}
+
 void Manager::deleteIdentifier(const std::string& key) {
     identifiers.erase(key);
 }

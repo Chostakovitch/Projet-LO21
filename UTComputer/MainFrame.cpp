@@ -58,7 +58,7 @@ Button *MainFrame::createButton(const QString &text, const char *member)
     return button;
 }
 
-WindowMoreOperators::WindowMoreOperators(QObject* parent) {
+WindowMoreOperators::WindowMoreOperators(QWidget* parent) {
     QGridLayout *opeartorLayout = new QGridLayout;
 
     std::vector<std::string> functionOperators = Manager::getInstance().getFunctionOperatorToString();
@@ -71,6 +71,7 @@ WindowMoreOperators::WindowMoreOperators(QObject* parent) {
         opeartorLayout->addWidget(operatorButton, row, column);
         count++;
     }
+    move(parent->pos());
     setLayout(opeartorLayout);
 }
 

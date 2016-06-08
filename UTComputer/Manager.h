@@ -72,6 +72,7 @@ public:
     void addIdentifier(const std::string&, const std::shared_ptr<Literal>) ;
     void addIdentifier(const std::string&,const std::string&) ;
     void changeIdentifier(const std::string&, const std::string&, const std::shared_ptr<Literal>);
+    void changeIdentifier(const std::string& key, const std::string& newKey, const std::string newValue);
     void deleteIdentifier(const std::string&);
     const std::map<const std::string,std::shared_ptr<Literal>> getProgramsIdentifiers() const;
     const std::map<const std::string,std::shared_ptr<Literal>> getVariablesIdentifiers() const;

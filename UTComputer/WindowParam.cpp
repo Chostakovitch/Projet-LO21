@@ -14,6 +14,7 @@
 #include <QHeaderView>
 #include <QPushButton>
 #include <iostream>
+#include <QTextBlock>
 
 WindowParam::WindowParam(QWidget* parent) : QWidget(){
     QTabWidget* tab = new QTabWidget();
@@ -136,14 +137,16 @@ VariableTab::VariableTab(WindowParam* parent) : QWidget(parent) {
 
     unsigned int count = 0;
     for(auto v : variables) {
-        viewVariable->setItem(count, 0, new QTableWidgetItem(QString::fromStdString(v.first)));
-        viewVariable->setItem(count, 1, new QTableWidgetItem(QString::fromStdString(v.second->toString())));
+        QTableWidgetItem* key = new QTableWidgetItem(QString::fromStdString(v.first));
+        key->setFlags(key->flags() ^ Qt::ItemIsEditable);
+        viewVariable->setItem(count, 0, key);
+        QTableWidgetItem* value = new QTableWidgetItem(QString::fromStdString(v.second->toString()));
+        viewVariable->setItem(count, 1, value);
         ButtonIdentifier *deleteButton = new ButtonIdentifier("X", v.first);
         connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteIdentifier()));
         viewVariable->setCellWidget(count, 2, deleteButton);
         count++;
     }
-
     QPushButton *buttonAdd = new QPushButton("&Add", this);
     connect(buttonAdd, SIGNAL(clicked(bool)), parent, SLOT(addIdentifier()));
 
@@ -230,6 +233,7 @@ void WindowAddIdentifier::save() {
 WindowEditProgramIdentifier::WindowEditProgramIdentifier(std::string key, WindowParam* parent) : QWidget(), key (key){
     QVBoxLayout* mainLayout = new QVBoxLayout();
 
+    QLabel* keyLabel = new QLabel(QString::fromStdString(key));
     valueTextEdit = new QTextEdit();
     valueTextEdit->setText(QString::fromStdString(Manager::getInstance().getIdentifier(key)->toString()));
     QFormLayout *formLayout = new QFormLayout;
@@ -248,6 +252,7 @@ WindowEditProgramIdentifier::WindowEditProgramIdentifier(std::string key, Window
     buttonLayout->addWidget(saveButton);
     buttonLayout->addWidget(cancelButton);
 
+    mainLayout->addWidget(keyLabel);
     mainLayout->addItem(formLayout);
     mainLayout->addItem(buttonLayout);
     setLayout(mainLayout);
