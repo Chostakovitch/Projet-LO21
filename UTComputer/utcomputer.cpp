@@ -9,6 +9,8 @@
 #include <QFile>
 #include <QDataStream>
 
+int const UTComputer::EXIT_CODE_REBOOT = -123456789;
+
 UTComputer::UTComputer(QWidget *parent) : QMainWindow(parent){
     central = new Calculator(this);
     load();

@@ -23,8 +23,13 @@ int main(int argc, char *argv[])
     //auto res = ExpressionParser("AND((4+3)=<SIN(4),8.5>5$4)").parse();
     //for(auto op : res) std::cout << op->toString() << " ";
     //std::cout << std::endl;
-    QApplication a(argc, argv);
-    UTComputer w;
-    w.show();
-    return a.exec();
+    int exitCode = 0;
+    do {
+        QApplication a(argc, argv);
+        UTComputer w;
+        w.show();
+        exitCode = a.exec();
+    } while(exitCode == UTComputer::EXIT_CODE_REBOOT);
+
+    return exitCode;
 }

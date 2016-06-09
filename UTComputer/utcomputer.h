@@ -35,6 +35,7 @@ private slots:
 public:
     explicit UTComputer(QWidget *parent = 0);
     Calculator* getCalculator() { return central; }
+    static int const EXIT_CODE_REBOOT;
     ~UTComputer() { save(); }
 };
 

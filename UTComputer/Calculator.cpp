@@ -17,7 +17,7 @@
 #include "UTComputer.h"
 #include "Manager.h"
 
-Calculator::Calculator(QWidget *parent)  {
+Calculator::Calculator(UTComputer *parent) : parentComputer(parent) {
     QHBoxLayout *mainLayout = new QHBoxLayout;
 
     QVBoxLayout *rightLayout = new QVBoxLayout;
@@ -152,7 +152,7 @@ void Calculator::beepMessageChanged(int newValue) {
 
 void Calculator::addOperatorToCommand() {
     Button *clickedButton = qobject_cast<Button *>(sender());
-    command->setText(command->text() +" "+ clickedButton->text());
+    command->setText(command->text() + " " + clickedButton->text());
     command->setFocus();
     calculate();
 }
@@ -160,27 +160,29 @@ void Calculator::addOperatorToCommand() {
 void Calculator::calculate() {
     try {
         std::string commandString = command->text().toStdString();
-        if (commandString.empty()) return;
-        std::string word, previousWord;
-        std::istringstream iss(commandString);
-        while(iss >> word) {
-            if (word == "EDIT") {
-                if (previousWord.empty()) throw ParsingError(commandString,"EDIT must have an identifier.");
-                WindowEditIdentifier* window = new WindowEditIdentifier(previousWord);
-                connect(window, SIGNAL(destroyed(QObject*)),this,SLOT(calculate()));
-                std::string rest;
-                std::getline(iss, rest);
-                command->setText(QString::fromStdString(rest));
-                window->show();
-                return;
+        if(damnBoyWhatIsThisMysteriousFunction(commandString));
+        else {
+            std::string word, previousWord;
+            std::istringstream iss(commandString);
+            while(iss >> word) {
+                if (word == "EDIT") {
+                    if (previousWord.empty()) throw ParsingError(commandString, "EDIT must have an identifier.");
+                    WindowEditIdentifier* window = new WindowEditIdentifier(previousWord);
+                    connect(window, SIGNAL(destroyed(QObject*)),this,SLOT(calculate()));
+                    std::string rest;
+                    std::getline(iss, rest);
+                    command->setText(QString::fromStdString(rest));
+                    window->show();
+                    return;
+                }
+                previousWord = word;
             }
-            previousWord = word;
+            Manager::getInstance().handleOperandLine(commandString);
+            deleteMessage();
+            commands.push_back(command->text()); //Pour la navigation par flèches verticales
+            commands_pos = commands.size();
+            command->setText(QString());
         }
-        Manager::getInstance().handleOperandLine(commandString);
-        deleteMessage();
-        commands.push_back(command->text()); //Pour la navigation par flèches verticales
-        commands_pos = commands.size();
-        command->setText(QString());
     } catch (UTException e) {
         setMessage(e);
     }
@@ -222,5 +224,31 @@ QString Calculator::formatLiteralString(QString value) {
     qDebug() << "Value size : " << width;
 
     return value;
+}
+bool Calculator::damnBoyWhatIsThisMysteriousFunction(const std::string &s) {
+    static bool pimped = false;
+    static bool rotated = false;
+    if(s == "PIMPMYCALC") {
+        if(!pimped) parentComputer->setStyleSheet("QToolButton { background-color: #FE2E9A; } QMenuBar { background-color: #F881E6; } QMenuBar::item { background-color: transparent; } QStatusBar { background-color: #F881E6; } QMainWindow { background-color: #F881E6; }");
+        else parentComputer->setStyleSheet("");
+        pimped = !pimped;
+        return true;
+    }
+    if(s == "ROTATE") {
+        if(!rotated) {
+            QGraphicsScene *scene = new QGraphicsScene();
+            QGraphicsView *view = new QGraphicsView();
+            scene->addWidget(parentComputer);
+            view->setScene(scene);
+            view->show();
+            view->rotate(180);
+        }
+        else {
+            qApp->exit(UTComputer::EXIT_CODE_REBOOT);
+        }
+        rotated = !rotated;
+        return true;
+    }
+    return false;
 }
 
