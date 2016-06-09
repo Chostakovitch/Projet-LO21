@@ -10,8 +10,9 @@
 #include <QDataStream>
 
 UTComputer::UTComputer(QWidget *parent) : QMainWindow(parent){
-    load();
     central = new Calculator(this);
+    load();
+    central->refreshPile();
 
     setCentralWidget(central);
 
@@ -48,15 +49,17 @@ void UTComputer::save() {
 
     out << settings.getBeepMessage() << settings.getDisplayKeyboard() << settings.getNbLinesDisplayPile();
     out << pile.size();
-    for(auto v: pile) {
-        out << QString::fromStdString(v->toString());
-    }
+    for(auto v: pile) out << QString::fromStdString(v->toString());
 
     out << (unsigned int)identifiers.size();
     for (auto v : identifiers) {
         out << QString::fromStdString(v.first);
         out << QString::fromStdString(v.second->toString());
     }
+
+    // Enregistrement du vecteur de commandes
+    out << (unsigned int)central->getCommands().size();
+    for(auto i: central->getCommands()) out << i;
 
     file.flush();
     file.close();
@@ -91,18 +94,21 @@ void UTComputer::load() {
     QString command;
     for (unsigned int i = 0; i < count; i++) {
         in >> value;
-        //command += " " + value;
         Manager::getInstance().handleOperandLine(value.toStdString());
     }
-    //Manager::getInstance().handleOperandLine(command.toStdString());
     command = "";
     in >> count;
     for(unsigned int i = 0; i< count; i++){
         in >> key;
         in >> value;
-        command += " " + value + " " + key + " STO ";
+        Manager::getInstance().addIdentifier(key.toStdString(),value.toStdString());
     }
-    Manager::getInstance().handleOperandLine(command.toStdString());
+
+    in >> count;
+    for(unsigned int i = 0; i< count; i++){
+        in >> value;
+        central->addCommand(value);
+    }
 
     file.close();
 }
@@ -111,7 +117,6 @@ void UTComputer::history() {
     HistoryWindow* window = new HistoryWindow(this);
     window->show();
 }
-
 
 void UTComputer::param() {
     WindowParam* window = new WindowParam(central);

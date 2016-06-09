@@ -40,7 +40,6 @@ Calculator::Calculator(QWidget *parent)  {
     viewPile->setColumnCount(1);
     viewPile->horizontalHeader()->hide();
     viewPile->horizontalHeader()->setStretchLastSection(true);
-    //viewPile->setStyleSheet("background-color:black; color:white;");
     viewPile->setRowCount(Manager::getInstance().getSettings().getNbLinesDisplayPile());
     topLayout->addWidget(viewPile);
     refreshPile();
@@ -161,6 +160,7 @@ void Calculator::addOperatorToCommand() {
 void Calculator::calculate() {
     try {
         std::string commandString = command->text().toStdString();
+        if (commandString.empty()) return;
         std::string word, previousWord;
         std::istringstream iss(commandString);
         while(iss >> word) {
@@ -188,7 +188,7 @@ void Calculator::calculate() {
 }
 
 void Calculator::setMessage(const UTException& e) {
-    if (Manager::getInstance().getSettings().getBeepMessage()) QSound::play("/Users/aureliedigeon/Documents/UTC/P16/LO21/Projet-LO21/sound.wav");
+    if (Manager::getInstance().getSettings().getBeepMessage()) QSound::play("sound.wav");
     message->setText(QString::fromStdString(e.what()));
     messageDetail = e.details();
 }
@@ -204,12 +204,23 @@ void Calculator::refreshPile() {
                 pile.size() : Manager::getInstance().getSettings().getNbLinesDisplayPile();
     for(unsigned int i=0; i < rowCount; i++)
     {
+        //QTableWidgetItem* newItem = new QTableWidgetItem(formatLiteralString(QString::fromStdString(pile[i])));
         QTableWidgetItem* newItem = new QTableWidgetItem(QString::fromStdString(pile[i]));
+        formatLiteralString(QString::fromStdString(pile[i]));
         viewPile->setItem(i, 0, newItem);
     }
     for(unsigned int i=rowCount; i < Manager::getInstance().getSettings().getNbLinesDisplayPile(); i++)
     {
         viewPile->takeItem(i,0);
     }
+}
+
+QString Calculator::formatLiteralString(QString value) {
+    qDebug() << "ViewPile size : " << viewPile->width();
+    QFontMetrics fm = viewPile->fontMetrics();
+    int width = fm.width(value);
+    qDebug() << "Value size : " << width;
+
+    return value;
 }
 

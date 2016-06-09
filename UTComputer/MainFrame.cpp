@@ -80,7 +80,6 @@ WindowMoreOperators::WindowMoreOperators(QWidget* parent) {
     setLayout(operatorLayout);
 }
 
-
 HistoryWindow::HistoryWindow(QWidget *parent) {
     UTComputer* computer = qobject_cast<UTComputer *>(parent);
     QVBoxLayout* layout = new QVBoxLayout();

@@ -37,7 +37,9 @@ protected:
     bool eventFilter (QObject *obj, QEvent *event);
 public:
     explicit Calculator(QWidget *parent = 0);
-    std::vector<QString> getCommands() { return commands; }
+    std::vector<QString> getCommands() const { return commands; }
+    void addCommand (QString& value) { commands.push_back(value);}
+    QString formatLiteralString(QString value);
 
 public slots:
     void refreshPile();
