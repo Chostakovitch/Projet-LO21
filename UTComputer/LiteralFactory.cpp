@@ -2,6 +2,7 @@
 #include "OperatorManager.h"
 #include "Utility.h"
 #include "UTException.h"
+#include "Manager.h"
 #include <algorithm>
 #include <sstream>
 #include <vector>
@@ -65,7 +66,7 @@ std::shared_ptr<Literal> LiteralFactory::makeComplex(const std::string &s) const
         if(num && den) return makeLiteral(num, den);
         throw UTException("Well formed complex but real or imaginary part is not numeric");
     }
-    throw UTException("Not a complex (format : numeric$numeric");
+    throw UTException("Not a complex (format : numeric$numeric)");
 }
 
 std::shared_ptr<Literal> LiteralFactory::makeExpression(const std::string& s) const {
@@ -94,9 +95,14 @@ void LiteralFactory::makeLeafProgram(const std::string &s, std::shared_ptr<Progr
             try {
                  prog->add(OperatorManager::getInstance().getOperator(str));
             }
-            //L'opérande n'est pas reconnue, on encapsule dans une expression
+            //L'opérande n'est pas reconnue, on regarde si elle identifie quelque chose
             catch (UTException& e2) {
-                prog->add(makeLiteral(str));
+                try {
+                    prog->add(Manager::getInstance().getIdentifier(str));
+                }
+                catch(UTException& e3) {
+                    throw ParsingError(str, "Unrecognized symbol.").add(e3).add(e2).add(e1);
+                }
             }
         }
     }
@@ -111,23 +117,41 @@ std::shared_ptr<Literal> LiteralFactory::makeCompositeProgram(const std::string&
         copy.erase(0, 1);
         copy.erase(copy.size() - 1);
 
-        //On trouve le plus large sous-programme (s'il existe)
+        //On trouve la preuve d'un sous-programme (s'il existe)
         first = copy.find_first_of('[');
         last = copy.find_last_of(']');
 
         //Cas où n'y a pas de sous-programme (feuille)
         if (first == std::string::npos && last == std::string::npos) makeLeafProgram(copy, prog);
 
-        //Cas où il y a un sous-programme : traitement des deux (éventuelles) feuilles et du sous-programme (appel récursif)
-        else if(first != std::string::npos && last != std::string::npos) {
-            makeLeafProgram(copy.substr(0, first), prog);
-            prog->add(makeCompositeProgram(copy.substr(first, last - first + 1)));
-            makeLeafProgram(copy.substr(last + 1, copy.size() - last + 1), prog);
-        }
+        int leftBracketPos = -1; //Position courante crochet gauche
+        int rightBracketPos = -1; //Position courante du crochet droit
+        while((leftBracketPos = copy.find('[', rightBracketPos + 1)) != std::string::npos) { //Tant qu'on trouve un début de sous-programme ultérieur
+            //On traite la feuille à gauche du sous programme s'il existe
+            makeLeafProgram(copy.substr(rightBracketPos + 1, leftBracketPos - rightBracketPos - 1), prog);
+            int leftBracketCount = 1, rightBracketCount = 0;
+            for(unsigned int i = leftBracketPos + 1; i < copy.size(); ++i) {
+                if(leftBracketCount == rightBracketCount) break; //On a trouvé un sous programme complet
+                if(copy.at(i) == '[') ++leftBracketCount;
+                else if(copy.at(i) == ']') {
+                    ++rightBracketCount;
+                    rightBracketPos = i; //Mise à jour de la position de la fin effective du programme
+                }
+            }
 
-        //Sous-programme malformé
-        else {
-            throw ParsingError(s, "Square bracket unclosed in subprogram.");
+            //Traitement du sous-programme
+            if(leftBracketPos != std::string::npos && rightBracketPos != std::string::npos) {
+                prog->add(makeCompositeProgram(copy.substr(leftBracketPos, rightBracketPos - leftBracketPos + 1)));
+            }
+
+            //Sous-programme malformé
+            else {
+                throw ParsingError(s, "Square bracket unclosed in subprogram.");
+            }
+        }
+        //On traite l'éventuelle feuille à la fin du dernier sous-programme
+        if(last != std::string::npos) {
+            makeLeafProgram(copy.substr(last + 1), prog);
         }
         return prog;
     }

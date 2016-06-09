@@ -17,6 +17,7 @@ class UTComputer : public QMainWindow
     QAction *paramAct;
     QAction *saveAct;
     QAction *loadAct;
+    QAction *historyAct;
 
     QMenu* paramMenu;
     QMenu* editMenu;
@@ -30,8 +31,10 @@ private slots:
     void param();
     void save();
     void load();
+    void history();
 public:
     explicit UTComputer(QWidget *parent = 0);
+    Calculator* getCalculator() { return central; }
     ~UTComputer() { save(); }
 };
 

@@ -79,7 +79,7 @@ protected:
      * @exception invalid_argument si non implémenté dans une sous-classe.
      * @return Ensemble résultat de pointeurs sur Literal.
      */
-    virtual Result eval(const Expressions) const;
+    virtual Result eval(Expressions) const;
     /**
      * @brief Opération sur des littérales programmes.
      * @arg Ensemble de littérales réelles ProgramLiteral wrappées dans un objet Arguments.
@@ -470,7 +470,7 @@ class IFTE : public Operation {
 
 /**
  * @brief Un objet WHILE implémente une boucle conditionnelle. Tant que la première littérale est vraie, la seconde est évaluée.
- * @details Le premier argument devrait être une littérale dont l'évaluation produit une valeur à interprétation booléenne.
+ * @details Le premier argument devrait être une littérale programme l'évaluation produit une valeur à interprétation booléenne.
  */
 class WHILE : public Operation {
     Result eval(Generic args) const override;

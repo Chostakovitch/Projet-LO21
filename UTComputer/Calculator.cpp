@@ -71,12 +71,26 @@ bool Calculator::eventFilter(QObject *obj, QEvent *event)
     }
     if (event->type() == QEvent::KeyPress) {
         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
-        if (keyEvent->key() == Qt::Key_Right || keyEvent->key() == Qt::Key_Left) return true;
         std::string commandStr = command->text().toStdString();
-        //Opérateur arithmétique (un caractère) et guillemets fermés s'ils existent
+        if (keyEvent->key() == Qt::Key_Right || keyEvent->key() == Qt::Key_Left) return true;
+        //Restauration de la commande antérieure
+        if (keyEvent->key() == Qt::Key_Up) {
+            if(commandStr.size() == 0) { //On part de la fin s'il n'y a rien sur la ligne
+                commands_pos = commands.size();
+            }
+            if(commands_pos > 0) { //On continue depuis la position courante sinon
+                command->setText(commands.at(--commands_pos));
+            }
+        }
+        else if(keyEvent->key() == Qt::Key_Down) {
+            if(commands_pos < (int)(commands.size() - 1)) {
+                command->setText(commands.at(++commands_pos));
+            }
+        }
+        //Opérateur arithmétique (un caractère) et guillemets fermés s'ils existent et programmes fermés
         if (OperatorManager::getInstance().isArithmeticOperator(keyEvent->text().toStdString())
                 && std::count(commandStr.begin(), commandStr.end(), '"') % 2 == 0
-                && (std::count(commandStr.begin(), commandStr.end(), '[') + std::count(commandStr.begin(), commandStr.end(), ']')) % 2 == 0) {
+                && (std::count(commandStr.begin(), commandStr.end(), '[') == std::count(commandStr.begin(), commandStr.end(), ']'))) {
             command->setText(command->text()+ QString(" ") + keyEvent->text());
             calculate();
             return true;
@@ -164,6 +178,8 @@ void Calculator::calculate() {
         }
         Manager::getInstance().handleOperandLine(commandString);
         deleteMessage();
+        commands.push_back(command->text()); //Pour la navigation par flèches verticales
+        commands_pos = commands.size();
         command->setText(QString());
     } catch (UTException e) {
         setMessage(e);

@@ -16,7 +16,7 @@ public:
         p.pop_back();
         return temp;
     }
-    void push(std::shared_ptr<Literal> l) { p.push_back(l);}
+    void push(std::shared_ptr<Literal> l) { p.push_back(l); }
 
     bool operator==(const Pile& pile) const { return pile.p == p; }
     bool operator!=(const Pile& pile) const { return pile.p != p; }

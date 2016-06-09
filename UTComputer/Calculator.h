@@ -28,6 +28,8 @@ private:
     QVBoxLayout* layout;
     MainFrame* keyBoard;
     std::string messageDetail;
+    std::vector<QString> commands;
+    int commands_pos;
 
     void setMessage(const UTException&);
     void deleteMessage();
@@ -35,6 +37,7 @@ protected:
     bool eventFilter (QObject *obj, QEvent *event);
 public:
     explicit Calculator(QWidget *parent = 0);
+    std::vector<QString> getCommands() { return commands; }
 
 public slots:
     void refreshPile();

@@ -26,4 +26,10 @@ public :
     WindowMoreOperators(QWidget* parent = 0);
 };
 
+class HistoryWindow : public QWidget {
+    Q_OBJECT
+public :
+    HistoryWindow(QWidget* parent = 0);
+};
+
 #endif // MAINFRAME_H

@@ -15,6 +15,9 @@
 Manager::Manager() {
     std::shared_ptr<Memento> memento(new Memento(identifiers, pile, settings, lastop, lastargs));
     backup.push_back(memento);
+
+    //Programme prédéfini pour effectuer une boucle
+    addIdentifier("BOUCLE", "[ \"PROG\" STO \"J\" STO \"I\" STO [ \"I\" EVAL \"J\" EVAL < ] [ \"PROG\" EVAL EVAL \"I\" EVAL 1 + \"I\" STO ] WHILE ]");
     currentState = 0;
 }
 
@@ -100,22 +103,53 @@ std::vector<std::string> Manager::getPileToString() const {
 void Manager::handleOperandLine(std::string command) {
     if(command.size() == 0) return;
 
-    std::string::size_type leftPos = command.find_first_of('"');
-    std::string::size_type rightPos = command.find_last_of('"');
-    if(leftPos != std::string::npos && rightPos != std::string::npos && leftPos != rightPos) {
-        command.erase(std::remove(command.begin() + leftPos, command.begin() + rightPos, ' '), command.begin() + rightPos);
+    int leftPos;
+    int rightPos = -1;
+    //Une expression ne contient pas de sous expression, on considère seulement les paires de guillemets
+    while((leftPos = command.find('"', rightPos + 1)) != std::string::npos) {
+        rightPos = command.find('"', leftPos + 1);
+        if(leftPos != std::string::npos && rightPos != std::string::npos && leftPos != rightPos) {
+            command.erase(std::remove(command.begin() + leftPos, command.begin() + rightPos, ' '), command.begin() + rightPos);
+        }
     }
-    //Séparation des programmes qui doivent rester entiers (pas de split sur les espaces)
+    //On traite à part les programmes et le reste, les programmes doivent rester entiers (pas de split sur espaces).
     leftPos = command.find_first_of('[');
     rightPos = command.find_last_of(']');
     std::vector<std::string> tokens;
-    //On a trouvé un programme, on effectue la séparation
+    //On a trouvé la preuve d'au moins un programme, on effectue la séparation
     if(leftPos != std::string::npos && rightPos != std::string::npos) {
-        std::istringstream leftiss(command.substr(0, leftPos));
-        std::istringstream rightiss(command.substr(rightPos + 1, command.size() - rightPos));
-        tokens.insert(tokens.end(), std::istream_iterator<std::string>{leftiss}, std::istream_iterator<std::string>{});
-        tokens.push_back(command.substr(leftPos, rightPos - leftPos + 1));
-        tokens.insert(tokens.end(), std::istream_iterator<std::string>{rightiss}, std::istream_iterator<std::string>{});
+        int leftBracketPos = -1; //Position courante crochet gauche
+        int rightBracketPos = -1; //Position courante du crochet droit
+        //Tant qu'on trouve un début de programme, on trouve la fin (on saute donc les sous-programmes)
+        while((leftBracketPos = command.find('[', rightBracketPos + 1)) != std::string::npos) {
+            //On traite l'expression à gauche du programme
+            std::istringstream leftiss(command.substr(rightBracketPos + 1, leftBracketPos - rightBracketPos - 1));
+            tokens.insert(tokens.end(), std::istream_iterator<std::string>{leftiss}, std::istream_iterator<std::string>{});
+            int leftBracketCount = 1, rightBracketCount = 0;
+            for(unsigned int i = leftBracketPos + 1; i < command.size(); ++i) {
+                if(leftBracketCount == rightBracketCount) break; //On a trouvé un programme complet
+                if(command.at(i) == '[') ++leftBracketCount;
+                else if(command.at(i) == ']') {
+                    ++rightBracketCount;
+                    rightBracketPos = i; //Mise à jour de la position de la fin effective du programme
+                }
+            }
+
+            //Traitement du programme en lui-même
+            if(leftBracketPos != std::string::npos && rightBracketPos != std::string::npos) {
+                tokens.push_back(command.substr(leftBracketPos, rightBracketPos - leftBracketPos + 1));
+            }
+
+            //Programme malformé
+            else {
+                throw ParsingError(command, "Square bracket unclosed in program.");
+            }
+        }
+        //On traite l'expression à la fin du dernier programme
+        if(rightPos != std::string::npos) {
+            std::istringstream rightiss(command.substr(rightPos + 1));
+            tokens.insert(tokens.end(), std::istream_iterator<std::string>{rightiss}, std::istream_iterator<std::string>{});
+        }
     }
     //Sinon, on splitte tous les espaces
     else {
@@ -150,7 +184,7 @@ void Manager::handleOperandLine(std::string command) {
                         ops.push_back(LiteralFactory::getInstance().makeLiteral(op));
                     }
                     //Impossible de construire une opérande, on le signale
-                    else throw ParsingError(op, "Syntax error").add(e3).add(e2).add(e1);
+                    else throw ParsingError(op, "Atom must start with uppercase and contain only digits and uppercase chars").add(e3).add(e2).add(e1);
                 }
             }
         }
@@ -172,6 +206,7 @@ void Manager::eval(std::vector<std::shared_ptr<Operand>> operands) {
     for(auto operand : operands) {
         //Si on trouve une littérale, on l'empile
         if(auto lit = std::dynamic_pointer_cast<Literal>(operand)) pile.push(lit);
+
         //Si on trouve un opérateur, on déclenche l'évaluation
         else if(auto op = std::dynamic_pointer_cast<Operator>(operand)) {
             if(pile.size() < op->getArity()) {
