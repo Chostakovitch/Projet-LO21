@@ -136,16 +136,6 @@ void UTComputer::createActions() {
     redoAct->setStatusTip(tr("Redo the last operation"));
     connect(redoAct, &QAction::triggered, this, &UTComputer::redo);
 
-    saveAct = new QAction(tr("&Save"), this);
-    saveAct->setShortcuts(QKeySequence::Save);
-    saveAct->setStatusTip(tr("Save the calculator"));
-    connect(saveAct, &QAction::triggered, this, &UTComputer::save);
-
-    loadAct = new QAction(tr("&Load"), this);
-    //loadAct->setShortcuts(QKeySequence::Load);
-    loadAct->setStatusTip(tr("Load the calculator"));
-    connect(loadAct, &QAction::triggered, this, &UTComputer::load);
-
     paramAct = new QAction(tr("&Preferences"), this);
     paramAct->setShortcut(QKeySequence(tr("Ctrl+,")));
     paramAct->setStatusTip(tr("Open the preferences"));
@@ -165,7 +155,5 @@ void UTComputer::createMenus() {
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(undoAct);
     editMenu->addAction(redoAct);
-    editMenu->addAction(saveAct);
-    editMenu->addAction(loadAct);
 }
 

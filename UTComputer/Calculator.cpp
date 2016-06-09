@@ -160,22 +160,19 @@ void Calculator::addOperatorToCommand() {
 void Calculator::calculate() {
     try {
         std::string commandString = command->text().toStdString();
+        commandString.erase(commandString.begin(), std::find_if(commandString.begin(), commandString.end(), std::bind1st(std::not_equal_to<char>(), ' ')));
+        commandString.erase(std::find_if(commandString.rbegin(), commandString.rend(), std::bind1st(std::not_equal_to<char>(), ' ')).base(), commandString.end());
         if(damnBoyWhatIsThisMysteriousFunction(commandString));
         else {
-            std::string word, previousWord;
-            std::istringstream iss(commandString);
-            while(iss >> word) {
-                if (word == "EDIT") {
-                    if (previousWord.empty()) throw ParsingError(commandString, "EDIT must have an identifier.");
-                    WindowEditIdentifier* window = new WindowEditIdentifier(previousWord);
-                    connect(window, SIGNAL(destroyed(QObject*)),this,SLOT(calculate()));
-                    std::string rest;
-                    std::getline(iss, rest);
-                    command->setText(QString::fromStdString(rest));
-                    window->show();
-                    return;
-                }
-                previousWord = word;
+            QStringList tab = QString::fromStdString(commandString).split(' ');
+            if (tab.length() == 2 && tab[1] == "EDIT"){
+                WindowEditIdentifier* window = new WindowEditIdentifier(tab[0].toStdString());
+                commands_pos = commands.size();
+                window->show();
+                command->setText(QString());
+                return;
+            } else if (commandString.find("EDIT")!=std::string::npos) {
+                throw ParsingError(commandString, "The operator EDIT must be use used only with one identifier.");
             }
             Manager::getInstance().handleOperandLine(commandString);
             deleteMessage();
@@ -225,6 +222,7 @@ QString Calculator::formatLiteralString(QString value) {
 
     return value;
 }
+
 bool Calculator::damnBoyWhatIsThisMysteriousFunction(const std::string &s) {
     static bool pimped = false;
     static bool rotated = false;

@@ -169,6 +169,7 @@ ProgramTab::ProgramTab(WindowParam* parent) : QWidget(parent), parent(parent) {
     viewProgram->setRowCount(variables.size());
     viewProgram->horizontalHeader()->hide();
     viewProgram->setSelectionBehavior(QAbstractItemView::SelectRows);
+    viewProgram->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     unsigned int count = 0;
     for(auto v : variables) {
