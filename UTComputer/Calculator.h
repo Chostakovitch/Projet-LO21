@@ -17,6 +17,7 @@ class Button;
 class Settings;
 class MainFrame;
 class Manager;
+class UTComputer;
 
 class Calculator : public QWidget
 {
@@ -30,15 +31,22 @@ private:
     std::string messageDetail;
     std::vector<QString> commands;
     int commands_pos;
+    UTComputer* parentComputer;
 
     void setMessage(const UTException&);
     void deleteMessage();
+    /**
+     * @brief Seems like you're taking a look at something hidden...
+     * @param s Some magic word
+     * @return kappa
+     */
+    bool damnBoyWhatIsThisMysteriousFunction(const std::string& s);
 protected:
     bool eventFilter (QObject *obj, QEvent *event);
 public:
-    explicit Calculator(QWidget *parent = 0);
-    std::vector<QString> getCommands() { return commands; }
+    explicit Calculator(UTComputer *parent = 0);
 
+    std::vector<QString> getCommands() { return commands; }
 public slots:
     void refreshPile();
     void addDigitToCommand();
