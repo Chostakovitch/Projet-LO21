@@ -1,7 +1,10 @@
 #include <QtWidgets>
+#include <iostream>
+#include <sstream>
 #include "OperatorManager.h"
 #include <cmath>
 #include "WindowException.h"
+#include "WindowParam.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSound>
@@ -126,7 +129,7 @@ void Calculator::displayKeyboardChanged(int newValue) {
 
 void Calculator::nbLineDisplayPileChanged(int newValue) {
     Manager::getInstance().getSettings().setNbLinesDisplayPile(newValue);
-    viewPile->setRowCount(Manager::getInstance().getSettings().getNbLinesDisplayPile());
+    viewPile->setRowCount(newValue);
     refreshPile();
 }
 
@@ -143,7 +146,23 @@ void Calculator::addOperatorToCommand() {
 
 void Calculator::calculate() {
     try {
-        Manager::getInstance().handleOperandLine(command->text().toStdString());
+        std::string commandString = command->text().toStdString();
+        std::string word, previousWord;
+        std::istringstream iss(commandString);
+        while(iss >> word) {
+            if (word == "EDIT") {
+                if (previousWord.empty()) throw ParsingError(commandString,"EDIT must have an identifier.");
+                WindowEditIdentifier* window = new WindowEditIdentifier(previousWord);
+                connect(window, SIGNAL(destroyed(QObject*)),this,SLOT(calculate()));
+                std::string rest;
+                std::getline(iss, rest);
+                command->setText(QString::fromStdString(rest));
+                window->show();
+                return;
+            }
+            previousWord = word;
+        }
+        Manager::getInstance().handleOperandLine(commandString);
         deleteMessage();
         command->setText(QString());
     } catch (UTException e) {

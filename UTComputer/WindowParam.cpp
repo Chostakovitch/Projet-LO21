@@ -251,8 +251,10 @@ WindowEditIdentifier::WindowEditIdentifier(std::string key, WindowParam* parent)
     connect(saveButton, SIGNAL(clicked(bool)), this, SLOT(save()));
     QPushButton* cancelButton = new QPushButton("&Cancel");
     connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(close()));
-    connect(this, SIGNAL(needRefresh()), parent, SLOT(refreshVariable()));
-    connect(this, SIGNAL(needRefresh()), parent, SLOT(refreshProgram()));
+    if (parent) {
+        connect(this, SIGNAL(needRefresh()), parent, SLOT(refreshVariable()));
+        connect(this, SIGNAL(needRefresh()), parent, SLOT(refreshProgram()));
+    }
 
     buttonLayout->addWidget(messageError);
     buttonLayout->addWidget(saveButton);
