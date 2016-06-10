@@ -18,59 +18,63 @@
 #include "Manager.h"
 
 Calculator::Calculator(UTComputer *parent) : parentComputer(parent) {
-    QHBoxLayout *mainLayout = new QHBoxLayout;
+    // Déclaration des layouts
+    QHBoxLayout *mainLayout = new QHBoxLayout();
+    QVBoxLayout *rightLayout = new QVBoxLayout();
+    QVBoxLayout *topLayout = new QVBoxLayout();
+    QHBoxLayout *errorLayout = new QHBoxLayout();
 
-    QVBoxLayout *rightLayout = new QVBoxLayout;
-    QVBoxLayout *topLayout = new QVBoxLayout;
-
-    QHBoxLayout* errorLayout = new QHBoxLayout();
+    // Mise en place du message d'erreur
     message = new QTextEdit();
     message->setReadOnly(true);
     message->setStyleSheet("color:red;");
     message->setMaximumHeight(60);
     errorLayout->addWidget(message);
+    // Bouton ouvrant une fentére contenant l'erreur compléte
     QPushButton* detailErrorButton = new QPushButton("More");
     connect(detailErrorButton, SIGNAL(clicked(bool)), this, SLOT(openDetailErrorWindow()));
     errorLayout->addWidget(detailErrorButton);
-
     topLayout->addLayout(errorLayout);
 
+    // Mise en place de la pile
+    QFont fixedFont = QFontDatabase::systemFont((QFontDatabase::FixedFont));
     viewPile = new QTableWidget();
     viewPile->setEditTriggers(QAbstractItemView::NoEditTriggers);
     viewPile->setColumnCount(1);
     viewPile->horizontalHeader()->hide();
     viewPile->horizontalHeader()->setStretchLastSection(true);
     viewPile->setRowCount(Manager::getInstance().getSettings().getNbLinesDisplayPile());
+    viewPile->setFont(fixedFont);
     topLayout->addWidget(viewPile);
-    refreshPile();
 
-
+    // Mise en place de la ligne de commande
     command = new QLineEdit();
     command->installEventFilter(this);
-    //connect(command, SIGNAL(cursorPositionChanged(int,int)), this, SLOT())
     topLayout->addWidget(command);
 
+    // Mise en place du clavier
     keyBoard = new MainFrame(this);
     keyBoard->setVisible(Manager::getInstance().getSettings().getDisplayKeyboard());
 
     rightLayout->addLayout(topLayout);
     rightLayout->addWidget(keyBoard);
-
-    //mainLayout->addLayout(operatorsLayout,10);
     mainLayout->addLayout(rightLayout);
-
     setLayout(mainLayout);
 }
 
 bool Calculator::eventFilter(QObject *obj, QEvent *event)
 {
+    /* Remet la position du curseur au debut de la ligne de commande dès que l'utilisateur clique
+    sur la ligne de commande. */
     if (event->type() == QEvent::MouseButtonPress) {
         command->setCursorPosition(command->text().size());
         return true;
     }
+    // Filtre des événements correspondant à une touche du clavier
     if (event->type() == QEvent::KeyPress) {
         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
         std::string commandStr = command->text().toStdString();
+        //On ignore les fléches gauche et droite.
         if (keyEvent->key() == Qt::Key_Right || keyEvent->key() == Qt::Key_Left) return true;
         //Restauration de la commande antérieure
         if (keyEvent->key() == Qt::Key_Up) {
@@ -85,6 +89,7 @@ bool Calculator::eventFilter(QObject *obj, QEvent *event)
             if(commands_pos < (int)(commands.size() - 1)) {
                 command->setText(commands.at(++commands_pos));
             }
+            else command->setText(QString(""));
         }
         //Opérateur arithmétique (un caractère) et guillemets fermés s'ils existent et programmes fermés
         if (OperatorManager::getInstance().isArithmeticOperator(keyEvent->text().toStdString())
@@ -94,13 +99,14 @@ bool Calculator::eventFilter(QObject *obj, QEvent *event)
             calculate();
             return true;
         }
+        //On déclenche le calcul si entrée
         if (keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter) {
             calculate();
             return true;
         }
         return false;
     } else {
-        // standard event processing
+        // Sinon standard
         return QObject::eventFilter(obj, event);
     }
 }
@@ -159,12 +165,11 @@ void Calculator::addOperatorToCommand() {
 
 void Calculator::calculate() {
     try {
-        std::string commandString = command->text().toStdString();
-        commandString.erase(commandString.begin(), std::find_if(commandString.begin(), commandString.end(), std::bind1st(std::not_equal_to<char>(), ' ')));
-        commandString.erase(std::find_if(commandString.rbegin(), commandString.rend(), std::bind1st(std::not_equal_to<char>(), ' ')).base(), commandString.end());
+        std::string commandString = command->text().simplified().toStdString();
         if(damnBoyWhatIsThisMysteriousFunction(commandString));
         else {
-            QStringList tab = QString::fromStdString(commandString).split(' ');
+            // On regarde si l'utilisateur utilise l'opérateur EDIT
+            QStringList tab = QString::fromStdString(commandString).simplified().split(QRegExp("\\s"));
             if (tab.length() == 2 && tab[1] == "EDIT"){
                 WindowEditIdentifier* window = new WindowEditIdentifier(tab[0].toStdString());
                 commands_pos = commands.size();
@@ -174,6 +179,7 @@ void Calculator::calculate() {
             } else if (commandString.find("EDIT")!=std::string::npos) {
                 throw ParsingError(commandString, "The operator EDIT must be use used only with one identifier.");
             }
+            // On lance l'évaluation de la commande
             Manager::getInstance().handleOperandLine(commandString);
             deleteMessage();
             commands.push_back(command->text()); //Pour la navigation par flèches verticales
@@ -181,6 +187,7 @@ void Calculator::calculate() {
             command->setText(QString());
         }
     } catch (UTException e) {
+        // Si erreur
         setMessage(e);
     }
     refreshPile();
@@ -199,28 +206,31 @@ void Calculator::deleteMessage() {
 
 void Calculator::refreshPile() {
     std::vector<std::string> pile = Manager::getInstance().getPileToString();
+    std::reverse(pile.begin(),pile.end());
     unsigned int rowCount = Manager::getInstance().getSettings().getNbLinesDisplayPile() > pile.size() ?
                 pile.size() : Manager::getInstance().getSettings().getNbLinesDisplayPile();
+    // Ajout des items de la pile
     for(unsigned int i=0; i < rowCount; i++)
     {
-        //QTableWidgetItem* newItem = new QTableWidgetItem(formatLiteralString(QString::fromStdString(pile[i])));
-        QTableWidgetItem* newItem = new QTableWidgetItem(QString::fromStdString(pile[i]));
-        formatLiteralString(QString::fromStdString(pile[i]));
+        QTableWidgetItem* newItem = new QTableWidgetItem(formatLiteralString(QString::fromStdString(pile[i])));
         viewPile->setItem(i, 0, newItem);
     }
-    for(unsigned int i=rowCount; i < Manager::getInstance().getSettings().getNbLinesDisplayPile(); i++)
-    {
-        viewPile->takeItem(i,0);
-    }
+    // Suppression des éventuels items restants
+    for(unsigned int i=rowCount; i < Manager::getInstance().getSettings().getNbLinesDisplayPile(); i++) viewPile->takeItem(i,0);
 }
 
 QString Calculator::formatLiteralString(QString value) {
-    qDebug() << "ViewPile size : " << viewPile->width();
-    QFontMetrics fm = viewPile->fontMetrics();
-    int width = fm.width(value);
-    qDebug() << "Value size : " << width;
+    std::string newCommand;
+    // Nombre de caractères qu'on peut afficher sur la pile
+    unsigned int nbChar = viewPile->columnWidth(0)/viewPile->fontMetrics().width('a');
+    std::string commandString = value.toStdString();
+    if(nbChar < commandString.length()) newCommand = commandString.substr(0, nbChar - 7);
+    else newCommand = commandString;
 
-    return value;
+    // Concaténation de "..." si besoin
+    if(commandString.length() > newCommand.length()) newCommand += (std::string("...") + commandString[commandString.length() - 1]);
+
+    return QString::fromStdString(newCommand);
 }
 
 bool Calculator::damnBoyWhatIsThisMysteriousFunction(const std::string &s) {

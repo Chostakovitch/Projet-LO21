@@ -14,7 +14,6 @@ int const UTComputer::EXIT_CODE_REBOOT = -123456789;
 UTComputer::UTComputer(QWidget *parent) : QMainWindow(parent){
     central = new Calculator(this);
     load();
-    central->refreshPile();
 
     setCentralWidget(central);
 
@@ -26,11 +25,24 @@ UTComputer::UTComputer(QWidget *parent) : QMainWindow(parent){
     setWindowTitle(tr("Calculator"));
 }
 
+void UTComputer::resizeEvent(QResizeEvent* event)
+{
+   QMainWindow::resizeEvent(event);
+   central->refreshPile();
+}
+
+void UTComputer::showEvent(QShowEvent * e){
+    QMainWindow::showEvent(e);
+    central->refreshPile();
+}
+
 void UTComputer::undo() {
     Manager::getInstance().undo();
+    central->refreshPile();
 }
 void UTComputer::redo() {
     Manager::getInstance().redo();
+    central->refreshPile();
 }
 
 void UTComputer::save() {

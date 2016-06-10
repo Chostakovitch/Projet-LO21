@@ -249,9 +249,7 @@ void Manager::saveState() {
 bool Manager::isCurrentState(std::shared_ptr<Memento> m) {
     if (identifiers.size() != m->getIdentifiers().size()
             || !std::equal(identifiers.begin(), identifiers.end(), m->getIdentifiers().begin())
-            || pile != m->getPile()
-            || lastargs != m->getLastargs()
-            || lastop != m->getLastop()) return false;
+            || pile != m->getPile()) return false;
     return true;
 }
 
@@ -267,12 +265,14 @@ void Manager::undo() {
     if (currentState == 0) throw UTException("There is nothing to undo.");
     currentState--;
     restoreState(backup[currentState]);
+    qDebug() << "UNDO, currentState " << currentState;
 }
 
 void Manager::redo() {
     if (currentState == backup.size() - 1) throw UTException("There is nothing to redo.");
     currentState++;
     restoreState(backup[currentState]);
+
 }
 
 void Manager::clearPile() {

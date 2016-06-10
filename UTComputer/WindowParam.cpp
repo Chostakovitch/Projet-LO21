@@ -55,7 +55,6 @@ void WindowParam::editIdentifier() {
 }
 
 void WindowParam::addIdentifier() {
-    ButtonIdentifier *button = qobject_cast<ButtonIdentifier *>(sender());
     WindowAddIdentifier* window = new WindowAddIdentifier(this);
     window->show();
 }
