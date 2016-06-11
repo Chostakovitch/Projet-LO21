@@ -57,7 +57,7 @@ class HistoryWindow : public QWidget {
     Q_OBJECT
 public :
     /**
-     * @brief Constructeur publique de la classe HistoryWindow.
+     * @brief Constructeur public de la classe HistoryWindow.
      * @param parent Element graphique parent de l'objet.
      */
     HistoryWindow(QWidget* parent = 0);

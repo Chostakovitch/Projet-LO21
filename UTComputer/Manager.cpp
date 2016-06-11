@@ -26,12 +26,12 @@ Manager& Manager::getInstance() {
     return instance;
 }
 
-const std::shared_ptr<Literal>& Manager::getIdentifier(const std::string& id) const {
+const std::shared_ptr<Literal>& Manager::getIdentifier(const std::string& k) const {
     try {
-        return identifiers.at(id);
+        return identifiers.at(k);
     }
     catch(std::out_of_range&) {
-        throw ParsingError(id, "Identifier does not exist.");
+        throw ParsingError(k, "Identifier does not exist.");
     }
 }
 
