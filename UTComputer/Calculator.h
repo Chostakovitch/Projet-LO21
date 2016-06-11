@@ -19,6 +19,10 @@ class MainFrame;
 class Manager;
 class UTComputer;
 
+/**
+ * @brief Le widget Calculator représente la partie centrale du calculateur contenant la ligne de commande, la pile, le clavier et la ligne de message.
+ * @details Le Calculator s'occupe d'évaluer la ligne de commande selon les actions de l'utilisateur.
+ */
 class Calculator : public QWidget
 {
 private:
