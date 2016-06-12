@@ -26,6 +26,7 @@ MainFrame::MainFrame(QWidget *parent) : QFrame(parent) {
     QGridLayout *actionLayout = new QGridLayout;
     QGridLayout *opeartorLayout = new QGridLayout;
 
+    // Ajout des boutos dans les layouts
     for (int i = 1; i < NumDigitButtons; ++i) {
         int row = ((9 - i) / 3) + 2;
         int column = ((i - 1) % 3) + 1;
@@ -49,6 +50,7 @@ MainFrame::MainFrame(QWidget *parent) : QFrame(parent) {
     }
     Button* operatorButton = createButton("More operators", SLOT(openMoreOperatorsWindow()));
 
+    // Ajout des layouts secondaires dans le main layout
     mainLayout->addItem(digitLayout);
     mainLayout->addItem(actionLayout);
     mainLayout->addItem(opeartorLayout);

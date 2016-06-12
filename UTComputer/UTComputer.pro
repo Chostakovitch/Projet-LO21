@@ -6,7 +6,7 @@
 
 QT       += core gui
 CONFIG   -= x86_64
-QT += multimedia
+QT       += multimedia
 
 DESTDIR = $$PWD
 

@@ -40,12 +40,14 @@ void UTComputer::undo() {
     Manager::getInstance().undo();
     central->refreshPile();
 }
+
 void UTComputer::redo() {
     Manager::getInstance().redo();
     central->refreshPile();
 }
 
 void UTComputer::save() {
+    // Fichier et données à sauvegarder.
     QString filename = "UTComputer.txt";
     QFile file(filename);
     auto settings = Manager::getInstance().getSettings();
@@ -61,10 +63,14 @@ void UTComputer::save() {
     QDataStream out(&file);
     out.setVersion(QDataStream::Qt_5_1);
 
+    // Sauvegarde des options
     out << settings.getBeepMessage() << settings.getDisplayKeyboard() << settings.getNbLinesDisplayPile();
+
+    // Sauvegarde de la pile
     out << pile.size();
     for(auto v: pile) out << QString::fromStdString(v->toString());
 
+    // Sauvegarde des identifiers
     out << (unsigned int)identifiers.size();
     for (auto v : identifiers) {
         out << QString::fromStdString(v.first);
@@ -95,6 +101,7 @@ void UTComputer::load() {
     bool display;
     bool beep;
 
+    // Load des options
     in >> beep >> display >> nbLine;
     Manager::getInstance().getSettings().setBeepMessage(beep);
     Manager::getInstance().getSettings().setDisplayKeyboard(display);
@@ -102,6 +109,7 @@ void UTComputer::load() {
 
     unsigned int count;
 
+    // Load de la pile
     in >> count;
     QString key;
     QString value;
@@ -111,6 +119,8 @@ void UTComputer::load() {
         Manager::getInstance().handleOperandLine(value.toStdString());
     }
     command = "";
+
+    // Load des identifiers
     in >> count;
     for(unsigned int i = 0; i< count; i++){
         in >> key;
@@ -118,6 +128,7 @@ void UTComputer::load() {
         Manager::getInstance().addIdentifier(key.toStdString(),value.toStdString());
     }
 
+    // Load de l'historique des commandes
     in >> count;
     for(unsigned int i = 0; i< count; i++){
         in >> value;
