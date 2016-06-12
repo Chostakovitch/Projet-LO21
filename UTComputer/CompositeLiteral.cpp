@@ -14,17 +14,22 @@ std::string ProgramLiteral::toString() const {
 
 std::string ProgramLiteral::toStringExtended() const {
     static int count;
-    ++count;
     std::stringstream ss;
     for (int i = 0; i < count - 1; ++i) ss << "\t";
-    ss << "[" << std::endl;
+    ss << "[";
+    if(operands.size() > 6) ss << std::endl;
+    ++count;
     for (auto op : operands) {
-        for (int i = 0; i < count; ++i) ss << "\t";
-        ss << op->toString();
-        ss << std::endl;
+        if(operands.size() > 6) for (int i = 0; i < count; ++i) ss << "\t";
+        else ss << " ";
+        if(auto prog = std::dynamic_pointer_cast<ProgramLiteral>(op))
+            ss << prog->toStringExtended();
+        else ss << op->toString();
+        if(operands.size() > 6) ss << std::endl;
     }
-    for (int i = 0; i < count - 1; ++i) ss << "\t";
-    ss << "]";
     --count;
+    if(operands.size() <= 6) ss << " ";
+    else for (int i = 0; i < count; ++i) ss << "\t";
+    ss << "]";
     return ss.str();
 }

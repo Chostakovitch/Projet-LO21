@@ -18,6 +18,10 @@ Manager::Manager() {
 
     //Programme prédéfini pour effectuer une boucle
     addIdentifier("BOUCLE", "[ \"PROG\" STO \"J\" STO \"I\" STO [ \"I\" EVAL \"J\" EVAL < ] [ \"PROG\" EVAL EVAL \"I\" EVAL 1 + \"I\" STO ] WHILE ]");
+    //Programme prédéfini pour déterminer si un nombre est premier
+    addIdentifier("ISPRIME", "[ \"I\" EVAL SQRT \"LIM\" STO 2 \"C\" STO [ \"C\" EVAL \"LIM\" EVAL =< \"I\" EVAL \"C\" EVAL MOD 0 != AND ] [ \"C\" EVAL 1 + \"C\" STO ] WHILE \"C\" EVAL \"LIM\" EVAL > [ \"I\" EVAL ] IFT ]");
+    //Programme prédéfini pour empiler la liste des nombres premiers de I à J
+    addIdentifier("PRIMES", "[ \"ISPRIME\" \"BOUCLE\" EVAL ]");
     currentState = 0;
 }
 

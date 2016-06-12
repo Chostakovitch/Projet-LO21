@@ -271,7 +271,7 @@ WindowEditIdentifier::WindowEditIdentifier(std::string key, WindowParam* parent)
 
     //Ajustement de la taille des tabulations
     QFontMetrics metrics(fixedFont);
-    auto tabSize = 2 * metrics.width(' ');
+    auto tabSize = 4 * metrics.width(' ');
     valueTextEdit->setTabStopWidth(tabSize);
 
     //Ajustement de la taille de la fenêtre au contenu en tenant compte des nouvelles tabulations

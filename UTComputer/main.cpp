@@ -15,15 +15,7 @@
 
 int main(int argc, char *argv[])
 {
-    /*try {
-        Manager::getInstance().handleOperandLine("4.5 4.6 +");
-        for(auto& lit : Manager::getInstance().getPile()) std::cout << lit->toString() << std::endl;
-    } catch(UTException& e) { std::cout << e.details() << std::endl; }*/
-
-    //auto res = ExpressionParser("AND((4+3)=<SIN(4),8.5>5$4)").parse();
-    //for(auto op : res) std::cout << op->toString() << " ";
-    //std::cout << std::endl;
-    int exitCode = 0;
+    int exitCode = EXIT_SUCCESS;
     do {
         QApplication a(argc, argv);
         UTComputer w;
