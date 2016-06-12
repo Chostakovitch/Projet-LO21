@@ -60,7 +60,6 @@ void Manager::changeIdentifier(const std::string& key, const std::string& newKey
 }
 
 void Manager::changeIdentifier(const std::string& key, const std::string newValue) {
-    handleOperandLine(newValue);
     identifiers[key] = LiteralFactory::getInstance().makeLiteralFromString(newValue);
 }
 
@@ -221,7 +220,7 @@ void Manager::eval(std::vector<std::shared_ptr<Operand>> operands) {
             }
             //Construction des arguments
             Arguments<std::shared_ptr<Literal>> args;
-            args.reserve(pile.size());
+            args.reserve(op->getArity());
             for(unsigned int i = 0; i < op->getArity(); ++i) {
                 args.insert(args.begin(), pile.pop());
             }

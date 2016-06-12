@@ -86,7 +86,7 @@ protected:
      * @exception invalid_argument si non implémenté dans une sous-classe.
      * @return Ensemble résultat de pointeurs sur Literal.
      */
-    virtual Result eval(Programs args) const;
+    virtual Result eval(Programs) const;
     /**
      * @brief Destructeur virtuel.
      */

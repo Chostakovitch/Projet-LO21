@@ -29,11 +29,11 @@ Operation::Result Operation::apply(const std::shared_ptr<const Operation> &op, O
                     } catch(UTException& e4) {
                         e4.add(e3);
                         try {
-                            return op->eval((Operation::Expressions)args);
+                            return op->eval((Operation::Programs)args);
                         } catch(UTException& e5) {
                             e5.add(e4);
                             try {
-                                return op->eval((Operation::Programs)args);
+                                return op->eval((Operation::Expressions)args);
                             } catch(UTException& e6) {
                                 throw e6.add(e5);
                             }
@@ -66,7 +66,7 @@ Operation::Result Operation::eval(Operation::Expressions) const {
     throw UTException("Operation not implemented for ExpressionLiteral.");
 }
 
-Operation::Result Operation::eval(Operation::Programs args) const {
+Operation::Result Operation::eval(Operation::Programs) const {
      throw UTException("Operation not implemented for ProgramLiteral.");
 }
 

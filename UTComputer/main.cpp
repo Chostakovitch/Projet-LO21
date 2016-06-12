@@ -22,6 +22,5 @@ int main(int argc, char *argv[])
         w.show();
         exitCode = a.exec();
     } while(exitCode == UTComputer::EXIT_CODE_REBOOT);
-
     return exitCode;
 }

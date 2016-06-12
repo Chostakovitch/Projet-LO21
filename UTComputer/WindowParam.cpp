@@ -221,7 +221,6 @@ WindowAddIdentifier::WindowAddIdentifier(WindowParam* parent) : QWidget(){
 
 void WindowAddIdentifier::save() {
     if (valueTextEdit->toPlainText().isEmpty() || keyLineEdit->text().isEmpty()) messageError->setText("Please enter a key and a value");
-    //TO DO : Verifier si l'identifier n'existe pas déja.
     else {
         try {
             Manager::getInstance().addIdentifier(keyLineEdit->text().toStdString(), valueTextEdit->toPlainText().toStdString());
