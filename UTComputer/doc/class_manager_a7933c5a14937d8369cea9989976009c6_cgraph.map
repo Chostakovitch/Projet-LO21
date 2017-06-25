@@ -1,0 +1,5 @@
+<map id="Manager::getPileToString" name="Manager::getPileToString">
+<area shape="rect" id="node2" href="$class_pile.html#acaad4c95fd65c4631556f00e4fe0574d" title="Fonction retournant la taille de la pile. " alt="" coords="225,5,301,32"/>
+<area shape="rect" id="node3" href="$class_pile.html#a626c47e9dfb4358e1b0702bd4b0238e2" title="Accesseur à l&#39;itérateur du début de la pile. " alt="" coords="221,56,304,83"/>
+<area shape="rect" id="node4" href="$class_pile.html#a62062f555cc60d5db9c3b16fbe2b0620" title="Accesseur à l&#39;itérateur de fin de la pile. " alt="" coords="226,107,299,133"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="ExpressionLiteral" name="ExpressionLiteral">
+<area shape="rect" id="node2" href="$class_literal.html" title="Un objet Literal représente une donnée numérique ou textuelle manipulable par un ou plusieurs opérate..." alt="" coords="38,80,95,107"/>
+<area shape="rect" id="node3" href="$class_operand.html" title="Un objet Operand représente une littérale quelconque ou bien un opérateur. " alt="" coords="31,5,102,32"/>
+</map>

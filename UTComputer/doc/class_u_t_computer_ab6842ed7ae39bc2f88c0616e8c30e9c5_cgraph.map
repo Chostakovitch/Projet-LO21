@@ -1,0 +1,11 @@
+<map id="UTComputer::resizeEvent" name="UTComputer::resizeEvent">
+<area shape="rect" id="node2" href="$class_calculator.html#aaafc217b7785d981c09d617281821e68" title="Slot mettant à jour l&#39;affichage de la pile, en actualisant selon la pile contenue dans le Manager..." alt="" coords="223,107,372,133"/>
+<area shape="rect" id="node3" href="$class_manager.html#a35f3d29e37b47d1ba1be1bd45686fd98" title="Récupération de l&#39;instance du singleton. " alt="" coords="451,5,597,32"/>
+<area shape="rect" id="node4" href="$class_manager.html#a7933c5a14937d8369cea9989976009c6" title="Accesseur à la pile en chaine de caractères. " alt="" coords="440,56,608,83"/>
+<area shape="rect" id="node8" href="$class_manager.html#aa581ed952c72470ae979a689f471727a" title="Accesseur aux options du Manager; si l&#39;identifieur n&#39;existe pas. " alt="" coords="451,107,597,133"/>
+<area shape="rect" id="node9" href="$class_settings.html#a8ff89fc8083746a6a21388b73f74804d" title="Accesseur au nombre lignes de la pile à afficher. " alt="" coords="420,157,628,184"/>
+<area shape="rect" id="node10" href="$class_calculator.html#a0a6282e224b8f0e0976d0c2c201a6e41" title="Formate une chaine de caractère pour qu&#39;elle s&#39;affiche correctement dans l&#39;élement graphique de la pi..." alt="" coords="445,209,603,250"/>
+<area shape="rect" id="node5" href="$class_pile.html#acaad4c95fd65c4631556f00e4fe0574d" title="Fonction retournant la taille de la pile. " alt="" coords="679,5,755,32"/>
+<area shape="rect" id="node6" href="$class_pile.html#a626c47e9dfb4358e1b0702bd4b0238e2" title="Accesseur à l&#39;itérateur du début de la pile. " alt="" coords="676,56,759,83"/>
+<area shape="rect" id="node7" href="$class_pile.html#a62062f555cc60d5db9c3b16fbe2b0620" title="Accesseur à l&#39;itérateur de fin de la pile. " alt="" coords="681,107,754,133"/>
+</map>

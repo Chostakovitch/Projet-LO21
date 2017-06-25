@@ -1,0 +1,7 @@
+<map id="ProgramTab::deleteIdentifier" name="ProgramTab::deleteIdentifier">
+<area shape="rect" id="node2" href="$class_manager.html#a35f3d29e37b47d1ba1be1bd45686fd98" title="Récupération de l&#39;instance du singleton. " alt="" coords="244,5,391,32"/>
+<area shape="rect" id="node3" href="$class_manager.html#a1138777ddaa146b60a90125c2e1decad" title="Suppression d&#39;un identifieur selon une chaine de caractères représentant la clé. " alt="" coords="236,56,399,83"/>
+<area shape="rect" id="node4" href="$class_button_identifier.html#a138f16cf9f41180ce3a2a883eb34d7c9" title="Accesseur à la clé de l&#39;identifieur. " alt="" coords="239,107,396,149"/>
+<area shape="rect" id="node5" href="$class_manager.html#aecb066a23199f3aa2a808a8250664797" title="Sauvegarde l&#39;état actuel du manager dans le vecteur de Memento. " alt="" coords="249,173,386,200"/>
+<area shape="rect" id="node6" href="$class_manager.html#a7913aa93b52c8107fd94ef028e08e2a7" title="Fonction indiquant si l&#39;état du mémento est l&#39;état courant du manager. " alt="" coords="447,173,609,200"/>
+</map>

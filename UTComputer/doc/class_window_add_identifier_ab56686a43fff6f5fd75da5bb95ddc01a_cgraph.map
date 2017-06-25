@@ -1,0 +1,13 @@
+<map id="WindowAddIdentifier::WindowAddIdentifier" name="WindowAddIdentifier::WindowAddIdentifier">
+<area shape="rect" id="node2" href="$class_window_add_identifier.html#a7641dfa179d028724d8dc3e3cd181b87" title="Slot créant le nouvel identifieur. " alt="" coords="200,74,339,115"/>
+<area shape="rect" id="node3" href="$class_manager.html#a35f3d29e37b47d1ba1be1bd45686fd98" title="Récupération de l&#39;instance du singleton. " alt="" coords="388,5,535,32"/>
+<area shape="rect" id="node4" href="$class_manager.html#a938b0b7700afbbaf55111cc46adcd612" title="Ajout d&#39;un identifieur selon une chaine de caractères représentant la clé, et une chaine de caractère..." alt="" coords="387,56,536,83"/>
+<area shape="rect" id="node7" href="$class_manager.html#aecb066a23199f3aa2a808a8250664797" title="Sauvegarde l&#39;état actuel du manager dans le vecteur de Memento. " alt="" coords="393,107,530,133"/>
+<area shape="rect" id="node9" href="$class_u_t_exception.html#a3cd5f1bd13eeef6be6c6e33431a143f4" title="Retourne les informations de l&#39;expression. " alt="" coords="396,157,527,184"/>
+<area shape="rect" id="node5" href="$namespace_utility.html#a903c87682da5cb14ae773b79a99b9853" title="Indique si une chaîne est une atome, i.e. un mot commençant par une majuscule et contenant des chiffr..." alt="" coords="631,5,735,32"/>
+<area shape="rect" id="node6" href="$class_operator_manager.html#a8f9ae84ad0aa5674338f5bcb59d53376" title="Récupération de l&#39;instance du singleton. " alt="" coords="584,56,781,83"/>
+<area shape="rect" id="node8" href="$class_manager.html#a7913aa93b52c8107fd94ef028e08e2a7" title="Fonction indiquant si l&#39;état du mémento est l&#39;état courant du manager. " alt="" coords="601,107,764,133"/>
+<area shape="rect" id="node10" href="$class_u_t_exception.html#a5f194e61f7bbe53ad39dd65708d7ce0e" title="Retourne les détails de l&#39;exception, i.e. incluant ses expressions sous&#45;jacentes. ..." alt="" coords="611,157,754,184"/>
+<area shape="rect" id="node11" href="$class_u_t_exception.html#a9197e3e1b8035a48718e804b61d6053c" title="Nom de classe représentant l&#39;expression. " alt="" coords="829,157,996,184"/>
+<area shape="rect" id="node12" href="$class_u_t_exception.html#ae19c3952b8483cd972d9cab7dd8936cc" title="Constructeur explicite. " alt="" coords="1044,157,1223,184"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="Manager::changeIdentifier" name="Manager::changeIdentifier">
+<area shape="rect" id="node2" href="$class_manager.html#a938b0b7700afbbaf55111cc46adcd612" title="Ajout d&#39;un identifieur selon une chaine de caractères représentant la clé, et une chaine de caractère..." alt="" coords="224,31,373,57"/>
+<area shape="rect" id="node3" href="$namespace_utility.html#a903c87682da5cb14ae773b79a99b9853" title="Indique si une chaîne est une atome, i.e. un mot commençant par une majuscule et contenant des chiffr..." alt="" coords="468,5,572,32"/>
+<area shape="rect" id="node4" href="$class_operator_manager.html#a8f9ae84ad0aa5674338f5bcb59d53376" title="Récupération de l&#39;instance du singleton. " alt="" coords="421,56,619,83"/>
+</map>

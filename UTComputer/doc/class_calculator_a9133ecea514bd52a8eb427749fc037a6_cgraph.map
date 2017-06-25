@@ -1,0 +1,5 @@
+<map id="Calculator::displayKeyboardChanged" name="Calculator::displayKeyboardChanged">
+<area shape="rect" id="node2" href="$class_manager.html#a35f3d29e37b47d1ba1be1bd45686fd98" title="Récupération de l&#39;instance du singleton. " alt="" coords="261,5,408,32"/>
+<area shape="rect" id="node3" href="$class_manager.html#aa581ed952c72470ae979a689f471727a" title="Accesseur aux options du Manager; si l&#39;identifieur n&#39;existe pas. " alt="" coords="261,56,408,83"/>
+<area shape="rect" id="node4" href="$class_settings.html#a4eb83b96437cb0490f5326c5f34570eb" title="Mutateur de la présence du bip du message utilisateur. " alt="" coords="237,107,432,133"/>
+</map>

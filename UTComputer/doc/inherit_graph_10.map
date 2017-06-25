@@ -1,0 +1,50 @@
+<map id="Graphe hiérarchique des classes" name="Graphe hiérarchique des classes">
+<area shape="rect" id="node2" href="$class_operation.html" title="Un objet Operation définit un comportement sur des littérales spécifiques. " alt="" coords="220,1171,299,1197"/>
+<area shape="rect" id="node3" href="$class_above.html" title="Un objet Above implémente la relation d&#39;ordre strict supérieur. " alt="" coords="383,5,441,32"/>
+<area shape="rect" id="node4" href="$class_above_or_equal.html" title="Un objet AboveOrEqual implémente la relation d&#39;ordre supérieur ou égal. " alt="" coords="360,56,464,83"/>
+<area shape="rect" id="node5" href="$class_arc_cos_operation.html" title="Un objet ArcCosOperation implémente l&#39;inverse du cosinus (radians). " alt="" coords="351,107,473,133"/>
+<area shape="rect" id="node6" href="$class_arc_sin_operation.html" title="Un objet ArcSinOperation implémente l&#39;inverse du sinus (radians). " alt="" coords="353,157,471,184"/>
+<area shape="rect" id="node7" href="$class_arc_tan_operation.html" title="Un objet ArcTanOperation implémente l&#39;inverse de la tangeante (radians). " alt="" coords="353,208,471,235"/>
+<area shape="rect" id="node8" href="$class_arg_operation.html" title="Un objet ArgOperation renvoie l&#39;argument d&#39;un complexe. " alt="" coords="363,259,461,285"/>
+<area shape="rect" id="node9" href="$class_below.html" title="Un objet Below implémente la relation d&#39;ordre strict inférieur. " alt="" coords="383,309,441,336"/>
+<area shape="rect" id="node10" href="$class_below_or_equal.html" title="Un objet BelowOrEqual implémente la relation d&#39;ordre inférieur ou égal. " alt="" coords="360,360,464,387"/>
+<area shape="rect" id="node11" href="$class_clear_operation.html" title="Un objet ClearOperation vide tous les éléments de la pile. " alt="" coords="358,411,466,437"/>
+<area shape="rect" id="node12" href="$class_complex_operation.html" title="Un objet ComplexOperation permet de produire un nombre complexe. " alt="" coords="347,461,477,488"/>
+<area shape="rect" id="node13" href="$class_cos_operation.html" title="Un objet CosOperation implémente le cosinus (radians). " alt="" coords="361,512,463,539"/>
+<area shape="rect" id="node14" href="$class_den_operation.html" title="Un objet DenOperation renvoie le dénominateur d&#39;un rationnel (a fortiori 1 pour un entier après cast)..." alt="" coords="361,563,463,589"/>
+<area shape="rect" id="node15" href="$class_div_operation.html" title="Un objet DivOperation implémente l&#39;opération de division (rationnelle) " alt="" coords="365,613,459,640"/>
+<area shape="rect" id="node16" href="$class_drop_operation.html" title="Un objet DropOperation dépile la littérale au sommet de la pile. " alt="" coords="359,664,465,691"/>
+<area shape="rect" id="node17" href="$class_dup_operation.html" title="Un objet DupOperation empile une nouvelle littérale identique à celle du sommet de la pile..." alt="" coords="361,715,463,741"/>
+<area shape="rect" id="node18" href="$class_equal_operation.html" title="Un objet EqualOperation implémente la relation d&#39;équivalence d&#39;égalité. " alt="" coords="357,765,467,792"/>
+<area shape="rect" id="node19" href="$class_eval.html" title="Un objet Eval évalue des littérales. " alt="" coords="389,816,435,843"/>
+<area shape="rect" id="node20" href="$class_exp_operation.html" title="Un objet ExpOperation implémente l&#39;exponentielle. " alt="" coords="361,867,463,893"/>
+<area shape="rect" id="node21" href="$class_forget_operation.html" title="Un objet ForgetOperation supprime un identificateur référençant une litteral. " alt="" coords="355,917,469,944"/>
+<area shape="rect" id="node22" href="$class_i_f_t.html" title="Un objet IFT implémente un test logique binaire. Si la première littérale est vraie, la seconde est évaluée. " alt="" coords="392,968,432,995"/>
+<area shape="rect" id="node23" href="$class_i_f_t_e.html" title="Un objet IFTE implémente un test logique ternaire. Si la première littérale est vraie, la seconde est évaluée, sinon, la troisième est évaluée. " alt="" coords="387,1019,437,1045"/>
+<area shape="rect" id="node24" href="$class_im_operation.html" title="Un objet ImOperation renvoie la partie imaginaire d&#39;un complexe (a fortiori 0 pour toutes les autres ..." alt="" coords="366,1069,458,1096"/>
+<area shape="rect" id="node25" href="$class_int_div_operation.html" title="Un objet IntDivOperation implémente l&#39;opération de division entière. " alt="" coords="357,1120,467,1147"/>
+<area shape="rect" id="node26" href="$class_lastargs_operation.html" title="Un objet LastargsOperation empile les littérales utilisées pour la dernière opération. " alt="" coords="348,1171,476,1197"/>
+<area shape="rect" id="node27" href="$class_lastop_operation.html" title="Un objet LastopOperation applique le dernier opérateur utilisé. " alt="" coords="353,1221,471,1248"/>
+<area shape="rect" id="node28" href="$class_ln_operation.html" title="Un objet ExpOperation implémente le logarithme néperien. " alt="" coords="366,1272,458,1299"/>
+<area shape="rect" id="node29" href="$class_logic_and.html" title="Un objet LogicAnd implémente l&#39;opération logique ET. " alt="" coords="374,1323,450,1349"/>
+<area shape="rect" id="node30" href="$class_logic_not.html" title="Un objet LogicNot implémente l&#39;opération logique NOT. " alt="" coords="375,1373,449,1400"/>
+<area shape="rect" id="node31" href="$class_logic_or.html" title="Un objet LogicOr implémente l&#39;opération logique OU. " alt="" coords="379,1424,445,1451"/>
+<area shape="rect" id="node32" href="$class_mod_operation.html" title="Un objet ModOperation implémente l&#39;opération de modulo. " alt="" coords="361,1475,463,1501"/>
+<area shape="rect" id="node33" href="$class_module_operation.html" title="Un objet ModuleOperation renvoie module d&#39;un complexe. " alt="" coords="352,1525,472,1552"/>
+<area shape="rect" id="node34" href="$class_moins_operation.html" title="Un objet MoinsOperation implémente l&#39;opération de soustraction (en terme de négation et d&#39;addition)..." alt="" coords="355,1576,469,1603"/>
+<area shape="rect" id="node35" href="$class_mul_operation.html" title="Un objet MulOperation implémente l&#39;opération de multiplication. " alt="" coords="363,1627,461,1653"/>
+<area shape="rect" id="node36" href="$class_neg_operation.html" title="Un objet NegOperation implémente l&#39;opération de négation. (en terme de multiplication par &#45;1) ..." alt="" coords="361,1677,463,1704"/>
+<area shape="rect" id="node37" href="$class_not_equal_operation.html" title="Un objet NotEqualOperation implémente la relation de différence. " alt="" coords="347,1728,477,1755"/>
+<area shape="rect" id="node38" href="$class_num_operation.html" title="Un objet NumOperation renvoie le numérateur d&#39;un rationnel (a fortiori la valeur d&#39;un entier après ca..." alt="" coords="359,1779,465,1805"/>
+<area shape="rect" id="node39" href="$class_plus_operation.html" title="Un objet PlusOperation implémente l&#39;opération d&#39;addition. " alt="" coords="360,1829,464,1856"/>
+<area shape="rect" id="node40" href="$class_pow_operation.html" title="Un objet PowOperation implémente l&#39;opération de puissance. " alt="" coords="361,1880,463,1907"/>
+<area shape="rect" id="node41" href="$class_redo_operation.html" title="Un objet RedoOperation rétablit l’état du calculateur avant l’application de la dernière opération ..." alt="" coords="358,1931,466,1957"/>
+<area shape="rect" id="node42" href="$class_re_operation.html" title="Un objet ReOperation renvoie la partie réelle d&#39;un complexe (a fortiori toutes les autres littérales ..." alt="" coords="365,1981,459,2008"/>
+<area shape="rect" id="node43" href="$class_sin_operation.html" title="Un objet SinOperation implémente le sinus (radians). " alt="" coords="363,2032,461,2059"/>
+<area shape="rect" id="node44" href="$class_sqrt_operation.html" title="Un objet SqrtOperation implémente la racine carrée. " alt="" coords="361,2083,463,2109"/>
+<area shape="rect" id="node45" href="$class_sto_operation.html" title="Un objet StoOperation enregistre un identificateur référençant une litteral. " alt="" coords="363,2133,461,2160"/>
+<area shape="rect" id="node46" href="$class_swap_operation.html" title="Un objet SwapOperation intervertit les deux derniers éléments empilés dans la pile. " alt="" coords="357,2184,467,2211"/>
+<area shape="rect" id="node47" href="$class_tan_operation.html" title="Un objet TanOperation implémente la tangeante (radians). " alt="" coords="363,2235,461,2261"/>
+<area shape="rect" id="node48" href="$class_undo_operation.html" title="Un objet UndoOperation rétablit l’état du calculateur avant la dernière opération. " alt="" coords="358,2285,466,2312"/>
+<area shape="rect" id="node49" href="$class_w_h_i_l_e.html" title="Un objet WHILE implémente une boucle conditionnelle. Tant que la première littérale est vraie..." alt="" coords="381,2336,443,2363"/>
+</map>

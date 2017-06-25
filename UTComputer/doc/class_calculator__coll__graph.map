@@ -1,0 +1,7 @@
+<map id="Calculator" name="Calculator">
+<area shape="rect" id="node6" href="$class_u_t_computer.html" title="La classe UTComputer est l&#39;interface graphique principal, contenant les menus, le Widget principal..." alt="" coords="116,364,211,391"/>
+<area shape="rect" id="node4" title="STL class. " alt="" coords="278,185,358,212"/>
+<area shape="rect" id="node5" title="STL class. " alt="" coords="247,81,373,123"/>
+<area shape="rect" id="node8" href="$class_main_frame.html" title="La classe MainFrame est un élément graphique qui contient le clavier clickable. " alt="" coords="389,185,476,212"/>
+<area shape="rect" id="node10" href="$class_button.html" title="La Button est un QToolButton ayant une taille spécifique. " alt="" coords="492,89,552,115"/>
+</map>
