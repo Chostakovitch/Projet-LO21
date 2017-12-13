@@ -1,4 +1,0 @@
-<map id="SymbolicOperator" name="SymbolicOperator">
-<area shape="rect" id="node2" href="$class_operator.html" title="Un objet Operator est une opérande qui abstrait la notion d&#39;opérateur. " alt="" coords="33,80,105,107"/>
-<area shape="rect" id="node3" href="$class_operand.html" title="Un objet Operand représente une littérale quelconque ou bien un opérateur. " alt="" coords="33,5,104,32"/>
-</map>

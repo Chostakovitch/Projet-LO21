@@ -1,7 +1,0 @@
-<map id="Calculator::setMessage" name="Calculator::setMessage">
-<area shape="rect" id="node2" href="$class_manager.html#a35f3d29e37b47d1ba1be1bd45686fd98" title="Récupération de l&#39;instance du singleton. " alt="" coords="212,5,359,32"/>
-<area shape="rect" id="node3" href="$class_u_t_exception.html#a3cd5f1bd13eeef6be6c6e33431a143f4" title="Retourne les informations de l&#39;expression. " alt="" coords="220,56,351,83"/>
-<area shape="rect" id="node4" href="$class_u_t_exception.html#a5f194e61f7bbe53ad39dd65708d7ce0e" title="Retourne les détails de l&#39;exception, i.e. incluant ses expressions sous&#45;jacentes. ..." alt="" coords="407,56,549,83"/>
-<area shape="rect" id="node5" href="$class_u_t_exception.html#a9197e3e1b8035a48718e804b61d6053c" title="Nom de classe représentant l&#39;expression. " alt="" coords="597,56,764,83"/>
-<area shape="rect" id="node6" href="$class_u_t_exception.html#ae19c3952b8483cd972d9cab7dd8936cc" title="Constructeur explicite. " alt="" coords="812,56,991,83"/>
-</map>

@@ -1,8 +1,0 @@
-<map id="ExpressionParser::getLiteral" name="ExpressionParser::getLiteral">
-<area shape="rect" id="node2" href="$class_manager.html#a35f3d29e37b47d1ba1be1bd45686fd98" title="Récupération de l&#39;instance du singleton. " alt="" coords="255,5,401,32"/>
-<area shape="rect" id="node3" href="$class_manager.html#ad4298e87a289b1238f41d19d0a0c8c1e" title="Récupération d&#39;un identifier à partir de sa clé, s&#39;il existe. si l&#39;identifieur n&#39;existe pas..." alt="" coords="255,56,401,83"/>
-<area shape="rect" id="node4" href="$class_literal_factory.html#aec9768d18ca1f1b46c9718825be9f364" title="Récupération de l&#39;instance du singleton. " alt="" coords="240,107,416,133"/>
-<area shape="rect" id="node5" href="$class_literal_factory.html#aa877c9fa1201c1b057a181d6df1c8ae2" title="Méthode générale de fabrication d&#39;une littérale quelconque à partir d&#39;une chaîne. ..." alt="" coords="240,158,416,199"/>
-<area shape="rect" id="node6" href="$class_u_t_exception.html#a10aa63a93fc1693089bb67da9552565e" title="Ajout d&#39;une expression parente. " alt="" coords="464,165,589,192"/>
-<area shape="rect" id="node7" href="$class_u_t_exception.html#a2f55da4ee0ff7ce2781fd3f35cfaa64e" title="Renvoie un pointeur vers un objet similaire à l&#39;actuel. " alt="" coords="637,165,772,192"/>
-</map>

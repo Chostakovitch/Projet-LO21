@@ -1,6 +1,0 @@
-<map id="ClearOperation::eval" name="ClearOperation::eval">
-<area shape="rect" id="node2" href="$class_manager.html#a35f3d29e37b47d1ba1be1bd45686fd98" title="Récupération de l&#39;instance du singleton. " alt="" coords="192,5,339,32"/>
-<area shape="rect" id="node3" href="$class_manager.html#af46ae189069aa4188a1dfd60fa038603" title="Procédure vidant la pile. " alt="" coords="200,56,331,83"/>
-<area shape="rect" id="node4" href="$class_pile.html#aacefa7b4387996e4b06c584bc45acef5" title="Test si la pile est vide. " alt="" coords="387,31,475,57"/>
-<area shape="rect" id="node5" href="$class_pile.html#af112d27736d23084f66a37920ac1170a" title="Dépile le sommet de la pile. " alt="" coords="394,81,467,108"/>
-</map>

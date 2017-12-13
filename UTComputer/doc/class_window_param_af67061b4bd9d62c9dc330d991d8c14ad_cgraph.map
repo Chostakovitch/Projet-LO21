@@ -1,7 +1,0 @@
-<map id="WindowParam::refreshVariable" name="WindowParam::refreshVariable">
-<area shape="rect" id="node2" href="$class_variable_tab.html#a6fb1ff993406735cb4a504d4638595f9" title="Met à jour le tableau affichant les variables. " alt="" coords="253,56,391,83"/>
-<area shape="rect" id="node3" href="$class_manager.html#a35f3d29e37b47d1ba1be1bd45686fd98" title="Récupération de l&#39;instance du singleton. " alt="" coords="469,5,615,32"/>
-<area shape="rect" id="node4" href="$class_manager.html#aa20a86ecc6adb3695459802023051e30" title="Accesseur aux identifieurs de Literal non&#45;programme. " alt="" coords="439,56,645,83"/>
-<area shape="rect" id="node5" href="$class_window_param.html#aac8d2440595395f49cfce6cb9c92025a" title="Slot ouvrant la fenétre de modification d&#39;un identifieur. " alt="" coords="451,107,633,133"/>
-<area shape="rect" id="node6" href="$class_button_identifier.html#a138f16cf9f41180ce3a2a883eb34d7c9" title="Accesseur à la clé de l&#39;identifieur. " alt="" coords="693,99,851,141"/>
-</map>

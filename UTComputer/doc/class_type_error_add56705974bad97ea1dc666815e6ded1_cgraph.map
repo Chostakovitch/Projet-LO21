@@ -1,6 +1,0 @@
-<map id="TypeError::TypeError" name="TypeError::TypeError">
-<area shape="rect" id="node2" href="$class_u_t_exception.html#a3cd5f1bd13eeef6be6c6e33431a143f4" title="Retourne les informations de l&#39;expression. " alt="" coords="196,5,327,32"/>
-<area shape="rect" id="node3" href="$class_u_t_exception.html#a5f194e61f7bbe53ad39dd65708d7ce0e" title="Retourne les détails de l&#39;exception, i.e. incluant ses expressions sous&#45;jacentes. ..." alt="" coords="375,5,517,32"/>
-<area shape="rect" id="node4" href="$class_u_t_exception.html#a9197e3e1b8035a48718e804b61d6053c" title="Nom de classe représentant l&#39;expression. " alt="" coords="565,5,732,32"/>
-<area shape="rect" id="node5" href="$class_u_t_exception.html#ae19c3952b8483cd972d9cab7dd8936cc" title="Constructeur explicite. " alt="" coords="780,5,959,32"/>
-</map>

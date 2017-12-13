@@ -1,7 +1,0 @@
-<map id="UTComputer::save" name="UTComputer::save">
-<area shape="rect" id="node2" href="$class_manager.html#a35f3d29e37b47d1ba1be1bd45686fd98" title="Récupération de l&#39;instance du singleton. " alt="" coords="194,5,341,32"/>
-<area shape="rect" id="node3" href="$class_manager.html#aa581ed952c72470ae979a689f471727a" title="Accesseur aux options du Manager; si l&#39;identifieur n&#39;existe pas. " alt="" coords="194,56,341,83"/>
-<area shape="rect" id="node4" href="$class_manager.html#ac27dbdf485d42ebe9072c2590eaaec79" title="Accesseur à la pile. " alt="" coords="207,107,327,133"/>
-<area shape="rect" id="node5" href="$class_manager.html#a87bb54773accd2cdded4021f4544cdb9" title="Récupération de la liste associative d&#39;identifieurs du Manager. si l&#39;identifieur n&#39;existe pas..." alt="" coords="191,157,344,184"/>
-<area shape="rect" id="node6" href="$class_calculator.html#aad93ba74884749141ae041a5f4479b14" title="Accesseur pour commands. " alt="" coords="181,208,353,235"/>
-</map>

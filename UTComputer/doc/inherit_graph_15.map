@@ -1,7 +1,0 @@
-<map id="Graphe hiérarchique des classes" name="Graphe hiérarchique des classes">
-<area shape="rect" id="node1" title="STL class. " alt="" coords="5,56,109,83"/>
-<area shape="rect" id="node2" href="$class_u_t_exception.html" title="Un objet UTException représente une exception générée par UTComputer à tout moment du programme..." alt="" coords="157,56,253,83"/>
-<area shape="rect" id="node3" href="$class_operation_error.html" title="Un objet OperationError décrit une erreur rencontrée lors de l&#39;application d&#39;une opération. Exemple : Types incompatibles, opération non&#45;implémentée. " alt="" coords="301,5,408,32"/>
-<area shape="rect" id="node4" href="$class_parsing_error.html" title="Un objet ParsingError décrit une erreur rencontrée lors de la transformation d&#39;une chaîne de caractèr..." alt="" coords="307,56,402,83"/>
-<area shape="rect" id="node5" href="$class_type_error.html" title="Un objet TypeError décrit une erreur concernant les types des littérales. Plus généralement, cette classe doit être utilisée quand des littérales ne peuvent pas être uniformisées. " alt="" coords="315,107,394,133"/>
-</map>

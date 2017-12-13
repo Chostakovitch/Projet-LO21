@@ -1,7 +1,0 @@
-<map id="MainFrame::MainFrame" name="MainFrame::MainFrame">
-<area shape="rect" id="node2" href="$class_main_frame.html#a46d8297bc0990769a20177416a0a0a2d" title="La fonction createButton crée un élement Button. " alt="" coords="230,5,399,32"/>
-<area shape="rect" id="node3" href="$class_manager.html#a35f3d29e37b47d1ba1be1bd45686fd98" title="Récupération de l&#39;instance du singleton. " alt="" coords="241,56,388,83"/>
-<area shape="rect" id="node4" href="$class_manager.html#a9e1355c548be61ee89dce1ad41369f0f" title="Accesseur au vecteur d&#39;opérateurs symbolique en chaine de caractères. " alt="" coords="213,107,416,149"/>
-<area shape="rect" id="node5" href="$class_operator_manager.html#a8f9ae84ad0aa5674338f5bcb59d53376" title="Récupération de l&#39;instance du singleton. " alt="" coords="467,85,664,112"/>
-<area shape="rect" id="node6" href="$class_operator_manager.html#a18956a41b2a9ec57c5d8dc4ebb5141d4" title="OperatorManager::getSymbolic\lOperators" alt="" coords="464,137,667,178"/>
-</map>

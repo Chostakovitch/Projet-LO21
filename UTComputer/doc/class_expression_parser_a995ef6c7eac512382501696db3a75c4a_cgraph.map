@@ -1,4 +1,0 @@
-<map id="ExpressionParser::getOperator" name="ExpressionParser::getOperator">
-<area shape="rect" id="node2" href="$class_operator_manager.html#a8f9ae84ad0aa5674338f5bcb59d53376" title="Récupération de l&#39;instance du singleton. " alt="" coords="255,5,453,32"/>
-<area shape="rect" id="node3" href="$class_operator_manager.html#a5069cc8b88042dd701c3b720c7c920d7" title="Récupération de l&#39;instance d&#39;un opérateur à partir de son symbole, s&#39;il existe. " alt="" coords="255,56,453,83"/>
-</map>

@@ -1,6 +1,0 @@
-<map id="Eval::eval" name="Eval::eval">
-<area shape="rect" id="node2" href="$class_manager.html#a35f3d29e37b47d1ba1be1bd45686fd98" title="Récupération de l&#39;instance du singleton. " alt="" coords="129,5,276,32"/>
-<area shape="rect" id="node3" href="$class_operation.html#a8221213d70534e70485b4ae9c63e02c0" title="Destructeur virtuel. " alt="" coords="144,56,261,83"/>
-<area shape="rect" id="node4" href="$class_u_t_exception.html#a10aa63a93fc1693089bb67da9552565e" title="Ajout d&#39;une expression parente. " alt="" coords="324,56,449,83"/>
-<area shape="rect" id="node5" href="$class_u_t_exception.html#a2f55da4ee0ff7ce2781fd3f35cfaa64e" title="Renvoie un pointeur vers un objet similaire à l&#39;actuel. " alt="" coords="497,56,632,83"/>
-</map>

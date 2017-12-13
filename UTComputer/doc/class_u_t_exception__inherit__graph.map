@@ -1,6 +1,0 @@
-<map id="UTException" name="UTException">
-<area shape="rect" id="node3" href="$class_operation_error.html" title="Un objet OperationError décrit une erreur rencontrée lors de l&#39;application d&#39;une opération. Exemple : Types incompatibles, opération non&#45;implémentée. " alt="" coords="5,155,112,181"/>
-<area shape="rect" id="node4" href="$class_parsing_error.html" title="Un objet ParsingError décrit une erreur rencontrée lors de la transformation d&#39;une chaîne de caractèr..." alt="" coords="137,155,231,181"/>
-<area shape="rect" id="node5" href="$class_type_error.html" title="Un objet TypeError décrit une erreur concernant les types des littérales. Plus généralement, cette classe doit être utilisée quand des littérales ne peuvent pas être uniformisées. " alt="" coords="255,155,334,181"/>
-<area shape="rect" id="node2" title="STL class. " alt="" coords="132,5,236,32"/>
-</map>

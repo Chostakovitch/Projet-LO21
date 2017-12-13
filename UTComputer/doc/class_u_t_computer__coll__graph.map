@@ -1,7 +1,0 @@
-<map id="UTComputer" name="UTComputer">
-<area shape="rect" id="node3" href="$class_calculator.html" title="Le widget Calculator représente la partie centrale du calculateur contenant la ligne de commande..." alt="" coords="326,275,406,301"/>
-<area shape="rect" id="node6" title="STL class. " alt="" coords="278,185,358,212"/>
-<area shape="rect" id="node7" title="STL class. " alt="" coords="247,81,373,123"/>
-<area shape="rect" id="node8" href="$class_main_frame.html" title="La classe MainFrame est un élément graphique qui contient le clavier clickable. " alt="" coords="389,185,476,212"/>
-<area shape="rect" id="node10" href="$class_button.html" title="La Button est un QToolButton ayant une taille spécifique. " alt="" coords="492,89,552,115"/>
-</map>

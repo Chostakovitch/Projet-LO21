@@ -1,5 +1,0 @@
-<map id="UndoOperation::eval" name="UndoOperation::eval">
-<area shape="rect" id="node2" href="$class_manager.html#a35f3d29e37b47d1ba1be1bd45686fd98" title="Récupération de l&#39;instance du singleton. " alt="" coords="192,5,339,32"/>
-<area shape="rect" id="node3" href="$class_manager.html#acf69d0c901c4aca22c90cf3721fa31e6" title="Retour à l&#39;état précédent du Manager. s&#39;il n&#39;y a rien à annulé. " alt="" coords="211,56,319,83"/>
-<area shape="rect" id="node4" href="$class_manager.html#a56e7c149e5fecd84891b0bcf7dc54168" title="Fonction restorant l&#39;état du Manager selon le Memento. " alt="" coords="387,56,537,83"/>
-</map>

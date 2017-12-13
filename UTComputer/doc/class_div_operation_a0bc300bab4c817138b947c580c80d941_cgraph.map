@@ -1,7 +1,0 @@
-<map id="DivOperation::eval" name="DivOperation::eval">
-<area shape="rect" id="node2" href="$class_literal_factory.html#aec9768d18ca1f1b46c9718825be9f364" title="Récupération de l&#39;instance du singleton. " alt="" coords="179,5,355,32"/>
-<area shape="rect" id="node3" href="$class_literal_factory.html#a9712c44c82a55990f7792e522b1a8bc9" title="Fabrique d&#39;un objet IntegerLiteral. " alt="" coords="179,56,355,83"/>
-<area shape="rect" id="node4" href="$class_operation.html#a8221213d70534e70485b4ae9c63e02c0" title="Destructeur virtuel. " alt="" coords="208,107,325,133"/>
-<area shape="rect" id="node5" href="$class_u_t_exception.html#a10aa63a93fc1693089bb67da9552565e" title="Ajout d&#39;une expression parente. " alt="" coords="403,107,528,133"/>
-<area shape="rect" id="node6" href="$class_u_t_exception.html#a2f55da4ee0ff7ce2781fd3f35cfaa64e" title="Renvoie un pointeur vers un objet similaire à l&#39;actuel. " alt="" coords="576,107,711,133"/>
-</map>

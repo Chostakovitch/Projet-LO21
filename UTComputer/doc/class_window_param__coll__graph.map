@@ -1,5 +1,0 @@
-<map id="WindowParam" name="WindowParam">
-<area shape="rect" id="node3" href="$class_variable_tab.html" title="La classe VariableTab est l&#39;onglet réservé à la gestion des variables du calculateur. " alt="" coords="5,260,96,287"/>
-<area shape="rect" id="node5" href="$class_program_tab.html" title="La classe ProgramTab est l&#39;onglet réservé à la gestion des programmes du calculateur. " alt="" coords="249,260,341,287"/>
-<area shape="rect" id="node4" href="$class_param_tab.html" title="La classe ParamTab est l&#39;onglet réservé au paramétre du calculateur. " alt="" coords="142,81,223,108"/>
-</map>

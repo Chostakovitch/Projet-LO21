@@ -1,4 +1,0 @@
-<map id="Manager::clearPile" name="Manager::clearPile">
-<area shape="rect" id="node2" href="$class_pile.html#aacefa7b4387996e4b06c584bc45acef5" title="Test si la pile est vide. " alt="" coords="184,5,272,32"/>
-<area shape="rect" id="node3" href="$class_pile.html#af112d27736d23084f66a37920ac1170a" title="Dépile le sommet de la pile. " alt="" coords="191,56,265,83"/>
-</map>
